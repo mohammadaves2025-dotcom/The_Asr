@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Plus, Eye, Trash2, Star, Zap, CheckCircle } from 'lucide-react';
+import { Search, Plus, Eye, Trash2, Star, Zap, CircleCheck as CheckCircle } from 'lucide-react';
 import { articlesAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatRelative, cn } from '../utils/helpers';

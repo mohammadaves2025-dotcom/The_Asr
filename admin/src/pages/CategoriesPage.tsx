@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, CreditCard as Edit, Trash2 } from 'lucide-react';
 import { categoriesAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { cn } from '../utils/helpers';

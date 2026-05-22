@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, CircleAlert as AlertCircle } from 'lucide-react';
 import { useAdminAuth } from '../context/AuthContext';
 
 export default function AdminLoginPage() {
