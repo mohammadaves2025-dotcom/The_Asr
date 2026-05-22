@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Clock, Eye, Share2, BookMarked, Calendar, MapPin, AlertCircle } from 'lucide-react';
+import { Clock, Eye, Share2, BookMarked, Calendar, MapPin, CircleAlert as AlertCircle } from 'lucide-react';
 import { articlesService } from '../services/articles';
 import CategoryBadge from '../components/common/CategoryBadge';
 import ContentTypeBadge from '../components/common/ContentTypeBadge';

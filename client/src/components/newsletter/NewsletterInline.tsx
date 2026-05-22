@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, CircleCheck as CheckCircle } from 'lucide-react';
 import { newsletterService } from '../../services/articles';
 
 interface Props {
