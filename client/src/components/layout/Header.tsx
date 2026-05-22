@@ -106,14 +106,15 @@ export default function Header({ categories }: Props) {
                 Latest
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow transition-all duration-300 group-hover:w-full" />
               </Link>
-              {navCats.map((cat) => (
+              {navCats.map((cat: any) => (
                 <Link
                   key={cat.slug}
                   to={`/category/${cat.slug}`}
                   className="group px-4 py-3 text-xs font-sans font-semibold uppercase tracking-widest text-ink-secondary hover:text-brand-navy transition-colors duration-300 whitespace-nowrap relative"
+                  title={cat.description || cat.name}
                 >
                   {cat.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-navy transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{ backgroundColor: cat.color || '#122837' }} />
                 </Link>
               ))}
             </nav>
