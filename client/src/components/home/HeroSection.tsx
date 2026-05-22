@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Clock, ArrowRight, Flame, CheckCircle } from 'lucide-react';
+import { Clock, ArrowRight, Flame, CircleCheck as CheckCircle } from 'lucide-react';
 import CategoryBadge from '../common/CategoryBadge';
 import ContentTypeBadge from '../common/ContentTypeBadge';
 import { formatDate, formatReadTime } from '../../utils/helpers';
