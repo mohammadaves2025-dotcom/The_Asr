@@ -19,7 +19,7 @@ export default function Logo({ variant = 'dark', size = 'md', className }: LogoP
           variant === 'dark' ? 'text-brand-navy' : 'text-white'
         )}
       >
-        Maktoob
+        The Asr
       </span>
       <span
         className={cn(

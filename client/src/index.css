@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
@@ -45,3 +48,43 @@
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
 ::selection { background: #FBFC09; color: #122837; }
+
+/* ── Additional utilities referenced in components ──────────────────────────── */
+@layer components {
+  .btn-yellow {
+    @apply inline-flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy px-6 py-3 text-sm font-bold font-sans uppercase tracking-widest transition-all duration-300 hover:bg-brand-yellow-dark;
+  }
+
+  .badge-minimal {
+    @apply inline-flex items-center gap-1.5 text-xs font-sans text-ink-muted;
+  }
+
+  .prose-article {
+    @apply text-base leading-relaxed text-ink font-sans;
+  }
+
+  .prose-article h2 { @apply text-2xl font-serif font-bold mt-10 mb-4 text-ink; }
+  .prose-article h3 { @apply text-xl font-serif font-semibold mt-8 mb-3 text-ink; }
+  .prose-article p  { @apply mb-5 leading-[1.85]; }
+  .prose-article blockquote {
+    @apply border-l-4 border-brand-yellow bg-surface-secondary px-6 py-4 my-8 italic font-serif text-xl text-ink-secondary;
+  }
+  .prose-article a  { @apply text-brand-navy underline hover:text-brand-navy-dark; }
+  .prose-article ul { @apply list-disc pl-6 mb-5 space-y-2; }
+  .prose-article ol { @apply list-decimal pl-6 mb-5 space-y-2; }
+  .prose-article img { @apply w-full my-8; }
+  .prose-article figure { @apply my-8; }
+  .prose-article figcaption { @apply text-xs text-ink-muted mt-2 font-sans; }
+  .prose-article strong { @apply font-bold text-ink; }
+}
+
+@layer utilities {
+  .text-status-success { color: #16a34a; }
+  .text-status-error   { color: #dc2626; }
+}
+
+/* ── Breaking ticker keyframe ─────────────────────────────────────────────────── */
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

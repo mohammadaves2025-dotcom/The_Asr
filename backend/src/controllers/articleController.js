@@ -255,3 +255,17 @@ exports.adminGetArticles = async (req, res, next) => {
     next(err);
   }
 };
+
+// ── Increment Views (public, fire-and-forget) ─────────────────────────────────
+exports.incrementViews = async (req, res, next) => {
+  try {
+    // Accept slug or id
+    const filter = req.params.slug.match(/^[0-9a-fA-F]{24}$/)
+      ? { _id: req.params.slug }
+      : { slug: req.params.slug };
+    await Article.findOneAndUpdate(filter, { $inc: { views: 1 } });
+    return res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+};

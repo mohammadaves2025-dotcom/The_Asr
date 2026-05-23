@@ -26,3 +26,8 @@ export const categoriesService = {
   getBySlug: (slug: string) =>
     api.get<ApiResponse<{ category: Category }>>(`/categories/${slug}`),
 };
+
+export const newsletterService = {
+  subscribe: (email: string, name?: string, source: string = 'website') =>
+    api.post('/newsletter/subscribe', { email, name, source }),
+};

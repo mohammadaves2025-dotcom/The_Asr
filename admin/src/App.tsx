@@ -5,6 +5,7 @@ import { AdminAuthProvider, useAdminAuth } from './context/AuthContext';
 import AdminLayout from './components/layout/AdminLayout';
 import DashboardPage from './pages/DashboardPage';
 import ArticlesPage from './pages/ArticlesPage';
+import ArticleEditorPage from './pages/ArticleEditorPage';
 import UsersPage from './pages/UsersPage';
 import CommentsPage from './pages/CommentsPage';
 import SubmissionsPage from './pages/SubmissionsPage';
@@ -45,6 +46,8 @@ function ProtectedRoutes() {
       <Route element={<AdminLayout />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="/articles/new" element={<ArticleEditorPage />} />
+        <Route path="/articles/:id/edit" element={<ArticleEditorPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/comments" element={<CommentsPage />} />
         <Route path="/submissions" element={<SubmissionsPage />} />

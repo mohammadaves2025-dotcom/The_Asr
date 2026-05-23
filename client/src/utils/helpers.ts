@@ -62,3 +62,8 @@ export const CONTENT_TYPE_LABELS: Record<string, string> = {
   'verified-report': 'Verified',
   'in-their-words': 'In Their Words',
 };
+
+export const formatReadTime = (mins: number): string => {
+  if (!mins || mins < 1) return '1 min read';
+  return `${mins} min read`;
+};
