@@ -1,69 +1,39 @@
 import api from './api';
-import type { Article, ApiResponse, HomepageData } from '../types';
-
-export interface ArticlesQuery {
-  page?: number;
-  limit?: number;
-  category?: string;
-  tag?: string;
-  author?: string;
-  contentType?: string;
-  isFeatured?: boolean;
-  isBreaking?: boolean;
-  search?: string;
-  sort?: string;
-  language?: string;
-}
+import type { Article, ApiResponse, Category } from '../types';
 
 export const articlesService = {
-  getArticles: async (query: ArticlesQuery = {}) => {
-    const { data } = await api.get<ApiResponse<{ articles: Article[] }>>('/articles', { params: query });
-    return data;
-  },
+  getAll: (params: Record<string, any> = {}) =>
+    api.get<ApiResponse<{ articles: Article[]; total: number }>>('/articles', { params }),
 
-  getArticle: async (slug: string) => {
-    const { data } = await api.get<ApiResponse<{ article: Article; related: Article[] }>>(`/articles/${slug}`);
-    return data;
-  },
+  getBySlug: (slug: string) =>
+    api.get<ApiResponse<{ article: Article }>>(`/articles/${slug}`),
 
-  getHomepageData: async () => {
-    const { data } = await api.get<ApiResponse<HomepageData>>('/articles/homepage');
-    return data;
-  },
+  search: (query: string) =>
+    api.get<ApiResponse<{ articles: Article[] }>>('/articles/search', { params: { q: query } }),
+
+  getByCategory: (slug: string, params: Record<string, any> = {}) =>
+    api.get<ApiResponse<{ articles: Article[]; category: Category }>>(`/articles/category/${slug}`, { params }),
+
+  getComments: (articleId: string) =>
+    api.get(`/articles/${articleId}/comments`),
+
+  addComment: (articleId: string, data: { content: string }) =>
+    api.post(`/articles/${articleId}/comments`, data),
+
+  saveArticle: (articleId: string) =>
+    api.post(`/articles/${articleId}/save`),
+
+  unsaveArticle: (articleId: string) =>
+    api.delete(`/articles/${articleId}/save`),
+
+  incrementViews: (articleId: string) =>
+    api.post(`/articles/${articleId}/views`),
 };
 
 export const categoriesService = {
-  getAll: async () => {
-    const { data } = await api.get<ApiResponse<{ categories: import('../types').Category[] }>>('/categories');
-    return data;
-  },
+  getAll: () =>
+    api.get<ApiResponse<{ categories: Category[] }>>('/categories'),
 
-  getOne: async (slug: string) => {
-    const { data } = await api.get<ApiResponse<{ category: import('../types').Category }>>(`/categories/${slug}`);
-    return data;
-  },
-};
-
-export const commentsService = {
-  getForArticle: async (articleId: string, page = 1) => {
-    const { data } = await api.get<ApiResponse<{ comments: import('../types').Comment[] }>>(`/articles/${articleId}/comments`, { params: { page } });
-    return data;
-  },
-
-  create: async (articleId: string, body: string, parentComment?: string) => {
-    const { data } = await api.post<ApiResponse<{ comment: import('../types').Comment }>>(`/articles/${articleId}/comments`, { body, parentComment });
-    return data;
-  },
-
-  getReplies: async (articleId: string, commentId: string) => {
-    const { data } = await api.get<ApiResponse<{ replies: import('../types').Comment[] }>>(`/articles/${articleId}/comments/${commentId}/replies`);
-    return data;
-  },
-};
-
-export const newsletterService = {
-  subscribe: async (email: string, name?: string, source = 'homepage') => {
-    const { data } = await api.post('/newsletter/subscribe', { email, name, source });
-    return data;
-  },
+  getBySlug: (slug: string) =>
+    api.get<ApiResponse<{ category: Category }>>(`/categories/${slug}`),
 };
