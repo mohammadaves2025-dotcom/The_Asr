@@ -6,28 +6,17 @@ export const articlesService = {
     api.get<ApiResponse<{ articles: Article[]; total: number }>>('/articles', { params }),
 
   getBySlug: (slug: string) =>
-    api.get<ApiResponse<{ article: Article }>>(`/articles/${slug}`),
+    api.get<ApiResponse<{ article: Article; related?: Article[] }>>(`/articles/${slug}`),
 
-  search: (query: string) =>
-    api.get<ApiResponse<{ articles: Article[] }>>('/articles/search', { params: { q: query } }),
-
-  getByCategory: (slug: string, params: Record<string, any> = {}) =>
-    api.get<ApiResponse<{ articles: Article[]; category: Category }>>(`/articles/category/${slug}`, { params }),
+  // Increment view count (fire and forget)
+  incrementViews: (slugOrId: string) =>
+    api.post(`/articles/${slugOrId}/views`).catch(() => {}),
 
   getComments: (articleId: string) =>
     api.get(`/articles/${articleId}/comments`),
 
-  addComment: (articleId: string, data: { content: string }) =>
+  addComment: (articleId: string, data: { body: string; parentComment?: string }) =>
     api.post(`/articles/${articleId}/comments`, data),
-
-  saveArticle: (articleId: string) =>
-    api.post(`/articles/${articleId}/save`),
-
-  unsaveArticle: (articleId: string) =>
-    api.delete(`/articles/${articleId}/save`),
-
-  incrementViews: (articleId: string) =>
-    api.post(`/articles/${articleId}/views`),
 };
 
 export const categoriesService = {

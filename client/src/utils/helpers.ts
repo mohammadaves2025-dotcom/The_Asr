@@ -31,3 +31,34 @@ export const truncate = (text: string, length: number = 150): string => {
 export const slugify = (text: string): string => {
   return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 };
+
+export const formatRelative = (date: string | Date): string => {
+  const d = new Date(date);
+  const now = new Date();
+  const diff = now.getTime() - d.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return formatDate(date);
+};
+
+export const CONTENT_TYPE_LABELS: Record<string, string> = {
+  'news': 'News',
+  'investigation': 'Investigation',
+  'opinion': 'Opinion',
+  'analysis': 'Analysis',
+  'ground-report': 'Ground Report',
+  'explainer': 'Explainer',
+  'interview': 'Interview',
+  'photo-essay': 'Photo Essay',
+  'video-report': 'Video',
+  'book-excerpt': 'Book Excerpt',
+  'special-series': 'Special Series',
+  'community-voice': 'Community Voice',
+  'verified-report': 'Verified',
+  'in-their-words': 'In Their Words',
+};
