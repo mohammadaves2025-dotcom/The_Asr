@@ -11,7 +11,7 @@ export default function Layout() {
     staleTime: 10 * 60 * 1000,
   });
 
-  const categories = data?.data?.categories || [];
+  const categories = data?.data?.data?.categories || [];
 
   return (
     <div className="flex flex-col min-h-screen">
