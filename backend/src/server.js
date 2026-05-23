@@ -34,8 +34,22 @@ app.use(hpp());
 app.use(xssSanitize);
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
+// Both the public client and the admin panel need to be whitelisted.
+// Set ADMIN_URL in your .env (e.g. http://localhost:5173 for Vite dev server).
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  process.env.ADMIN_URL  || 'http://localhost:5173',
+];
+
 app.use(cors({
-  origin: [process.env.CLIENT_URL || 'http://localhost:3000'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin '${origin}' not allowed`));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -72,13 +86,13 @@ app.use('/api', apiLimiter);
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 const API = '/api/v1';
-app.use(`${API}/auth`,         authRoutes);
-app.use(`${API}/articles`,     articleRoutes);
-app.use(`${API}/articles/:articleId/comments`, commentRouter);
-app.use(`${API}/categories`,   categoryRouter);
-app.use(`${API}/newsletter`,   newsletterRouter);
-app.use(`${API}/submissions`,  submissionRouter);
-app.use(`${API}/users`,        userRouter);
+app.use(`${API}/auth`,                          authRoutes);
+app.use(`${API}/articles`,                      articleRoutes);
+app.use(`${API}/articles/:articleId/comments`,  commentRouter);
+app.use(`${API}/categories`,                    categoryRouter);
+app.use(`${API}/newsletter`,                    newsletterRouter);
+app.use(`${API}/submissions`,                   submissionRouter);
+app.use(`${API}/users`,                         userRouter);
 
 // ── 404 & Error Handler ───────────────────────────────────────────────────────
 app.use(notFound);

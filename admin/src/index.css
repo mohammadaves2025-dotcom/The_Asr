@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { @apply font-sans text-ink bg-surface-secondary; margin: 0; padding: 0; }
+  h1,h2,h3,h4,h5,h6 { @apply font-sans; }
+  img { @apply max-w-full h-auto; }
+}
+
+@layer components {
+  .admin-btn {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold font-sans transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .admin-btn-primary {
+    @apply admin-btn bg-brand-navy text-brand-yellow hover:bg-brand-navy-dark;
+  }
+  .admin-btn-secondary {
+    @apply admin-btn border border-gray-300 bg-white text-ink hover:bg-surface-tertiary hover:border-gray-400;
+  }
+  .admin-btn-danger {
+    @apply admin-btn bg-accent-red text-white hover:opacity-90;
+  }
+  .admin-btn-success {
+    @apply admin-btn bg-accent-green text-white hover:opacity-90;
+  }
+
+  .admin-card {
+    @apply bg-white border border-gray-200 shadow-card;
+  }
+
+  .admin-input {
+    @apply w-full border border-gray-200 bg-white px-3 py-2.5 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors;
+  }
+
+  .admin-label {
+    @apply block text-xs font-semibold font-sans text-ink-muted uppercase tracking-wider mb-1.5;
+  }
+
+  .admin-select {
+    @apply admin-input appearance-none pr-8 cursor-pointer;
+  }
+
+  .status-badge {
+    @apply text-[11px] font-bold font-sans uppercase tracking-wide px-2 py-0.5 inline-flex items-center gap-1;
+  }
+
+  .table-th {
+    @apply px-4 py-3 text-left text-xs font-bold font-sans uppercase tracking-wider text-ink-muted border-b border-gray-200 bg-surface-secondary whitespace-nowrap;
+  }
+
+  .table-td {
+    @apply px-4 py-3.5 text-sm font-sans text-ink border-b border-gray-100;
+  }
+
+  .table-row {
+    @apply hover:bg-surface-secondary transition-colors;
+  }
+
+  .stat-card {
+    @apply admin-card p-5 flex flex-col gap-3;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-2.5 text-sm font-sans text-sidebar-text hover:bg-sidebar-hover hover:text-white transition-all duration-150 cursor-pointer;
+  }
+
+  .sidebar-link-active {
+    @apply bg-sidebar-active text-sidebar-text-active border-r-2 border-brand-yellow;
+  }
+
+  .sidebar-section-label {
+    @apply px-4 py-2 text-[10px] font-bold font-sans uppercase tracking-widest text-white/30 mt-2;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+::selection { background: #FBFC09; color: #122837; }

@@ -130,7 +130,12 @@ const commentController = {
 
   delete: async (req, res, next) => {
     try {
-      await Comment.findByIdAndDelete(req.params.id);
+      const comment = await Comment.findByIdAndDelete(req.params.id);
+      if (!comment) return sendError(res, { statusCode: 404, message: 'Comment not found' });
+
+      // Keep commentsCount in sync — decrement the parent article's counter
+      await Article.findByIdAndUpdate(comment.article, { $inc: { commentsCount: -1 } });
+
       return sendSuccess(res, { message: 'Comment deleted' });
     } catch (err) { next(err); }
   },

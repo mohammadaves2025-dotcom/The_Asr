@@ -35,12 +35,21 @@ submissionRouter.get('/admin', protect, authorize('editor', 'admin', 'superadmin
 submissionRouter.patch('/admin/:id/status', protect, authorize('editor', 'admin', 'superadmin'), submissionController.updateStatus);
 
 // ─── Users Router ─────────────────────────────────────────────────────────────
+// IMPORTANT: static/prefixed routes (/me/*, /admin/*) must be declared BEFORE
+// the dynamic /:id route, otherwise Express will treat "me" and "admin" as
+// ObjectId values and the routes will never match correctly.
 const userRouter = express.Router();
-userRouter.get('/:id/profile', userController.getPublicProfile);
-userRouter.patch('/me/profile', protect, uploadAvatar.single('avatar'), userController.updateProfile);
-userRouter.patch('/me/saved/:articleId', protect, userController.toggleSavedArticle);
+
+// -- Admin routes (static prefix — must come before /:id) ---------------------
 userRouter.get('/admin/list', protect, authorize('admin', 'superadmin'), paginationValidator, userController.adminList);
 userRouter.patch('/admin/:id/role', protect, authorize('superadmin'), userController.adminUpdateRole);
 userRouter.patch('/admin/:id/toggle-active', protect, authorize('admin', 'superadmin'), userController.adminToggleActive);
+
+// -- Authenticated user (self) routes (static prefix) -------------------------
+userRouter.patch('/me/profile', protect, uploadAvatar.single('avatar'), userController.updateProfile);
+userRouter.patch('/me/saved/:articleId', protect, userController.toggleSavedArticle);
+
+// -- Public dynamic route (must come last) ------------------------------------
+userRouter.get('/:id/profile', userController.getPublicProfile);
 
 module.exports = { categoryRouter, commentRouter, newsletterRouter, submissionRouter, userRouter };
