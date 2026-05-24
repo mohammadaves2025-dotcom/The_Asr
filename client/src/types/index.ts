@@ -9,6 +9,7 @@ export interface User {
   isVerified: boolean;
   isActive: boolean;
   newsletterSubscribed: boolean;
+  savedArticles?: string[]; // array of article ObjectId strings
   createdAt: string;
   lastLogin?: string;
 }
@@ -31,7 +32,6 @@ export interface Article {
   subtitle?: string;
   excerpt: string;
   body?: string;
-  // featuredImage is an object, NOT a string
   featuredImage?: {
     url: string;
     publicId?: string;
@@ -72,11 +72,7 @@ export interface Article {
   likes: number;
   shares: number;
   commentsCount: number;
-  location?: {
-    state?: string;
-    district?: string;
-    country?: string;
-  };
+  location?: { state?: string; district?: string; country?: string };
   language: 'en' | 'ur' | 'hi';
   corrections?: Array<{ note: string; correctedAt: string }>;
   seo?: {
