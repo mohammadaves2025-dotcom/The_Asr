@@ -1,89 +1,88 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
-import { articlesService } from '../services/articles';
+import { Search, X } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
-
-function Skeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="h-48 bg-gray-200 mb-3" />
-      <div className="h-4 bg-gray-200 mb-2 rounded" />
-      <div className="h-4 bg-gray-200 w-3/4 rounded" />
-    </div>
-  );
-}
+import { articlesService } from '../services/articles';
+import type { Article } from '../types';
 
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const q = searchParams.get('q') ?? '';
-  const [input, setInput] = useState(q);
+  const [q, setQ] = useState(searchParams.get('q') ?? '');
+  const query = searchParams.get('q') ?? '';
 
   const { data, isLoading } = useQuery({
-    queryKey: ['search', q],
-    // use getAll with search param — backend filters by search on title/body/tags
-    queryFn: () => articlesService.getAll({ search: q, limit: 20, status: 'published' }),
-    enabled: q.length > 1,
+    queryKey: ['search', query],
+    queryFn: () => articlesService.getAll({ search: query, status: 'published', limit: 20 }),
+    enabled: query.length > 1,
+    staleTime: 2 * 60 * 1000,
   });
 
-  // response: res.data.data.articles
-  const articles = data?.data?.data?.articles ?? [];
-  const total = data?.data?.meta?.total ?? articles.length;
+  const articles: Article[] = data?.data?.data?.articles ?? [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim()) setSearchParams({ q: input.trim() });
+    if (q.trim()) setSearchParams({ q: q.trim() });
   };
 
   return (
-    <div className="container-site py-10">
-      {/* Search box */}
-      <div className="max-w-2xl mx-auto mb-10">
-        <h1 className="text-3xl font-serif font-bold text-ink mb-6 text-center">Search</h1>
-        <form onSubmit={handleSubmit} className="flex gap-0 border-2 border-brand-navy">
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Search articles, topics, authors…"
-            className="flex-1 px-5 py-3.5 text-base font-sans outline-none"
-          />
-          <button type="submit"
-            className="bg-brand-navy text-brand-yellow px-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:bg-brand-navy-dark transition-colors">
-            <Search size={16} /> Search
-          </button>
-        </form>
+    <div className="bg-paper min-h-screen">
+      {/* Search header */}
+      <div className="bg-brand-navy">
+        <div className="container-site py-10 md:py-14">
+          <p className="text-[9px] font-black uppercase tracking-[3px] text-white/30 mb-4 font-sans">Search</p>
+          <form onSubmit={handleSearch} className="flex items-end border-b-2 border-brand-yellow pb-2 max-w-2xl">
+            <input
+              type="text"
+              value={q}
+              onChange={e => setQ(e.target.value)}
+              placeholder="Search articles, topics, journalists…"
+              className="flex-1 bg-transparent text-white text-2xl md:text-3xl font-serif placeholder:text-white/20 outline-none py-2"
+            />
+            {q && (
+              <button type="button" onClick={() => setQ('')}
+                className="text-white/40 hover:text-white mr-3 transition-colors">
+                <X size={18} />
+              </button>
+            )}
+            <button type="submit" className="text-brand-yellow hover:text-white transition-colors pb-2">
+              <Search size={20} />
+            </button>
+          </form>
+        </div>
       </div>
 
-      {q && (
-        <>
-          <p className="text-sm text-ink-muted font-sans mb-6">
-            {isLoading ? 'Searching…' : `${total} result${total !== 1 ? 's' : ''} for "${q}"`}
+      <div className="container-site py-8 md:py-12">
+        {query && (
+          <p className="text-[11px] text-ink-muted font-sans mb-6">
+            {isLoading ? 'Searching…' : `${articles.length} results for `}
+            {!isLoading && <strong className="text-ink">"{query}"</strong>}
           </p>
-          {isLoading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1,2,3].map(i => <Skeleton key={i} />)}
-            </div>
-          ) : articles.length === 0 ? (
-            <div className="py-16 text-center">
-              <p className="text-lg text-ink-muted">No results found for "{q}"</p>
-              <p className="text-sm text-ink-muted mt-2">Try different keywords or browse categories.</p>
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map(art => <ArticleCard key={art._id} article={art} />)}
-            </div>
-          )}
-        </>
-      )}
+        )}
 
-      {!q && (
-        <div className="text-center py-16 text-ink-muted">
-          <p className="text-lg font-serif">What are you looking for?</p>
-          <p className="text-sm mt-2">Enter a keyword, topic, or author name above.</p>
-        </div>
-      )}
+        {!query && (
+          <p className="text-ink-muted font-sans py-12 text-center">Type a query above to search.</p>
+        )}
+
+        {isLoading && (
+          <div className="grid md:grid-cols-3 gap-5 animate-pulse">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-64 bg-gray-200" />)}
+          </div>
+        )}
+
+        {!isLoading && query && articles.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-ink-muted font-sans mb-4">No articles found for "{query}".</p>
+            <Link to="/" className="btn-primary">← Back to Home</Link>
+          </div>
+        )}
+
+        {!isLoading && articles.length > 0 && (
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {articles.map(art => <ArticleCard key={art._id} article={art} />)}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { authService } from '../services/auth';
-import type { User, AuthState } from '../types';
+import type { AuthState } from '../types';
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
@@ -26,7 +26,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authService
         .getMe()
         .then((res) => {
-          const user = res.data.data.user;
+          const data = res.data?.data as any;
+          const user = data?.user;
           setState({ user, accessToken: token, isAuthenticated: true, isLoading: false });
         })
         .catch(() => {
@@ -40,14 +41,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const res = await authService.login(email, password);
-    const { user, accessToken } = res.data.data;
+    const data = res.data?.data as any;
+    const { user, accessToken } = data;
     localStorage.setItem('accessToken', accessToken);
     setState({ user, accessToken, isAuthenticated: true, isLoading: false });
   };
 
   const register = async (name: string, email: string, password: string) => {
     const res = await authService.register({ name, email, password });
-    const { user, accessToken } = res.data.data;
+    const data = res.data?.data as any;
+    const { user, accessToken } = data;
     localStorage.setItem('accessToken', accessToken);
     setState({ user, accessToken, isAuthenticated: true, isLoading: false });
   };
@@ -60,7 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = async () => {
     const res = await authService.getMe();
-    const user = res.data.data.user;
+    const data = res.data?.data as any;
+    const user = data?.user;
     setState((s) => ({ ...s, user }));
   };
 

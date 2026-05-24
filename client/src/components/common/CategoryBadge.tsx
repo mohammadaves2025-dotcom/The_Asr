@@ -1,38 +1,23 @@
 import { Link } from 'react-router-dom';
-import { cn } from '../../utils/helpers';
 import type { Category } from '../../types';
 
 interface Props {
-  category: Category | { name: string; slug: string; color: string };
-  size?: 'xs' | 'sm';
-  linked?: boolean;
-  className?: string;
+  category: Category;
+  size?: 'xs' | 'sm' | 'md';
+  asLink?: boolean;
 }
 
-export default function CategoryBadge({ category, size = 'sm', linked = true, className }: Props) {
-  const baseClass = cn(
-    'font-sans font-bold uppercase tracking-widest inline-block',
-    size === 'xs' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-1',
-    className
-  );
+export default function CategoryBadge({ category, size = 'sm', asLink = true }: Props) {
+  const cls = `inline-block font-black uppercase font-sans ${
+    size === 'xs' ? 'text-[8px] tracking-[1.5px] px-1.5 py-0.5' :
+    size === 'sm' ? 'text-[9px] tracking-[2px] px-2 py-0.5' :
+    'text-[10px] tracking-[2px] px-2.5 py-1'
+  } text-brand-red hover:text-brand-red-dark transition-colors`;
 
-  const style = {
-    backgroundColor: category.color + '18',
-    color: category.color,
-    borderLeft: `2px solid ${category.color}`,
-  };
-
-  if (linked) {
-    return (
-      <Link to={`/category/${category.slug}`} className={baseClass} style={style}>
-        {category.name}
-      </Link>
-    );
-  }
-
+  if (!asLink) return <span className={cls}>{category.name}</span>;
   return (
-    <span className={baseClass} style={style}>
+    <Link to={`/category/${category.slug}`} className={cls} onClick={e => e.stopPropagation()}>
       {category.name}
-    </span>
+    </Link>
   );
 }

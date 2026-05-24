@@ -1,37 +1,24 @@
-import { cn, CONTENT_TYPE_LABELS } from '../../utils/helpers';
-
-const TYPE_COLORS: Record<string, string> = {
-  investigation: 'bg-accent-red text-white',
-  opinion: 'bg-accent-teal text-white',
-  analysis: 'bg-accent-blue text-white',
-  'ground-report': 'bg-accent-green text-white',
-  'verified-report': 'bg-accent-emerald text-white',
-  'in-their-words': 'bg-accent-rose text-white',
-  news: 'bg-brand-navy text-white',
-  explainer: 'bg-accent-amber text-white',
-  interview: 'bg-purple-600 text-white',
-  'photo-essay': 'bg-pink-600 text-white',
-  'community-voice': 'bg-orange-600 text-white',
-  'special-series': 'bg-indigo-600 text-white',
-};
-
 interface Props {
-  // accepts both `type` (old) and `contentType` (new) for compatibility
-  type?: string;
-  contentType?: string;
+  type: string;
   className?: string;
 }
 
-export default function ContentTypeBadge({ type, contentType, className }: Props) {
-  const t = contentType ?? type ?? 'news';
-  if (!t) return null;
+const TYPE_MAP: Record<string, { label: string; color: string }> = {
+  investigation: { label: 'Investigation', color: 'bg-accent-purple/10 text-accent-purple' },
+  opinion: { label: 'Opinion', color: 'bg-brand-navy/10 text-brand-navy' },
+  explainer: { label: 'Explainer', color: 'bg-accent-teal/10 text-accent-teal' },
+  'photo-essay': { label: 'Photo Essay', color: 'bg-accent-amber/10 text-accent-amber' },
+  interview: { label: 'Interview', color: 'bg-accent-green/10 text-accent-green' },
+  news: { label: 'News', color: 'bg-brand-red/10 text-brand-red' },
+  video: { label: 'Video', color: 'bg-red-100 text-red-700' },
+  'community-voices': { label: 'Community Voice', color: 'bg-emerald-100 text-emerald-700' },
+};
+
+export default function ContentTypeBadge({ type, className = '' }: Props) {
+  const m = TYPE_MAP[type] ?? { label: type, color: 'bg-gray-100 text-ink-muted' };
   return (
-    <span className={cn(
-      'text-[10px] font-bold font-sans uppercase tracking-widest px-2 py-0.5 inline-block',
-      TYPE_COLORS[t] || 'bg-gray-600 text-white',
-      className
-    )}>
-      {CONTENT_TYPE_LABELS[t] ?? t}
+    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 ${m.color} ${className}`}>
+      {m.label}
     </span>
   );
 }

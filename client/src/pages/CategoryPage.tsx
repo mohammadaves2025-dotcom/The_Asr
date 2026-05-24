@@ -1,105 +1,81 @@
-import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { categoriesService, articlesService } from '../services/articles';
+import { ArrowRight } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
-
-function Skeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="h-48 bg-gray-200 mb-3" />
-      <div className="h-4 bg-gray-200 mb-2 rounded" />
-      <div className="h-4 bg-gray-200 w-3/4 rounded" />
-    </div>
-  );
-}
+import { articlesService, categoriesService } from '../services/articles';
+import type { Article } from '../types';
 
 export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [page, setPage] = useState(1);
-  const LIMIT = 12;
 
   const { data: catData } = useQuery({
     queryKey: ['category', slug],
-    queryFn: () => categoriesService.getBySlug(slug!),
+    queryFn: () => (slug ? categoriesService.getBySlug(slug) : Promise.reject()),
     enabled: !!slug,
   });
 
-  // category shape: res.data.data.category
-  const cat = catData?.data?.data?.category;
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['articles', 'category', slug, page],
-    queryFn: () => articlesService.getAll({
-      category: slug,
-      page,
-      limit: LIMIT,
-      status: 'published',
-    }),
+  const { data: articlesData, isLoading } = useQuery({
+    queryKey: ['articles', 'category', slug],
+    queryFn: () => articlesService.getAll({ category: slug, status: 'published', limit: 24, sort: '-publishedAt' }),
     enabled: !!slug,
   });
 
-  // articles shape: res.data.data.articles
-  const articles = data?.data?.data?.articles ?? [];
-  const meta = data?.data?.meta;
+  const category = catData?.data?.data?.category;
+  const articles: Article[] = articlesData?.data?.data?.articles ?? [];
+  const hero = articles[0];
+  const rest = articles.slice(1);
 
   return (
-    <div>
-      {/* Category Header */}
-      <div className="border-b-4" style={{ borderColor: cat?.color ?? '#122837' }}>
-        <div className="container-site py-8 md:py-12">
-          {cat ? (
-            <>
-              <p className="text-xs font-bold font-sans uppercase tracking-widest text-ink-muted mb-2">Section</p>
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-ink" style={{ color: cat.color }}>
-                {cat.name}
-              </h1>
-              {cat.description && (
-                <p className="text-base text-ink-secondary mt-3 max-w-2xl font-sans">{cat.description}</p>
-              )}
-              <p className="text-sm text-ink-muted mt-2 font-sans">{meta?.total ?? 0} articles</p>
-            </>
-          ) : (
-            <div className="animate-pulse space-y-3">
-              <div className="h-5 w-24 bg-gray-200 rounded" />
-              <div className="h-12 w-64 bg-gray-200 rounded" />
+    <div className="bg-paper min-h-screen">
+      {/* Category banner */}
+      <div className="bg-brand-navy border-b border-white/10">
+        <div className="container-site py-8 md:py-10">
+          {category?.description && (
+            <div className="mb-1">
+              <span className="text-[9px] font-black uppercase tracking-[3px] text-white/30 font-sans">Section</span>
             </div>
+          )}
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
+            {category?.name ?? (slug ? slug.replace(/-/g, ' ') : 'Category')}
+          </h1>
+          {category?.description && (
+            <p className="text-white/50 text-[13px] font-sans max-w-xl leading-relaxed">{category.description}</p>
           )}
         </div>
       </div>
 
-      {/* Articles Grid */}
-      <div className="container-site py-10">
-        {isLoading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {Array(6).fill(0).map((_, i) => <Skeleton key={i} />)}
+      <div className="container-site py-8 md:py-12">
+        {isLoading && (
+          <div className="grid md:grid-cols-3 gap-5 animate-pulse">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-64 bg-gray-200" />)}
           </div>
-        ) : articles.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="text-ink-muted font-sans text-lg mb-6">No articles in this category yet.</p>
-            <Link to="/" className="btn-secondary">Browse all stories</Link>
+        )}
+
+        {!isLoading && articles.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-ink-muted font-sans mb-4">No articles found in this section yet.</p>
+            <Link to="/" className="btn-primary">← Back to Home</Link>
           </div>
-        ) : (
+        )}
+
+        {!isLoading && hero && (
           <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {articles.map(art => <ArticleCard key={art._id} article={art} />)}
+            {/* Hero */}
+            <div className="mb-8 pb-8 border-b-2 border-ink">
+              <ArticleCard article={hero} variant="featured-side" />
             </div>
 
-            {/* Pagination */}
-            {meta && meta.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-12">
-                <button disabled={!meta.hasPrevPage}
-                  onClick={() => setPage(p => p - 1)}
-                  className="btn-secondary disabled:opacity-40 disabled:cursor-not-allowed text-sm">
-                  ← Previous
-                </button>
-                <span className="text-sm text-ink-muted font-sans">
-                  Page {meta.page} of {meta.totalPages}
-                </span>
-                <button disabled={!meta.hasNextPage}
-                  onClick={() => setPage(p => p + 1)}
-                  className="btn-secondary disabled:opacity-40 disabled:cursor-not-allowed text-sm">
-                  Next →
+            {/* Grid */}
+            {rest.length > 0 && (
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {rest.map(art => <ArticleCard key={art._id} article={art} />)}
+              </div>
+            )}
+
+            {articles.length >= 24 && (
+              <div className="text-center mt-10">
+                <button className="btn-secondary">
+                  Load More <ArrowRight size={13} />
                 </button>
               </div>
             )}

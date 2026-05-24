@@ -1,90 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  body { @apply font-sans text-ink bg-white; margin: 0; padding: 0; }
-  h1,h2,h3,h4,h5,h6 { @apply font-sans font-bold; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+  body { @apply font-sans text-ink bg-paper; margin: 0; padding: 0; }
+  h1,h2,h3,h4,h5,h6 { @apply font-serif; }
 }
 
 @layer components {
   .container-site {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-yellow px-6 py-3 text-sm font-semibold font-sans uppercase tracking-widest transition-all duration-300 hover:bg-brand-navy-dark hover:shadow-lg hover:-translate-y-0.5;
+    @apply inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-yellow px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-brand-red hover:text-white active:scale-95;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 border-2 border-brand-navy bg-white text-brand-navy px-6 py-3 text-sm font-semibold font-sans uppercase tracking-widest transition-all duration-300 hover:bg-brand-navy hover:text-brand-yellow;
+    @apply inline-flex items-center justify-center gap-2 border border-brand-navy bg-transparent text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-brand-navy hover:text-white;
+  }
+
+  .btn-yellow {
+    @apply inline-flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-yellow-400 active:scale-95;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 bg-transparent text-ink px-4 py-2 text-sm font-sans transition-colors duration-200 hover:text-brand-navy;
+    @apply inline-flex items-center justify-center gap-1 bg-transparent text-ink-muted px-3 py-1.5 text-xs font-sans transition-colors duration-200 hover:text-brand-navy;
+  }
+
+  .section-label {
+    @apply text-[10px] font-bold font-sans uppercase tracking-[3px] text-brand-red;
   }
 
   .section-heading {
-    @apply text-2xl font-serif font-bold text-ink;
+    @apply text-xl font-serif font-bold text-ink;
+  }
+
+  .divider-bold {
+    @apply border-t-2 border-ink;
   }
 
   .input-field {
-    @apply w-full border border-gray-200 bg-white px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all;
+    @apply w-full border border-gray-300 bg-white px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy focus:ring-0 transition-colors;
   }
 
   .form-label {
-    @apply block text-sm font-semibold font-sans text-ink mb-2;
-  }
-}
-
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-::selection { background: #FBFC09; color: #122837; }
-
-/* ── Additional utilities referenced in components ──────────────────────────── */
-@layer components {
-  .btn-yellow {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy px-6 py-3 text-sm font-bold font-sans uppercase tracking-widest transition-all duration-300 hover:bg-brand-yellow-dark;
+    @apply block text-xs font-bold font-sans uppercase tracking-[1.5px] text-ink mb-2;
   }
 
-  .badge-minimal {
-    @apply inline-flex items-center gap-1.5 text-xs font-sans text-ink-muted;
-  }
-
+  /* Article body prose */
   .prose-article {
-    @apply text-base leading-relaxed text-ink font-sans;
+    @apply text-[17px] leading-[1.9] text-ink font-sans;
   }
-
-  .prose-article h2 { @apply text-2xl font-serif font-bold mt-10 mb-4 text-ink; }
-  .prose-article h3 { @apply text-xl font-serif font-semibold mt-8 mb-3 text-ink; }
-  .prose-article p  { @apply mb-5 leading-[1.85]; }
+  .prose-article h2 { @apply text-2xl font-serif font-bold mt-12 mb-5 text-ink pt-4 border-t border-gray-200; }
+  .prose-article h3 { @apply text-xl font-serif font-semibold mt-10 mb-4 text-ink; }
+  .prose-article p  { @apply mb-6 leading-[1.9]; }
   .prose-article blockquote {
-    @apply border-l-4 border-brand-yellow bg-surface-secondary px-6 py-4 my-8 italic font-serif text-xl text-ink-secondary;
+    @apply border-l-[3px] border-brand-red bg-gray-50 px-6 py-5 my-10 italic font-serif text-[1.2rem] leading-relaxed text-ink-secondary;
   }
-  .prose-article a  { @apply text-brand-navy underline hover:text-brand-navy-dark; }
-  .prose-article ul { @apply list-disc pl-6 mb-5 space-y-2; }
-  .prose-article ol { @apply list-decimal pl-6 mb-5 space-y-2; }
-  .prose-article img { @apply w-full my-8; }
-  .prose-article figure { @apply my-8; }
-  .prose-article figcaption { @apply text-xs text-ink-muted mt-2 font-sans; }
+  .prose-article a  { @apply text-brand-navy underline underline-offset-2 decoration-brand-yellow hover:decoration-brand-red transition-colors; }
+  .prose-article ul { @apply list-disc pl-6 mb-6 space-y-2; }
+  .prose-article ol { @apply list-decimal pl-6 mb-6 space-y-2; }
+  .prose-article img { @apply w-full my-10; }
+  .prose-article figure { @apply my-10; }
+  .prose-article figcaption { @apply text-xs text-ink-muted mt-3 font-sans; }
   .prose-article strong { @apply font-bold text-ink; }
+  .prose-article em { @apply italic; }
+  .prose-article hr { @apply my-12 border-gray-200; }
+
+  /* Card styles */
+  .card-base {
+    @apply bg-white border border-gray-200 transition-all duration-300 hover:shadow-card-hover;
+  }
+
+  /* Badge styles */
+  .badge-minimal {
+    @apply inline-flex items-center gap-1.5 text-[11px] font-sans text-ink-muted;
+  }
+
+  /* Ticker animation */
+  .ticker-animate {
+    animation: ticker 35s linear infinite;
+  }
 }
 
-@layer utilities {
-  .text-status-success { color: #16a34a; }
-  .text-status-error   { color: #dc2626; }
-}
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
-/* ── Breaking ticker keyframe ─────────────────────────────────────────────────── */
+/* Selection */
+::selection { background: #FBFC09; color: #0d1e29; }
+
+/* Ticker keyframe */
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+/* Fade in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeUp 0.5s ease forwards;
+}
+
+/* Progress bar for article reading */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  height: 2px;
+  background: #c8392b;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .text-status-success { color: #16a34a; }
+  .text-status-error   { color: #dc2626; }
+  .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+  .line-clamp-4 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
 }
