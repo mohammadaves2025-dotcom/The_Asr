@@ -30,26 +30,39 @@ export interface Article {
   _id: string;
   title: string;
   slug: string;
+  subtitle?: string;
   excerpt: string;
   body?: string;
   featuredImage?: { url: string; alt?: string; caption?: string; credit?: string };
-  category: Category;
+  category: Category | string;
   tags?: string[];
   contentType: string;
   author: { _id: string; name: string; email?: string; avatar?: string };
   status: 'draft' | 'review' | 'scheduled' | 'published' | 'archived';
+  scheduledFor?: string;
   publishedAt?: string;
   isFeatured: boolean;
   isBreaking: boolean;
   isEditorsPick: boolean;
+  isMustRead?: boolean;
   isVerified: boolean;
+  isPremium?: boolean;
+  isGuestAuthor?: boolean;
+  guestAuthorName?: string;
+  guestAuthorBio?: string;
   views: number;
   readTime: number;
   likes: number;
   commentsCount: number;
   language: 'en' | 'ur' | 'hi';
+  series?: string;
+  seriesPart?: number;
+  videoUrl?: string;
+  location?: { state?: string; district?: string; country?: string };
+  seo?: { metaTitle?: string; metaDescription?: string };
   createdAt: string;
   updatedAt: string;
+  __v?: number;
 }
 
 export interface Comment {

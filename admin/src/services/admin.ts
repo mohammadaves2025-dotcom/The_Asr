@@ -5,6 +5,9 @@ export const articlesAdmin = {
   getAll: (params: Record<string, any> = {}) =>
     api.get<ApiResponse<{ articles: Article[] }>>('/articles/admin/all', { params }),
 
+  create: (data: Partial<Article>) =>
+    api.post<ApiResponse<{ article: Article }>>('/articles', data),
+
   update: (id: string, data: Partial<Article>) =>
     api.patch(`/articles/${id}`, data),
 
@@ -31,14 +34,18 @@ export const usersAdmin = {
 };
 
 export const commentsAdmin = {
+  getAll: (params: Record<string, any> = {}) =>
+    api.get('/comments/admin', { params }),
+
+  moderate: (commentId: string, status: string, note?: string) =>
+    api.patch(`/comments/admin/${commentId}/moderate`, { status, note }),
+
+  delete: (commentId: string) =>
+    api.delete(`/comments/admin/${commentId}`),
+
+  // Per-article (kept for compatibility)
   getPending: (articleId: string) =>
     api.get(`/articles/${articleId}/comments`),
-
-  moderate: (articleId: string, commentId: string, status: string, note?: string) =>
-    api.patch(`/articles/${articleId}/comments/${commentId}/moderate`, { status, note }),
-
-  delete: (articleId: string, commentId: string) =>
-    api.delete(`/articles/${articleId}/comments/${commentId}`),
 };
 
 export const submissionsAdmin = {

@@ -134,6 +134,33 @@ const commentController = {
       return sendSuccess(res, { message: 'Comment deleted' });
     } catch (err) { next(err); }
   },
+
+  // Admin: global comments queue across all articles
+  adminList: async (req, res, next) => {
+    try {
+      const { page = 1, limit = 30, status, search } = req.query;
+      const filter = {};
+      if (status) filter.status = status;
+      if (search) filter.body = { $regex: search, $options: 'i' };
+      const skip = (page - 1) * limit;
+
+      const [comments, total] = await Promise.all([
+        Comment.find(filter)
+          .sort('-createdAt')
+          .skip(skip)
+          .limit(Number(limit))
+          .populate('author', 'name avatar email role')
+          .populate('article', 'title slug'),
+        Comment.countDocuments(filter),
+      ]);
+
+      const { buildPaginationMeta } = require('../utils/apiResponse');
+      return sendSuccess(res, {
+        data: { comments },
+        meta: buildPaginationMeta(page, limit, total),
+      });
+    } catch (err) { next(err); }
+  },
 };
 
 // ── NEWSLETTER CONTROLLER ─────────────────────────────────────────────────────

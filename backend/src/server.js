@@ -16,7 +16,7 @@ const xssSanitize = require('./middleware/sanitize');
 
 const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
-const { categoryRouter, commentRouter, newsletterRouter, submissionRouter, userRouter } = require('./routes/index');
+const { categoryRouter, commentRouter, adminCommentRouter, newsletterRouter, submissionRouter, userRouter } = require('./routes/index');
 
 const app = express();
 
@@ -76,6 +76,7 @@ const API = '/api/v1';
 app.use(`${API}/auth`,                           authRoutes);
 app.use(`${API}/articles`,                       articleRoutes);
 app.use(`${API}/articles/:articleId/comments`,   commentRouter);
+app.use(`${API}/comments/admin`,                 adminCommentRouter);
 app.use(`${API}/categories`,                     categoryRouter);
 app.use(`${API}/newsletter`,                     newsletterRouter);
 app.use(`${API}/submissions`,                    submissionRouter);

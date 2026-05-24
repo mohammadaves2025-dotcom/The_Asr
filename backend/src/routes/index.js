@@ -21,6 +21,12 @@ commentRouter.post('/', protect, createCommentValidator, commentController.creat
 commentRouter.patch('/:id/moderate', protect, authorize('editor', 'admin', 'superadmin'), commentController.moderate);
 commentRouter.delete('/:id', protect, authorize('editor', 'admin', 'superadmin'), commentController.delete);
 
+// ─── Admin Comments Router (global, not article-scoped) ───────────────────────
+const adminCommentRouter = express.Router();
+adminCommentRouter.get('/', protect, authorize('editor', 'admin', 'superadmin'), commentController.adminList);
+adminCommentRouter.patch('/:id/moderate', protect, authorize('editor', 'admin', 'superadmin'), commentController.moderate);
+adminCommentRouter.delete('/:id', protect, authorize('editor', 'admin', 'superadmin'), commentController.delete);
+
 // ─── Newsletter Router ────────────────────────────────────────────────────────
 const newsletterRouter = express.Router();
 newsletterRouter.post('/subscribe', newsletterController.subscribe);
@@ -52,4 +58,4 @@ userRouter.patch('/me/saved/:articleId', protect, userController.toggleSavedArti
 // -- Public dynamic route (must come last) ------------------------------------
 userRouter.get('/:id/profile', userController.getPublicProfile);
 
-module.exports = { categoryRouter, commentRouter, newsletterRouter, submissionRouter, userRouter };
+module.exports = { categoryRouter, commentRouter, adminCommentRouter, newsletterRouter, submissionRouter, userRouter };
