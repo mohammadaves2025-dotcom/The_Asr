@@ -7,6 +7,8 @@ interface AuthContextValue extends AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  /** Called by GoogleCallbackPage after redirect — stores token and fetches user */
+  handleOAuthCallback: (accessToken: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -68,8 +70,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, user }));
   };
 
+  /**
+   * Called once by GoogleCallbackPage.
+   * Stores the token, then fetches the full user object via /auth/me.
+   */
+  const handleOAuthCallback = async (accessToken: string) => {
+    localStorage.setItem('accessToken', accessToken);
+    const res = await authService.getMe();
+    const data = res.data?.data as any;
+    const user = data?.user;
+    setState({ user, accessToken, isAuthenticated: true, isLoading: false });
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ ...state, login, register, logout, refreshUser, handleOAuthCallback }}>
       {children}
     </AuthContext.Provider>
   );

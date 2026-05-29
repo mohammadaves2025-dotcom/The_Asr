@@ -4,10 +4,12 @@ const logger = require('../utils/logger');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      // Recommended production settings
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
+      tls: true,
+      tlsAllowInvalidCertificates: true,
     });
 
     logger.info(`MongoDB connected: ${conn.connection.host}`);

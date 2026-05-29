@@ -1,18 +1,24 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, CircleAlert as AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/auth';
 import Logo from '../components/common/Logo';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const from = (location.state as any)?.from || '/';
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(
+    searchParams.get('error') === 'oauth'
+      ? 'Google sign-in failed. Please try again or use email and password.'
+      : ''
+  );
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,8 +146,9 @@ export default function LoginPage() {
               <span className="text-xs text-ink-muted font-sans">or</span>
               <div className="flex-1 border-t border-gray-200" />
             </div>
-            <a
-              href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'}/auth/google`}
+            <button
+              type="button"
+              onClick={() => authService.initiateGoogleOAuth(from)}
               className="w-full flex items-center justify-center gap-3 border-2 border-gray-200 py-3.5 text-sm font-semibold font-sans text-ink hover:border-brand-navy transition-colors"
             >
               <svg width="18" height="18" viewBox="0 0 18 18">
@@ -151,7 +158,7 @@ export default function LoginPage() {
                 <path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.3z" fill="#EA4335"/>
               </svg>
               Continue with Google
-            </a>
+            </button>
           </div>
         </div>
       </div>

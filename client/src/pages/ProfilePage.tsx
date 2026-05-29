@@ -80,10 +80,6 @@ export default function ProfilePage() {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
 
-  if (!user) {
-    navigate('/login'); return null;
-  }
-
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault(); setSaving(true);
     try {

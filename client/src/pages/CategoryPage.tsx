@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
@@ -5,8 +6,15 @@ import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import type { Article } from '../types';
 
-export default function CategoryPage() {
-  const { slug } = useParams<{ slug: string }>();
+interface CategoryPageProps {
+  /** Hard-coded slug for alias routes like /verified, /in-their-words */
+  fixedSlug?: string;
+}
+
+export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
+  const { slug: paramSlug } = useParams<{ slug: string }>();
+  const slug = paramSlug ?? fixedSlug;
+  const [page, setPage] = useState(1);
 
   const { data: catData } = useQuery({
     queryKey: ['category', slug],
@@ -15,15 +23,16 @@ export default function CategoryPage() {
   });
 
   const { data: articlesData, isLoading } = useQuery({
-    queryKey: ['articles', 'category', slug],
-    queryFn: () => articlesService.getAll({ category: slug, status: 'published', limit: 24, sort: '-publishedAt' }),
+    queryKey: ['articles', 'category', slug, page],
+    queryFn: () => articlesService.getAll({ category: slug, status: 'published', limit: 24, page, sort: '-publishedAt' }),
     enabled: !!slug,
   });
 
   const category = catData?.data?.data?.category;
   const articles: Article[] = articlesData?.data?.data?.articles ?? [];
-  const hero = articles[0];
-  const rest = articles.slice(1);
+  const total: number = articlesData?.data?.data?.total ?? 0;
+  const hero = page === 1 ? articles[0] : null;
+  const rest = page === 1 ? articles.slice(1) : articles;
 
   return (
     <div className="bg-paper min-h-screen">
@@ -72,9 +81,12 @@ export default function CategoryPage() {
               </div>
             )}
 
-            {articles.length >= 24 && (
+            {articles.length >= 24 && (page * 24) < total && (
               <div className="text-center mt-10">
-                <button className="btn-secondary">
+                <button
+                  className="btn-secondary"
+                  onClick={() => setPage((p) => p + 1)}
+                >
                   Load More <ArrowRight size={13} />
                 </button>
               </div>
