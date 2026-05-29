@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Shield, Zap, Users } from 'lucide-react';
+import { Heart, Shield, Zap, Users, ExternalLink, Copy, CheckCircle } from 'lucide-react';
 
 const AMOUNTS = ['₹200', '₹500', '₹1000', '₹2000', '₹5000'];
+
+// Replace with your actual UPI VPA
+const UPI_VPA = 'theasr@upi';
+const UPI_NAME = 'The Asr Media';
+const UPI_NOTE = 'Support independent journalism';
 
 const WHY_ITEMS = [
   { icon: <Shield size={20} />, title: 'No corporate owners', desc: 'We answer only to our readers. No advertiser can tell us what not to cover.' },
@@ -11,10 +16,39 @@ const WHY_ITEMS = [
   { icon: <Heart size={20} />, title: 'Free for everyone', desc: 'All our journalism is free to read. No paywall, ever.' },
 ];
 
+// Build UPI deep link (works on Android; opens UPI apps on iOS via browser fallback)
+function buildUpiLink(amount: string) {
+  const amt = amount.replace('₹', '').replace(',', '');
+  return `upi://pay?pa=${UPI_VPA}&pn=${encodeURIComponent(UPI_NAME)}&am=${amt}&cu=INR&tn=${encodeURIComponent(UPI_NOTE)}`;
+}
+
+// QR code via a free, privacy-safe QR API (no personal data, just the UPI string)
+function UpiQR({ upiLink }: { upiLink: string }) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}&bgcolor=ffffff&color=0a1628&margin=10`;
+  return (
+    <img
+      src={qrUrl}
+      alt="UPI QR code"
+      className="w-44 h-44 mx-auto block"
+      loading="lazy"
+    />
+  );
+}
+
 export default function SupportPage() {
   const [selected, setSelected] = useState('₹500');
   const [custom, setCustom] = useState('');
   const [frequency, setFrequency] = useState<'once' | 'monthly'>('once');
+  const [copied, setCopied] = useState(false);
+
+  const displayAmount = custom ? `₹${custom}` : selected;
+  const upiLink = buildUpiLink(displayAmount);
+
+  const copyUpi = () => {
+    navigator.clipboard.writeText(UPI_VPA);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div>
@@ -55,25 +89,55 @@ export default function SupportPage() {
                   {a}
                 </button>
               ))}
-              <input type="text" value={custom}
+              <input type="number" value={custom}
                 onChange={e => { setCustom(e.target.value); setSelected(''); }}
                 placeholder="Custom ₹"
+                min="1"
                 className="col-span-3 border-2 border-gray-200 px-4 py-3 text-sm font-sans text-ink outline-none focus:border-brand-navy transition-colors text-center"
               />
             </div>
 
-            <button className="w-full btn-primary py-4 text-base justify-center mb-4">
-              {frequency === 'monthly' ? 'Support Monthly' : 'Donate'} {custom || selected}
-            </button>
+            {/* UPI Pay button */}
+            <a
+              href={upiLink}
+              className="w-full btn-primary py-4 text-base justify-center mb-3 flex items-center gap-2"
+            >
+              <ExternalLink size={15} />
+              {frequency === 'monthly' ? 'Support Monthly' : 'Pay via UPI'} · {displayAmount}
+            </a>
 
-            <p className="text-xs text-ink-muted font-sans text-center">
-              Secure payment · UPI, Cards, NetBanking accepted · Receipts emailed
+            <p className="text-xs text-ink-muted font-sans text-center mb-6">
+              Opens your UPI app · Cards & NetBanking via QR · Receipts emailed
             </p>
 
-            {/* UPI note */}
-            <div className="mt-6 p-4 bg-surface-secondary border border-gray-200">
-              <p className="text-xs font-bold uppercase tracking-widest text-ink-muted mb-1">Direct UPI</p>
-              <p className="font-mono text-sm text-ink">theasr@upi</p>
+            {/* UPI QR + VPA */}
+            <div className="border border-gray-200 p-5 bg-surface-secondary">
+              <p className="text-[10px] font-black uppercase tracking-[2px] text-ink-muted mb-4 text-center">
+                Scan to pay · {displayAmount}
+              </p>
+
+              <UpiQR upiLink={upiLink} />
+
+              <div className="mt-4 flex items-center justify-between gap-3 border border-gray-200 bg-white px-4 py-3">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[2px] text-ink-muted mb-0.5">UPI ID</p>
+                  <p className="font-mono text-sm font-bold text-ink">{UPI_VPA}</p>
+                </div>
+                <button
+                  onClick={copyUpi}
+                  className="flex items-center gap-1.5 text-[11px] font-bold text-ink-muted hover:text-brand-navy transition-colors flex-shrink-0 font-sans"
+                >
+                  {copied
+                    ? <><CheckCircle size={13} className="text-green-600" /> Copied</>
+                    : <><Copy size={13} /> Copy</>
+                  }
+                </button>
+              </div>
+
+              <p className="text-[10px] text-ink-muted font-sans text-center mt-3 leading-relaxed">
+                Works with GPay, PhonePe, Paytm, BHIM, and all UPI-enabled apps.
+                Overseas readers: use the QR in your bank's international transfer app.
+              </p>
             </div>
           </div>
 
@@ -113,6 +177,14 @@ export default function SupportPage() {
                 </div>
               ))}
             </div>
+
+            <div className="mt-5 p-4 border border-gray-200">
+              <p className="text-[10px] font-black uppercase tracking-[2px] text-ink-muted mb-1">Transparency</p>
+              <p className="text-[13px] text-ink-secondary font-sans leading-relaxed">
+                We publish a full breakdown of our revenue and expenses annually.{' '}
+                <Link to="/funding" className="text-brand-red hover:underline">Read our funding disclosure →</Link>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -122,7 +194,7 @@ export default function SupportPage() {
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { title: 'Fund a Story', desc: 'Crowdfund specific investigations you want us to pursue.', cta: 'Browse stories' },
-              { title: 'Gift a Subscription', desc: 'Support us in a friend\'s name. Great gift for someone who cares.', cta: 'Gift now' },
+              { title: 'Gift a Subscription', desc: "Support us in a friend's name. Great gift for someone who cares.", cta: 'Gift now' },
               { title: 'Sponsor a Reporter', desc: 'Support a young journalist from a marginalized community.', cta: 'Learn more' },
             ].map(item => (
               <div key={item.title} className="border-2 border-gray-200 p-5 hover:border-brand-navy transition-colors group">

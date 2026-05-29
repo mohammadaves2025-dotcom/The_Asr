@@ -1,14 +1,81 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { User, Lock, Bell, LogOut } from 'lucide-react';
+import { User, Lock, Bookmark, LogOut, Clock, BookmarkX } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '../services/api';
+import { formatDate } from '../utils/helpers';
 
+// ── Saved Articles Tab ────────────────────────────────────────────────────────
+function SavedArticlesTab({ user }: { user: any }) {
+  const qc = useQueryClient();
+  const { refreshUser } = useAuth();
+
+  const removeMutation = useMutation({
+    mutationFn: (articleId: string) => api.patch(`/users/me/saved/${articleId}`),
+    onSuccess: () => { refreshUser?.(); },
+    onError: () => toast.error('Failed to remove bookmark'),
+  });
+
+  const saved: any[] = user?.savedArticles ?? [];
+
+  if (saved.length === 0) {
+    return (
+      <div className="py-16 text-center border border-dashed border-gray-200">
+        <Bookmark size={28} className="text-gray-300 mx-auto mb-3" />
+        <p className="text-ink-muted font-sans text-sm">No saved articles yet.</p>
+        <p className="text-ink-faint font-sans text-xs mt-1">
+          Click the <strong>Save</strong> button on any article to bookmark it here.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-0 divide-y divide-gray-100">
+      {saved.map((art: any) => (
+        <div key={art._id} className="flex items-start gap-4 py-4 group">
+          {art.featuredImage?.url && (
+            <img
+              src={art.featuredImage.url}
+              alt={art.title}
+              className="w-16 h-16 object-cover flex-shrink-0 bg-gray-100"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <Link
+              to={`/article/${art.slug}`}
+              className="text-[14px] font-serif font-semibold text-ink hover:text-brand-navy transition-colors line-clamp-2 block leading-snug"
+            >
+              {art.title}
+            </Link>
+            {art.publishedAt && (
+              <p className="text-[11px] text-ink-muted font-sans mt-1 flex items-center gap-1">
+                <Clock size={10} /> {formatDate(art.publishedAt)}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={() => removeMutation.mutate(art._id)}
+            disabled={removeMutation.isPending && (removeMutation.variables === art._id)}
+            title="Remove bookmark"
+            className="flex-shrink-0 p-1.5 text-ink-faint hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-40"
+          >
+            <BookmarkX size={15} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'profile' | 'password' | 'notifications'>('profile');
+  const [tab, setTab] = useState<'profile' | 'password' | 'saved'>('profile');
   const [profileForm, setProfileForm] = useState({ name: user?.name ?? '', bio: '', designation: '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
@@ -43,10 +110,12 @@ export default function ProfilePage() {
     } finally { setSaving(false); }
   };
 
+  const savedCount = (user as any)?.savedArticles?.length ?? 0;
+
   const TABS = [
     { key: 'profile', label: 'Profile', icon: <User size={15} /> },
     { key: 'password', label: 'Password', icon: <Lock size={15} /> },
-    { key: 'notifications', label: 'Notifications', icon: <Bell size={15} /> },
+    { key: 'saved',    label: `Saved${savedCount > 0 ? ` (${savedCount})` : ''}`, icon: <Bookmark size={15} /> },
   ] as const;
 
   return (
@@ -115,23 +184,8 @@ export default function ProfilePage() {
         </form>
       )}
 
-      {tab === 'notifications' && (
-        <div className="space-y-4">
-          <p className="text-ink-muted font-sans text-sm">Manage your notification preferences.</p>
-          {[
-            { label: 'Breaking news alerts', desc: 'Get notified for urgent stories', defaultOn: true },
-            { label: 'Weekly newsletter', desc: 'The Asr Dispatch every Friday', defaultOn: true },
-            { label: 'Replies to my comments', desc: 'When someone replies to your comment', defaultOn: false },
-          ].map(pref => (
-            <label key={pref.label} className="flex items-center justify-between p-4 border border-gray-200 cursor-pointer hover:bg-surface-secondary transition-colors">
-              <div>
-                <p className="text-sm font-semibold text-ink">{pref.label}</p>
-                <p className="text-xs text-ink-muted font-sans">{pref.desc}</p>
-              </div>
-              <input type="checkbox" defaultChecked={pref.defaultOn} className="w-4 h-4 accent-brand-navy" />
-            </label>
-          ))}
-        </div>
+      {tab === 'saved' && (
+        <SavedArticlesTab user={user} />
       )}
     </div>
   );

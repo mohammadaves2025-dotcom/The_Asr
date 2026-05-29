@@ -1,41 +1,22 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, DollarSign } from 'lucide-react';
 
-const META: Record<string, { title: string; description: string; body: string }> = {
-  CorrectionsPage: {
-    title: 'Corrections Policy',
-    description: 'How we acknowledge and correct errors.',
-    body: 'The Asr is committed to accuracy. When we make an error, we correct it promptly and transparently. Corrections are published on the original article and noted with the date of correction. To report an error, please contact corrections@theasr.in or use our contact form.',
-  },
-  EditorialPolicyPage: {
-    title: 'Editorial Policy',
-    description: 'Our standards for sourcing, verification, and editorial independence.',
-    body: 'The Asr publishes original reporting on human rights, minority communities, and social justice. We are committed to accuracy, fairness, and editorial independence. No article may be published without independent verification of facts. Our newsroom is funded entirely by readers and does not accept money from governments, political parties, or corporate advertisers.',
-  },
-  FundingPage: {
-    title: 'Funding & Transparency',
-    description: 'Where our money comes from.',
-    body: 'The Asr is funded entirely by reader donations, subscriptions, and journalism grants from independent foundations. We do not carry advertising or accept money from government agencies, political parties, or corporations that may have a stake in our coverage. A full list of funders is available on this page and updated annually.',
-  },
-  GrievancePage: {
-    title: 'Grievance Redressal',
-    description: 'A formal process for complaints about our coverage.',
-    body: 'If you believe The Asr has misrepresented facts, infringed on your privacy, or violated our editorial standards, you may file a formal grievance. Our Grievance Officer will review your complaint within 14 working days and respond in writing. Please write to grievance@theasr.in with full details.',
-  },
-  PrivacyPage: {
-    title: 'Privacy Policy',
-    description: 'How we collect, use, and protect your data.',
-    body: 'The Asr collects minimal personal data — your email if you subscribe to our newsletter, and basic analytics to understand what stories matter. We do not sell your data. We use cookies solely for analytics and do not share personal information with third parties without your consent. Full GDPR compliance details are available on request.',
-  },
-  TermsPage: {
-    title: 'Terms of Use',
-    description: 'The terms governing your use of this site.',
-    body: 'By using The Asr website, you agree to our terms of service. All content published on this site is the intellectual property of The Asr Media unless otherwise noted. You may share articles with attribution and a link to the original. Commercial reproduction without written permission is prohibited.',
-  },
-};
+function PolicySection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mb-10">
+      <h2 className="text-lg font-serif font-bold text-ink mb-3 pb-2 border-b border-gray-200">{title}</h2>
+      <div className="space-y-3 text-[15px] leading-[1.85] text-ink-secondary font-sans">{children}</div>
+    </section>
+  );
+}
+
+const FUNDERS = [
+  { category: 'Reader Donations', share: 55, desc: 'One-time and recurring contributions from individual readers across India and the diaspora.' },
+  { category: 'Journalism Grants', share: 30, desc: 'Project-specific grants from independent foundations focused on press freedom and human rights reporting.' },
+  { category: 'Subscriptions', share: 15, desc: 'Premium reader subscriptions that support exclusive long-form investigations.' },
+];
 
 export default function FundingPage() {
-  const meta = META['FundingPage'];
   return (
     <div className="bg-paper min-h-screen">
       <div className="bg-brand-navy">
@@ -43,14 +24,108 @@ export default function FundingPage() {
           <Link to="/" className="text-white/40 hover:text-white text-[10px] font-sans font-bold uppercase tracking-[2px] flex items-center gap-1.5 mb-4 transition-colors">
             <ArrowLeft size={11} /> Home
           </Link>
-          <h1 className="text-3xl font-serif font-bold text-white">{meta?.title}</h1>
-          {meta?.description && <p className="text-white/50 text-sm font-sans mt-2">{meta.description}</p>}
+          <div className="flex items-center gap-3">
+            <DollarSign size={22} className="text-brand-yellow" />
+            <h1 className="text-3xl font-serif font-bold text-white">Funding & Transparency</h1>
+          </div>
+          <p className="text-white/50 text-sm font-sans mt-2">Where our money comes from, and how it is spent.</p>
+          <p className="text-white/30 text-xs font-sans mt-1">Last updated: January 2025</p>
         </div>
       </div>
+
       <div className="container-site py-10 md:py-14 max-w-3xl">
-        <p className="text-[15px] leading-[1.85] text-ink-secondary font-sans">{meta?.body}</p>
-        <div className="mt-10 pt-8 border-t border-gray-200">
-          <Link to="/contact" className="btn-primary">Contact Us <ArrowLeft size={13} className="rotate-180" /></Link>
+
+        <PolicySection title="Why we publish this">
+          <p>
+            Trust in journalism depends on knowing who pays for it. The Asr publishes this funding disclosure because
+            readers deserve to know what interests — if any — might influence our editorial decisions. We believe
+            financial transparency is inseparable from editorial credibility.
+          </p>
+          <p>
+            Our editorial decisions are made solely by our journalists and editors. No funder, donor, or supporter
+            may direct, veto, or influence our coverage. Any entity that attempts to do so will be publicly disclosed
+            and their funding returned.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Our funding model">
+          <p>
+            The Asr is funded entirely by readers and independent foundations. We do not carry advertising. We do not
+            accept money from governments, political parties, or corporations with a stake in the subjects we cover.
+          </p>
+          <p>
+            We have made a deliberate choice not to pursue government grants — including from national bodies that
+            fund journalism — because we believe editorial independence requires financial independence from the state.
+          </p>
+        </PolicySection>
+
+        {/* Funding breakdown */}
+        <section className="mb-10">
+          <h2 className="text-lg font-serif font-bold text-ink mb-3 pb-2 border-b border-gray-200">Revenue breakdown (FY 2024–25)</h2>
+          <div className="space-y-5 mt-5">
+            {FUNDERS.map(({ category, share, desc }) => (
+              <div key={category}>
+                <div className="flex justify-between items-baseline mb-1.5">
+                  <span className="text-[14px] font-semibold text-ink font-sans">{category}</span>
+                  <span className="text-[13px] font-black text-brand-red font-sans">{share}%</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full mb-2">
+                  <div className="h-full bg-brand-navy rounded-full" style={{ width: `${share}%` }} />
+                </div>
+                <p className="text-[13px] text-ink-muted font-sans leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <PolicySection title="Grants and foundations">
+          <p>
+            We accept project-specific grants from independent foundations whose focus areas align with our journalism —
+            press freedom, human rights documentation, and investigative reporting in the public interest. All grants
+            are disclosed here. Foundation funders do not have editorial input, advance access to stories, or any role
+            in our reporting.
+          </p>
+          <p>
+            <strong className="text-ink">Current grant funders:</strong> This section will be updated when active
+            grant funding is in place. We commit to disclosing all funders providing more than ₹1,00,000 in a
+            financial year by name and purpose within 60 days of receipt.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="What we will never accept">
+          <p>We maintain a clear list of funding we refuse regardless of the amount or conditions offered:</p>
+          <ul className="list-disc pl-5 space-y-1.5">
+            <li>Advertising or sponsored content of any kind</li>
+            <li>Funding from political parties or candidates</li>
+            <li>Funding from government ministries, departments, or state-owned entities</li>
+            <li>Funding from corporations that are subjects of our ongoing coverage</li>
+            <li>Funding conditioned on editorial access, advance notice, or story suppression</li>
+          </ul>
+        </PolicySection>
+
+        <PolicySection title="How funds are spent">
+          <p>
+            Reader support goes directly to journalism. The largest portions of our budget are journalist salaries
+            and field reporting costs — travel, documentation, and source protection tools for reporters working in
+            sensitive areas. A smaller portion covers technology (this website, our newsletter platform, and secure
+            communication tools) and operations.
+          </p>
+          <p>
+            We do not pay executive salaries that exceed three times the salary of our most junior full-time journalist.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Annual reports">
+          <p>
+            We publish an annual report each year covering our editorial output, financial summary, and impact.
+            If you have questions about our funding that are not answered here, please write to
+            <strong className="text-ink"> finance@theasr.in</strong>.
+          </p>
+        </PolicySection>
+
+        <div className="mt-10 pt-8 border-t border-gray-200 flex gap-4">
+          <Link to="/support" className="btn-primary">Support Our Work <ArrowLeft size={13} className="rotate-180" /></Link>
+          <Link to="/contact" className="btn-secondary">Contact Us</Link>
         </div>
       </div>
     </div>

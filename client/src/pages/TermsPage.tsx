@@ -1,41 +1,16 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FileText } from 'lucide-react';
 
-const META: Record<string, { title: string; description: string; body: string }> = {
-  CorrectionsPage: {
-    title: 'Corrections Policy',
-    description: 'How we acknowledge and correct errors.',
-    body: 'The Asr is committed to accuracy. When we make an error, we correct it promptly and transparently. Corrections are published on the original article and noted with the date of correction. To report an error, please contact corrections@theasr.in or use our contact form.',
-  },
-  EditorialPolicyPage: {
-    title: 'Editorial Policy',
-    description: 'Our standards for sourcing, verification, and editorial independence.',
-    body: 'The Asr publishes original reporting on human rights, minority communities, and social justice. We are committed to accuracy, fairness, and editorial independence. No article may be published without independent verification of facts. Our newsroom is funded entirely by readers and does not accept money from governments, political parties, or corporate advertisers.',
-  },
-  FundingPage: {
-    title: 'Funding & Transparency',
-    description: 'Where our money comes from.',
-    body: 'The Asr is funded entirely by reader donations, subscriptions, and journalism grants from independent foundations. We do not carry advertising or accept money from government agencies, political parties, or corporations that may have a stake in our coverage. A full list of funders is available on this page and updated annually.',
-  },
-  GrievancePage: {
-    title: 'Grievance Redressal',
-    description: 'A formal process for complaints about our coverage.',
-    body: 'If you believe The Asr has misrepresented facts, infringed on your privacy, or violated our editorial standards, you may file a formal grievance. Our Grievance Officer will review your complaint within 14 working days and respond in writing. Please write to grievance@theasr.in with full details.',
-  },
-  PrivacyPage: {
-    title: 'Privacy Policy',
-    description: 'How we collect, use, and protect your data.',
-    body: 'The Asr collects minimal personal data — your email if you subscribe to our newsletter, and basic analytics to understand what stories matter. We do not sell your data. We use cookies solely for analytics and do not share personal information with third parties without your consent. Full GDPR compliance details are available on request.',
-  },
-  TermsPage: {
-    title: 'Terms of Use',
-    description: 'The terms governing your use of this site.',
-    body: 'By using The Asr website, you agree to our terms of service. All content published on this site is the intellectual property of The Asr Media unless otherwise noted. You may share articles with attribution and a link to the original. Commercial reproduction without written permission is prohibited.',
-  },
-};
+function PolicySection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mb-10">
+      <h2 className="text-lg font-serif font-bold text-ink mb-3 pb-2 border-b border-gray-200">{title}</h2>
+      <div className="space-y-3 text-[15px] leading-[1.85] text-ink-secondary font-sans">{children}</div>
+    </section>
+  );
+}
 
 export default function TermsPage() {
-  const meta = META['TermsPage'];
   return (
     <div className="bg-paper min-h-screen">
       <div className="bg-brand-navy">
@@ -43,14 +18,103 @@ export default function TermsPage() {
           <Link to="/" className="text-white/40 hover:text-white text-[10px] font-sans font-bold uppercase tracking-[2px] flex items-center gap-1.5 mb-4 transition-colors">
             <ArrowLeft size={11} /> Home
           </Link>
-          <h1 className="text-3xl font-serif font-bold text-white">{meta?.title}</h1>
-          {meta?.description && <p className="text-white/50 text-sm font-sans mt-2">{meta.description}</p>}
+          <div className="flex items-center gap-3">
+            <FileText size={22} className="text-brand-yellow" />
+            <h1 className="text-3xl font-serif font-bold text-white">Terms of Use</h1>
+          </div>
+          <p className="text-white/50 text-sm font-sans mt-2">The terms governing your use of this website and its content.</p>
+          <p className="text-white/30 text-xs font-sans mt-1">Last updated: January 2025</p>
         </div>
       </div>
+
       <div className="container-site py-10 md:py-14 max-w-3xl">
-        <p className="text-[15px] leading-[1.85] text-ink-secondary font-sans">{meta?.body}</p>
-        <div className="mt-10 pt-8 border-t border-gray-200">
+
+        <PolicySection title="Acceptance of terms">
+          <p>
+            By accessing or using theasr.in (the "Site"), you agree to be bound by these Terms of Use and our
+            Privacy Policy. If you do not agree, please do not use the Site. These terms apply to all visitors,
+            registered users, subscribers, and anyone who accesses any content published on the Site.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Content ownership and copyright">
+          <p>
+            All articles, photographs, videos, graphics, and other content published on the Site are the intellectual
+            property of The Asr Media or, where credited, of the respective contributor or rights holder. Content is
+            protected by Indian copyright law and applicable international treaties.
+          </p>
+          <p>
+            You may share our articles on social media or link to them from other websites, provided you clearly attribute
+            The Asr and include a direct link to the original article. Brief quotations (up to 100 words) for the purpose
+            of commentary, criticism, or review are permitted under fair use.
+          </p>
+          <p>
+            Republishing full articles, hosting our content on other websites, or commercial reproduction in any form is
+            strictly prohibited without prior written permission. To request republication rights, contact
+            permissions@theasr.in.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="User accounts">
+          <p>
+            You must be at least 18 years old to create an account. You are responsible for maintaining the confidentiality
+            of your login credentials and for all activity that occurs under your account. Please notify us immediately if
+            you believe your account has been compromised.
+          </p>
+          <p>
+            We reserve the right to suspend or terminate accounts that violate these terms, post harmful or illegal content,
+            engage in harassment, or are used for spam or automated data scraping.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Comments and user submissions">
+          <p>
+            By posting a comment or submitting content to the Site, you grant The Asr a non-exclusive, royalty-free licence
+            to publish, display, and distribute your submission. You represent that you own the rights to your submission and
+            that it does not infringe the rights of any third party.
+          </p>
+          <p>
+            We moderate comments and reserve the right to remove content that is defamatory, abusive, discriminatory, off-topic,
+            or otherwise in violation of our community standards. Repeated violations may result in account suspension.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Prohibited conduct">
+          <p>You agree not to use the Site to: distribute malware or spam; scrape or harvest data using automated tools;
+          impersonate another person or entity; post content that is defamatory, incites violence, or promotes hatred on
+          the basis of religion, caste, ethnicity, gender, or sexual orientation; or engage in any activity that interferes
+          with the Site's operation.</p>
+        </PolicySection>
+
+        <PolicySection title="Disclaimer and limitation of liability">
+          <p>
+            The Asr publishes journalism in good faith and strives for accuracy. However, we do not warrant that content on
+            the Site is always complete, accurate, or up to date. Nothing on this Site constitutes legal, medical, or
+            financial advice.
+          </p>
+          <p>
+            To the maximum extent permitted by law, The Asr Media shall not be liable for any indirect, incidental, or
+            consequential damages arising from your use of the Site or reliance on its content.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Governing law">
+          <p>
+            These Terms are governed by the laws of India. Any dispute arising from your use of the Site shall be subject
+            to the exclusive jurisdiction of the courts in New Delhi, India.
+          </p>
+        </PolicySection>
+
+        <PolicySection title="Changes to these terms">
+          <p>
+            We may update these Terms from time to time. Material changes will be notified on the Site and, where appropriate,
+            by email to registered users. Continued use of the Site after changes constitutes your acceptance of the revised terms.
+          </p>
+        </PolicySection>
+
+        <div className="mt-10 pt-8 border-t border-gray-200 flex gap-4">
           <Link to="/contact" className="btn-primary">Contact Us <ArrowLeft size={13} className="rotate-180" /></Link>
+          <Link to="/privacy" className="btn-secondary">Privacy Policy</Link>
         </div>
       </div>
     </div>
