@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, TrendingUp } from 'lucide-react';
+import { ArrowRight, Zap, TrendingUp, Star, Eye } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import NewsletterInline from '../components/newsletter/NewsletterInline';
 import { articlesService, categoriesService } from '../services/articles';
+import { useSeoMeta } from '../hooks/useSeoMeta';
+import { formatDate } from '../utils/helpers';
 import type { Article } from '../types';
 
 // ── Breaking Ticker ────────────────────────────────────────────────────────────
@@ -113,7 +115,7 @@ function DonateCard() {
   );
 }
 
-// ── Opinion card ──────────────────────────────────────────────────────────────
+// ── Opinion Card ──────────────────────────────────────────────────────────────
 function OpinionCard({ article }: { article: Article }) {
   const authorName = article.isGuestAuthor && article.guestAuthorName
     ? article.guestAuthorName
@@ -155,6 +157,142 @@ function OpinionCard({ article }: { article: Article }) {
   );
 }
 
+// ── Stories That Mattered ─────────────────────────────────────────────────────
+function StoriesThatMattered({ articles }: { articles: Article[] }) {
+  if (!articles.length) return null;
+
+  const ACCENTS = [
+    { bg: 'bg-brand-navy',  text: 'text-brand-yellow', border: 'border-brand-navy'  },
+    { bg: 'bg-brand-red',   text: 'text-white',         border: 'border-brand-red'   },
+    { bg: 'bg-amber-700',   text: 'text-white',         border: 'border-amber-700'   },
+    { bg: 'bg-emerald-800', text: 'text-white',         border: 'border-emerald-800' },
+  ];
+
+  return (
+    <section className="my-14">
+      <div className="border-y-2 border-ink py-5 mb-8 flex flex-col sm:flex-row sm:items-end gap-3 sm:justify-between">
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-[4px] text-brand-red mb-1.5 font-sans">
+            Impact Journalism
+          </p>
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-ink leading-tight">
+            Stories That Mattered
+          </h2>
+          <p className="text-[12px] text-ink-muted font-sans mt-1.5 max-w-md leading-relaxed">
+            Reporting that moved the needle — investigations and ground reports that led to real change.
+          </p>
+        </div>
+        <Link
+          to="/category/investigation"
+          className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[2px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0"
+        >
+          All Investigations <ArrowRight size={11} />
+        </Link>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-200">
+        {articles.slice(0, 4).map((art, i) => {
+          const accent = ACCENTS[i % ACCENTS.length];
+          const authorName = art.isGuestAuthor && art.guestAuthorName
+            ? art.guestAuthorName
+            : art.author?.name ?? 'The Asr';
+
+          return (
+            <div
+              key={art._id}
+              className="group relative flex flex-col border-b sm:border-b-0 sm:border-r border-gray-200 last:border-r-0"
+            >
+              <div className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10`}>
+                <span className={`text-[11px] font-black font-sans ${accent.text}`}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </div>
+
+              {art.featuredImage?.url ? (
+                <Link to={`/article/${art.slug}`} className="block overflow-hidden bg-gray-100 aspect-[4/3]">
+                  <img
+                    src={art.featuredImage.url}
+                    alt={art.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </Link>
+              ) : (
+                <div className={`aspect-[4/3] ${accent.bg} opacity-10`} />
+              )}
+
+              <div className="flex flex-col flex-1 p-4 pt-3">
+                <div className="mb-2 mt-1">
+                  <span className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text}`}>
+                    {art.contentType === 'investigation' ? 'Investigation'
+                      : art.contentType === 'ground-report' ? 'Ground Report'
+                      : art.contentType === 'verified-report' ? '✓ Verified'
+                      : 'Must Read'}
+                  </span>
+                </div>
+
+                <Link
+                  to={`/article/${art.slug}`}
+                  className="font-serif font-bold text-[14px] text-ink leading-snug line-clamp-3 group-hover:text-brand-navy transition-colors mb-2 block"
+                >
+                  {art.title}
+                </Link>
+
+                {(art.subtitle || art.excerpt) && (
+                  <p className="text-[11px] text-ink-muted font-sans leading-relaxed line-clamp-2 mb-3 flex-1">
+                    {(art.subtitle || art.excerpt).slice(0, 90)}
+                    {(art.subtitle || art.excerpt).length > 90 ? '…' : ''}
+                  </p>
+                )}
+
+                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    {art.author?.avatar ? (
+                      <img src={art.author.avatar} alt={authorName} className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-ink/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[8px] font-bold text-ink">{authorName[0]}</span>
+                      </div>
+                    )}
+                    <span className="text-[10px] text-ink-muted font-sans truncate">{authorName}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                    {art.views > 0 && (
+                      <span className="flex items-center gap-0.5 text-[9px] text-ink-muted font-sans">
+                        <Eye size={9} />
+                        {art.views >= 1000 ? `${(art.views / 1000).toFixed(1)}k` : art.views}
+                      </span>
+                    )}
+                    {art.publishedAt && (
+                      <span className="text-[9px] text-ink-muted font-sans">
+                        {formatDate(art.publishedAt)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Star size={14} className="text-brand-yellow flex-shrink-0" fill="currentColor" />
+          <p className="text-[12px] text-ink-secondary font-sans leading-relaxed">
+            These stories shaped policy, sparked legal action, or gave voice to communities ignored elsewhere.
+          </p>
+        </div>
+        <Link
+          to="/verified"
+          className="flex-shrink-0 text-[9px] font-black uppercase tracking-[2px] text-brand-navy border border-brand-navy px-4 py-2 hover:bg-brand-navy hover:text-brand-yellow transition-all font-sans"
+        >
+          View Verified Reports →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 function HomePageSkeleton() {
   return (
@@ -186,10 +324,12 @@ function HomePageSkeleton() {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theasr.in';
+
 export default function HomePage() {
   const { data: articlesData, isLoading } = useQuery({
     queryKey: ['articles', 'home'],
-    queryFn: () => articlesService.getAll({ limit: 24, status: 'published', sort: '-publishedAt' }),
+    queryFn: () => articlesService.getAll({ limit: 30, status: 'published', sort: '-publishedAt' }),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -202,6 +342,14 @@ export default function HomePage() {
   const articles: Article[] = articlesData?.data?.data?.articles ?? [];
   const categories = categoriesData?.data?.data?.categories ?? [];
 
+  // ── SEO ─────────────────────────────────────────────────────────────────────
+  useSeoMeta({
+    title:       'The Asr — Independent Human Rights Journalism',
+    description: 'Independent, reader-funded journalism on human rights, minorities, and social justice in India and beyond.',
+    url:         SITE_URL,
+    type:        'website',
+  });
+
   if (isLoading) return <HomePageSkeleton />;
 
   const breaking      = articles.filter(a => a.isBreaking);
@@ -210,10 +358,25 @@ export default function HomePage() {
   const usedIds       = new Set([hero?._id, ...sideStories.map(a => a._id)]);
   const latestGrid    = articles.filter(a => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2      = new Set([...usedIds, ...latestGrid.map(a => a._id)]);
+  const investigations = articles.filter(a => a.contentType === 'investigation').slice(0, 4);
+  const opinions      = articles.filter(a => a.contentType === 'opinion').slice(0, 3);
   const moreGrid      = articles.filter(a => !usedIds2.has(a._id)).slice(0, 6);
   const mostRead      = [...articles].sort((a, b) => (b.views ?? 0) - (a.views ?? 0)).slice(0, 5);
-  const opinions      = articles.filter(a => a.contentType === 'opinion').slice(0, 3);
-  const investigations = articles.filter(a => a.contentType === 'investigation').slice(0, 4);
+
+  const mustReads = articles.filter(a => a.isMustRead);
+  const storiesThatMattered = mustReads.length >= 2
+    ? mustReads.slice(0, 4)
+    : [
+        ...mustReads,
+        ...articles
+          .filter(a =>
+            !mustReads.find(m => m._id === a._id) &&
+            (a.contentType === 'investigation' ||
+             a.contentType === 'ground-report' ||
+             a.contentType === 'verified-report')
+          )
+          .slice(0, 4 - mustReads.length),
+      ].slice(0, 4);
 
   return (
     <div className="bg-paper min-h-screen">
@@ -236,7 +399,7 @@ export default function HomePage() {
 
       <div className="container-site py-7 md:py-10">
 
-        {/* ── HERO ─────────────────────────────────────────────────────────── */}
+        {/* Hero */}
         {hero && (
           <section className="mb-10 border-b-2 border-ink pb-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
@@ -253,7 +416,7 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ── MAIN + SIDEBAR ───────────────────────────────────────────────── */}
+        {/* Main + Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
 
           <main className="lg:col-span-8 space-y-12">
@@ -293,6 +456,9 @@ export default function HomePage() {
               </section>
             )}
 
+            {/* Stories That Mattered */}
+            <StoriesThatMattered articles={storiesThatMattered} />
+
             {/* More stories */}
             {moreGrid.length > 0 && (
               <section>
@@ -326,11 +492,9 @@ export default function HomePage() {
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-5">
             {mostRead.length > 0 && <MostRead articles={mostRead} />}
-            {/* ✅ Wired newsletter — posts to /newsletter/subscribe */}
             <NewsletterInline source="homepage-sidebar" variant="dark" />
             <DonateCard />
 
-            {/* Fund a story */}
             <div className="bg-surface-secondary border border-gray-200 p-5">
               <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-2 font-sans">Unique to The Asr</p>
               <h4 className="font-serif font-bold text-[15px] text-ink mb-2 leading-snug">Fund a story you care about</h4>
@@ -342,15 +506,14 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Social */}
             <div className="border border-gray-200 p-5">
               <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-4 font-sans">Follow Us</p>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { name: 'Twitter / X', href: '#' },
-                  { name: 'Instagram', href: '#' },
-                  { name: 'YouTube', href: '#' },
-                  { name: 'Telegram', href: '#' },
+                  { name: 'Instagram',   href: '#' },
+                  { name: 'YouTube',     href: '#' },
+                  { name: 'Telegram',    href: '#' },
                 ].map(s => (
                   <a
                     key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"

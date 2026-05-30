@@ -7,10 +7,15 @@ import { User, Lock, Bookmark, LogOut, Clock, BookmarkX } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { formatDate } from '../utils/helpers';
+import type { Article, User as UserType } from '../types';
+
+type SavedUser = UserType & { savedArticles?: Article[] };
+
+const errMsg = (err: unknown, fallback: string) =>
+  (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? fallback;
 
 // ── Saved Articles Tab ────────────────────────────────────────────────────────
-function SavedArticlesTab({ user }: { user: any }) {
-  const qc = useQueryClient();
+function SavedArticlesTab({ user }: { user: SavedUser }) {
   const { refreshUser } = useAuth();
 
   const removeMutation = useMutation({
@@ -19,7 +24,7 @@ function SavedArticlesTab({ user }: { user: any }) {
     onError: () => toast.error('Failed to remove bookmark'),
   });
 
-  const saved: any[] = user?.savedArticles ?? [];
+  const saved: Article[] = user?.savedArticles ?? [];
 
   if (saved.length === 0) {
     return (
@@ -35,7 +40,7 @@ function SavedArticlesTab({ user }: { user: any }) {
 
   return (
     <div className="space-y-0 divide-y divide-gray-100">
-      {saved.map((art: any) => (
+      {saved.map((art) => (
         <div key={art._id} className="flex items-start gap-4 py-4 group">
           {art.featuredImage?.url && (
             <img
@@ -59,7 +64,7 @@ function SavedArticlesTab({ user }: { user: any }) {
           </div>
           <button
             onClick={() => removeMutation.mutate(art._id)}
-            disabled={removeMutation.isPending && (removeMutation.variables === art._id)}
+            disabled={removeMutation.isPending && removeMutation.variables === art._id}
             title="Remove bookmark"
             className="flex-shrink-0 p-1.5 text-ink-faint hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-40"
           >
@@ -76,46 +81,70 @@ export default function ProfilePage() {
   const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<'profile' | 'password' | 'saved'>('profile');
-  const [profileForm, setProfileForm] = useState({ name: user?.name ?? '', bio: '', designation: '' });
-  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name ?? '',
+    bio: user?.bio ?? '',
+    designation: user?.designation ?? '',
+  });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
   const [saving, setSaving] = useState(false);
 
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
+  const savedUser = user as SavedUser;
+  const savedCount = savedUser.savedArticles?.length ?? 0;
+
   const handleProfileSave = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true);
+    e.preventDefault();
+    setSaving(true);
     try {
       await authService.updateProfile(profileForm);
       await refreshUser?.();
       toast.success('Profile updated!');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed to update profile');
-    } finally { setSaving(false); }
+    } catch (err) {
+      toast.error(errMsg(err, 'Failed to update profile'));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handlePasswordSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error('Passwords do not match'); return;
+      toast.error('Passwords do not match');
+      return;
     }
     setSaving(true);
     try {
-      await authService.updatePassword({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword });
+      await authService.updatePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
       toast.success('Password changed!');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed to change password');
-    } finally { setSaving(false); }
+    } catch (err) {
+      toast.error(errMsg(err, 'Failed to change password'));
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const savedCount = (user as any)?.savedArticles?.length ?? 0;
-
   const TABS = [
-    { key: 'profile', label: 'Profile', icon: <User size={15} /> },
-    { key: 'password', label: 'Password', icon: <Lock size={15} /> },
-    { key: 'saved',    label: `Saved${savedCount > 0 ? ` (${savedCount})` : ''}`, icon: <Bookmark size={15} /> },
+    { key: 'profile',  label: 'Profile',                                          icon: <User size={15} />     },
+    { key: 'password', label: 'Password',                                          icon: <Lock size={15} />     },
+    { key: 'saved',    label: savedCount > 0 ? `Saved (${savedCount})` : 'Saved', icon: <Bookmark size={15} /> },
   ] as const;
 
   return (
     <div className="container-site max-w-3xl py-12">
+      {/* Header */}
       <div className="flex items-start gap-6 mb-8">
         <div className="w-16 h-16 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
           {user.avatar
@@ -130,35 +159,62 @@ export default function ProfilePage() {
             {user.role}
           </span>
         </div>
-        <button onClick={async () => { await logout(); navigate('/'); }}
-          className="ml-auto flex items-center gap-2 text-sm text-ink-muted hover:text-accent-red transition-colors font-sans">
+        <button
+          onClick={async () => { await logout(); navigate('/'); }}
+          className="ml-auto flex items-center gap-2 text-sm text-ink-muted hover:text-brand-red transition-colors font-sans"
+        >
           <LogOut size={15} /> Logout
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6 gap-0">
+      <div className="flex border-b border-gray-200 mb-6">
         {TABS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold font-sans border-b-2 transition-all -mb-px ${tab === t.key ? 'border-brand-navy text-brand-navy' : 'border-transparent text-ink-muted hover:text-ink'}`}>
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold font-sans border-b-2 transition-all -mb-px ${
+              tab === t.key
+                ? 'border-brand-navy text-brand-navy'
+                : 'border-transparent text-ink-muted hover:text-ink'
+            }`}
+          >
             {t.icon} {t.label}
           </button>
         ))}
       </div>
 
+      {/* Profile tab */}
       {tab === 'profile' && (
         <form onSubmit={handleProfileSave} className="space-y-4">
           <div>
             <label className="form-label">Full Name</label>
-            <input type="text" value={profileForm.name} onChange={e => setProfileForm({...profileForm, name: e.target.value})} className="input-field" />
+            <input
+              type="text"
+              value={profileForm.name}
+              onChange={e => setProfileForm({ ...profileForm, name: e.target.value })}
+              className="input-field"
+            />
           </div>
           <div>
             <label className="form-label">Bio</label>
-            <textarea rows={3} value={profileForm.bio} onChange={e => setProfileForm({...profileForm, bio: e.target.value})} className="input-field resize-none" placeholder="A short bio about yourself…" />
+            <textarea
+              rows={3}
+              value={profileForm.bio}
+              onChange={e => setProfileForm({ ...profileForm, bio: e.target.value })}
+              className="input-field resize-none"
+              placeholder="A short bio about yourself…"
+            />
           </div>
           <div>
             <label className="form-label">Designation</label>
-            <input type="text" value={profileForm.designation} onChange={e => setProfileForm({...profileForm, designation: e.target.value})} className="input-field" placeholder="e.g. Journalist, Researcher…" />
+            <input
+              type="text"
+              value={profileForm.designation}
+              onChange={e => setProfileForm({ ...profileForm, designation: e.target.value })}
+              className="input-field"
+              placeholder="e.g. Journalist, Researcher…"
+            />
           </div>
           <button type="submit" disabled={saving} className="btn-primary disabled:opacity-70">
             {saving ? 'Saving…' : 'Save Changes'}
@@ -166,12 +222,25 @@ export default function ProfilePage() {
         </form>
       )}
 
+      {/* Password tab */}
       {tab === 'password' && (
         <form onSubmit={handlePasswordSave} className="space-y-4 max-w-md">
           {(['currentPassword', 'newPassword', 'confirmPassword'] as const).map(field => (
             <div key={field}>
-              <label className="form-label">{field === 'currentPassword' ? 'Current Password' : field === 'newPassword' ? 'New Password' : 'Confirm New Password'}</label>
-              <input type="password" value={passwordForm[field]} onChange={e => setPasswordForm({...passwordForm, [field]: e.target.value})} className="input-field" required />
+              <label className="form-label">
+                {field === 'currentPassword'
+                  ? 'Current Password'
+                  : field === 'newPassword'
+                  ? 'New Password'
+                  : 'Confirm New Password'}
+              </label>
+              <input
+                type="password"
+                value={passwordForm[field]}
+                onChange={e => setPasswordForm({ ...passwordForm, [field]: e.target.value })}
+                className="input-field"
+                required
+              />
             </div>
           ))}
           <button type="submit" disabled={saving} className="btn-primary disabled:opacity-70">
@@ -180,8 +249,9 @@ export default function ProfilePage() {
         </form>
       )}
 
+      {/* Saved tab */}
       {tab === 'saved' && (
-        <SavedArticlesTab user={user} />
+        <SavedArticlesTab user={savedUser} />
       )}
     </div>
   );

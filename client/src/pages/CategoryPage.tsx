@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import type { Article } from '../types';
@@ -39,24 +39,38 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
       {/* Category banner */}
       <div className="bg-brand-navy border-b border-white/10">
         <div className="container-site py-8 md:py-10">
+
+          {/* Breadcrumb */}
+
+          <nav className="flex items-center gap-1.5 mb-4 text-[10px] font-sans text-white/40">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <ChevronRight size={10} />
+            <span className="text-white/70">
+              {category?.name ?? (slug ? slug.replace(/-/g, ' ') : 'Category')}
+            </span>
+          </nav>
+
           {category?.description && (
             <div className="mb-1">
               <span className="text-[9px] font-black uppercase tracking-[3px] text-white/30 font-sans">Section</span>
             </div>
           )}
+
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
             {category?.name ?? (slug ? slug.replace(/-/g, ' ') : 'Category')}
           </h1>
+
           {category?.description && (
             <p className="text-white/50 text-[13px] font-sans max-w-xl leading-relaxed">{category.description}</p>
           )}
+          
         </div>
       </div>
 
       <div className="container-site py-8 md:py-12">
         {isLoading && (
           <div className="grid md:grid-cols-3 gap-5 animate-pulse">
-            {[1,2,3,4,5,6].map(i => <div key={i} className="h-64 bg-gray-200" />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-64 bg-gray-200" />)}
           </div>
         )}
 

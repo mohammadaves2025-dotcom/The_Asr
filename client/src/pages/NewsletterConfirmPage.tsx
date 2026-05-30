@@ -42,7 +42,7 @@ export default function NewsletterConfirmPage() {
             </div>
             <h1 className="text-3xl font-serif font-bold text-white mb-3">You're subscribed!</h1>
             <p className="text-white/60 font-sans text-sm leading-relaxed mb-8">
-              Welcome to The Maktoob Dispatch. You'll receive our weekly digest of the most important
+              Welcome to The Asr Dispatch. You'll receive our weekly digest of the most important
               rights and accountability stories every Tuesday.
             </p>
             <Link to="/" className="btn-primary text-sm">

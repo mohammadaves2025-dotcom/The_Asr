@@ -8,14 +8,27 @@ const VALUES = [
   { icon: <FileText size={22} />, title: 'Accuracy', desc: 'Every claim is verified, every source is protected, and every correction is published prominently.' },
 ];
 
+// ── REPLACE THIS ARRAY WITH YOUR REAL TEAM ───────────────────────────────────
+// Each member needs: name (string), role (string), bio (string)
+// The initial letter of `name` is used as the avatar placeholder.
 const TEAM = [
-  { name: 'Fatima Malik', role: 'Editor-in-Chief', bio: 'Former correspondent for international outlets, reporting on conflict and human rights for 12 years.' },
-  { name: 'Rahul Pandey', role: 'Senior Investigative Reporter', bio: 'Specialises in land rights, caste atrocities, and state accountability in UP and Bihar.' },
-  { name: 'Zainab Sheikh', role: 'Legal Affairs Reporter', bio: 'Covers the judiciary, UAPA cases, and legal reform with a focus on minority rights.' },
-  { name: 'Anjali Das', role: 'Ground Reports Editor', bio: 'Field journalist based in Assam, covering NRC, communal tensions, and border communities.' },
-  { name: 'Priya Nair', role: 'Gender & Rights Reporter', bio: 'Reports on LGBTQIA+ rights, gender-based violence, and women in conflict zones.' },
-  { name: 'Deepa Singh', role: 'Data Journalist', bio: 'Turns government data and RTI responses into accountability journalism.' },
+  {
+    name: 'Your Name Here',
+    role: 'Editor-in-Chief',
+    bio: 'Add a short bio — 1–2 sentences about background and beat.',
+  },
+  {
+    name: 'Your Name Here',
+    role: 'Senior Reporter',
+    bio: 'Add a short bio — 1–2 sentences about background and beat.',
+  },
+  {
+    name: 'Your Name Here',
+    role: 'Reporter',
+    bio: 'Add a short bio — 1–2 sentences about background and beat.',
+  },
 ];
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
   return (
@@ -51,9 +64,9 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 gap-6">
               {[
                 { n: '247+', label: 'Stories Published' },
-                { n: '48K', label: 'Monthly Readers' },
+                { n: '48K',  label: 'Monthly Readers' },
                 { n: '15K+', label: 'Newsletter Subscribers' },
-                { n: '4', label: 'Years of Reporting' },
+                { n: '4',    label: 'Years of Reporting' },
               ].map(({ n, label }) => (
                 <div key={label}>
                   <p className="text-4xl font-serif font-black text-brand-yellow">{n}</p>
@@ -108,13 +121,16 @@ export default function AboutPage() {
           <h2 className="text-2xl font-serif font-bold text-white mb-6">Transparency & policies</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Editorial Policy', href: '/editorial-policy' },
+              { label: 'Editorial Policy',    href: '/editorial-policy' },
               { label: 'Funding Transparency', href: '/funding' },
-              { label: 'Corrections Policy', href: '/corrections' },
+              { label: 'Corrections Policy',  href: '/corrections' },
               { label: 'Grievance Redressal', href: '/grievance' },
             ].map(link => (
-              <Link key={link.href} to={link.href}
-                className="block p-4 border border-white/20 text-white/70 hover:text-white hover:border-brand-yellow text-sm font-bold font-sans transition-all">
+              <Link
+                key={link.href}
+                to={link.href}
+                className="block p-4 border border-white/20 text-white/70 hover:text-white hover:border-brand-yellow text-sm font-bold font-sans transition-all"
+              >
                 {link.label} →
               </Link>
             ))}

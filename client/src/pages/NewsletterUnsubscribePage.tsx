@@ -42,8 +42,7 @@ export default function NewsletterUnsubscribePage() {
             </div>
             <h1 className="text-3xl font-serif font-bold text-white mb-3">Unsubscribed</h1>
             <p className="text-white/60 font-sans text-sm leading-relaxed mb-8">
-              You've been removed from The Maktoob Dispatch. You won't receive any further emails from us.
-              You can resubscribe at any time.
+              You've been removed from The Asr Dispatch. You won't receive any further emails from us.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to="/newsletter" className="btn-primary text-sm">

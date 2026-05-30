@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { articlesService } from '../services/articles';
 import ArticleCard from '../components/article/ArticleCard';
+import { ChevronRight } from 'lucide-react';
 
 export default function TagPage() {
   const { tag } = useParams<{ tag: string }>();
@@ -20,6 +21,12 @@ export default function TagPage() {
   return (
     <div className="container-site py-10">
       <header className="mb-8 pb-5 border-b-2 border-brand-navy">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1.5 mb-3 text-[10px] font-sans text-ink-muted">
+          <Link to="/" className="hover:text-ink transition-colors">Home</Link>
+          <ChevronRight size={10} />
+          <span className="text-ink">#{tag}</span>
+        </nav>
         <p className="section-label text-ink-muted mb-1">Tag</p>
         <h1 className="text-4xl font-serif font-bold text-ink">#{tag}</h1>
         {meta && <p className="text-sm text-ink-muted mt-1 font-sans">{meta.total} articles</p>}

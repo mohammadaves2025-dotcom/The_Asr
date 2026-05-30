@@ -10,8 +10,9 @@ import NewsletterInline from '../components/newsletter/NewsletterInline';
 import { articlesService } from '../services/articles';
 import { useAuth } from '../context/AuthContext';
 import { formatDateLong } from '../utils/helpers';
+import { useSeoMeta } from '../hooks/useSeoMeta';
 import api from '../services/api';
-import type { Article } from '../types';
+import type { Article, User } from '../types';
 
 // ── Reading progress bar ───────────────────────────────────────────────────────
 function ReadingProgress() {
@@ -44,14 +45,16 @@ function ShareBar({ article }: { article: Article }) {
   return (
     <div className="flex flex-wrap items-center gap-2 py-5 border-y border-gray-200 my-8">
       <span className="text-[10px] font-black uppercase tracking-[2px] text-ink-muted mr-1 font-sans">Share</span>
-      <a
+
+        <a
         href={`https://twitter.com/intent/tweet?text=${text}&url=${url}`}
         target="_blank" rel="noopener noreferrer"
         className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
       >
         Twitter / X
       </a>
-      <a
+      <a 
+      
         href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
         target="_blank" rel="noopener noreferrer"
         className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all font-sans"
@@ -125,23 +128,28 @@ function AuthorCard({ article }: { article: Article }) {
 }
 
 // ── Bookmark hook ─────────────────────────────────────────────────────────────
+type UserWithSaved = User & { savedArticles?: string[] };
+
 function useBookmark(articleId: string) {
   const { user, isAuthenticated, refreshUser } = useAuth();
-  
-
-  const isSaved = (user as any)?.savedArticles?.includes(articleId) ?? false;
+  const isSaved = (user as UserWithSaved)?.savedArticles?.includes(articleId) ?? false;
 
   const mutation = useMutation({
     mutationFn: () => api.patch(`/users/me/saved/${articleId}`),
-    onSuccess: () => {
-      refreshUser();
-    },
+    onSuccess: () => { refreshUser(); },
   });
 
-  return { isSaved, toggle: () => mutation.mutate(), isPending: mutation.isPending, isAuthenticated };
+  return {
+    isSaved,
+    toggle:        () => mutation.mutate(),
+    isPending:     mutation.isPending,
+    isAuthenticated,
+  };
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theasr.in';
+
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -156,7 +164,7 @@ export default function ArticlePage() {
   }, [slug]);
 
   const article: Article | undefined = data?.data?.data?.article;
-  const related: Article[] = (data?.data?.data as any)?.related ?? [];
+  const related: Article[] = (data?.data?.data as { related?: Article[] })?.related ?? [];
 
   const authorName = article?.isGuestAuthor && article?.guestAuthorName
     ? article.guestAuthorName
@@ -165,7 +173,23 @@ export default function ArticlePage() {
   const { isSaved, toggle: toggleBookmark, isPending: bookmarkPending, isAuthenticated } =
     useBookmark(article?._id ?? '');
 
-  // ── Loading ──────────────────────────────────────────────────────────────
+  // ── SEO ───────────────────────────────────────────────────────────────────
+  useSeoMeta(
+    article
+      ? {
+          title:       article.seo?.metaTitle       ?? article.title,
+          description: article.seo?.metaDescription ?? article.excerpt,
+          image:       article.seo?.ogImage         ?? article.featuredImage?.url,
+          url:         `${SITE_URL}/article/${article.slug}`,
+          type:        'article',
+          publishedAt: article.publishedAt,
+          author:      authorName,
+          section:     article.category?.name,
+        }
+      : {}
+  );
+
+  // ── Loading ───────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <>
@@ -186,7 +210,7 @@ export default function ArticlePage() {
     );
   }
 
-  // ── Error ────────────────────────────────────────────────────────────────
+  // ── Error ─────────────────────────────────────────────────────────────────
   if (error || !article) {
     return (
       <div className="container-site py-24 text-center">
@@ -311,7 +335,7 @@ export default function ArticlePage() {
                   </div>
                 )}
 
-                {/* Bookmark button */}
+                {/* Bookmark */}
                 {isAuthenticated && (
                   <button
                     onClick={toggleBookmark}

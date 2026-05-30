@@ -4,6 +4,7 @@ import api from '../services/api';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService } from '../services/articles';
 import { formatDate } from '../utils/helpers';
+import { ChevronRight } from 'lucide-react';
 
 export default function AuthorPage() {
   const { id } = useParams<{ id: string }>();
@@ -52,6 +53,14 @@ export default function AuthorPage() {
       {/* Author header */}
       <div className="bg-brand-navy text-white">
         <div className="container-site py-12 md:py-16">
+          
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 mb-6 text-[10px] font-sans text-white/40">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <ChevronRight size={10} />
+            <span className="text-white/70">{author.name}</span>
+          </nav>
+
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             {author.avatar ? (
               <img src={author.avatar} alt={author.name}
