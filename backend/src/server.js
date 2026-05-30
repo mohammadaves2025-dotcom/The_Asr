@@ -33,8 +33,8 @@ app.use(xssSanitize);
 
 // ── CORS: allow client + admin origins ────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL   || 'http://localhost:3000',
-  process.env.ADMIN_URL    || 'http://localhost:5174',
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  process.env.ADMIN_URL || 'http://localhost:5174',
 ];
 
 app.use(cors({
@@ -48,6 +48,19 @@ app.use(cors({
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// ── Internal cron endpoint (called by Vercel Cron every minute) ───────────────
+const publishScheduledArticles = require('./jobs/publishScheduled');
+
+app.get('/api/v1/internal/publish-scheduled', async (req, res) => {
+  // Verify it's Vercel calling, not the public internet
+  const cronSecret = req.headers['authorization'];
+  if (process.env.CRON_SECRET && cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  await publishScheduledArticles();
+  res.json({ ok: true, time: new Date().toISOString() });
+});
 
 app.use(compression());
 app.use(cookieParser());
@@ -74,15 +87,15 @@ app.get('/health', (req, res) => {
 app.use('/api', apiLimiter);
 
 const API = '/api/v1';
-app.use(`${API}/auth`,                           authRoutes);
-app.use(`${API}/ai`,                             aiRoutes);
-app.use(`${API}/articles`,                       articleRoutes);
-app.use(`${API}/articles/:articleId/comments`,   commentRouter);
-app.use(`${API}/comments/admin`,                 adminCommentRouter);
-app.use(`${API}/categories`,                     categoryRouter);
-app.use(`${API}/newsletter`,                     newsletterRouter);
-app.use(`${API}/submissions`,                    submissionRouter);
-app.use(`${API}/users`,                          userRouter);
+app.use(`${API}/auth`, authRoutes);
+app.use(`${API}/ai`, aiRoutes);
+app.use(`${API}/articles`, articleRoutes);
+app.use(`${API}/articles/:articleId/comments`, commentRouter);
+app.use(`${API}/comments/admin`, adminCommentRouter);
+app.use(`${API}/categories`, categoryRouter);
+app.use(`${API}/newsletter`, newsletterRouter);
+app.use(`${API}/submissions`, submissionRouter);
+app.use(`${API}/users`, userRouter);
 
 app.use(notFound);
 app.use(errorHandler);

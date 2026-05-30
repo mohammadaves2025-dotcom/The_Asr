@@ -1,6 +1,7 @@
 const Article = require('../models/Article');
 const Category = require('../models/Category');
 const { sendSuccess, sendError, buildPaginationMeta } = require('../utils/apiResponse');
+const { uploadToCloudinary } = require('../config/cloudinary'); // ← ADD THIS LINE
 
 // ── List Articles (public) ────────────────────────────────────────────────────
 exports.getArticles = async (req, res, next) => {
@@ -60,10 +61,8 @@ exports.getArticle = async (req, res, next) => {
 
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
-    // Increment view count (fire and forget)
-    Article.findByIdAndUpdate(article._id, { $inc: { views: 1 } }).exec();
+    // ← Remove the view increment that was here — frontend fires POST /:slug/views separately
 
-    // Fetch related articles
     const related = await Article.find({
       _id: { $ne: article._id },
       status: 'published',
@@ -182,21 +181,24 @@ exports.createArticle = async (req, res, next) => {
   }
 };
 
+
 // ── Update Article ────────────────────────────────────────────────────────────
 exports.updateArticle = async (req, res, next) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
-    // Only author, editor, or admin can edit
     const canEdit = ['admin', 'superadmin', 'editor'].includes(req.user.role) ||
       article.author.toString() === req.user._id.toString();
     if (!canEdit) return sendError(res, { statusCode: 403, message: 'Access denied' });
 
-    // Track edit history
+    // Strip fields that must never be overwritten via PATCH
+    const { author, slug, views, likes, shares, commentsCount,
+      editHistory, createdAt, updatedAt, __v, ...safeBody } = req.body;
+
     article.editHistory.push({ editedBy: req.user._id, note: req.body.editNote });
     article.lastEditedBy = req.user._id;
-    Object.assign(article, req.body);
+    Object.assign(article, safeBody);
     await article.save();
 
     return sendSuccess(res, { message: 'Article updated', data: { article } });
@@ -220,8 +222,17 @@ exports.deleteArticle = async (req, res, next) => {
 exports.uploadImage = async (req, res, next) => {
   try {
     if (!req.file) return sendError(res, { statusCode: 400, message: 'No image uploaded' });
+
+    const result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'theasr/articles',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+      transformation: [
+        { width: 1200, height: 675, crop: 'fill', quality: 'auto', fetch_format: 'auto' },
+      ],
+    });
+
     return sendSuccess(res, {
-      data: { url: req.file.path, publicId: req.file.filename },
+      data: { url: result.secure_url, publicId: result.public_id },
     });
   } catch (err) {
     next(err);

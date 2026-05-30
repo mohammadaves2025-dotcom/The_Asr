@@ -457,7 +457,8 @@ export default function ArticleEditorPage() {
   const triggerAutoSave = useCallback(() => {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(() => {
-      if (!form.title?.trim()) return;
+      // Don't auto-save until we have the minimum required fields
+      if (!form.title?.trim() || !form.excerpt?.trim() || !form.categoryId) return;
       setSaveState('saving');
       saveMutation.mutate(buildPayload('draft'));
     }, 3000);
@@ -536,8 +537,8 @@ export default function ArticleEditorPage() {
         <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 font-sans flex-shrink-0
           ${form.status === 'published' ? 'bg-green-100 text-green-700'
             : form.status === 'review' ? 'bg-amber-100 text-amber-700'
-            : form.status === 'scheduled' ? 'bg-blue-100 text-blue-700'
-            : 'bg-gray-100 text-gray-600'}`}>
+              : form.status === 'scheduled' ? 'bg-blue-100 text-blue-700'
+                : 'bg-gray-100 text-gray-600'}`}>
           {form.status}
         </span>
 

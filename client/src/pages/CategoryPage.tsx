@@ -30,7 +30,7 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
 
   const category = catData?.data?.data?.category;
   const articles: Article[] = articlesData?.data?.data?.articles ?? [];
-  const total: number = articlesData?.data?.data?.total ?? 0;
+  const total: number = articlesData?.data?.meta?.total ?? 0; 
   const hero = page === 1 ? articles[0] : null;
   const rest = page === 1 ? articles.slice(1) : articles;
 
@@ -63,7 +63,7 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
           {category?.description && (
             <p className="text-white/50 text-[13px] font-sans max-w-xl leading-relaxed">{category.description}</p>
           )}
-          
+
         </div>
       </div>
 

@@ -5,6 +5,7 @@
 // ── CATEGORY CONTROLLER ───────────────────────────────────────────────────────
 const Category = require('../models/Category');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { uploadToCloudinary } = require('../config/cloudinary'); // ← ADD THIS LINE
 
 const categoryController = {
   getAll: async (req, res, next) => {
@@ -301,7 +302,16 @@ const userController = {
       const updates = {};
       allowed.forEach((k) => { if (req.body[k] !== undefined) updates[k] = req.body[k]; });
 
-      if (req.file) updates.avatar = req.file.path;
+      // Inside updateProfile, find where req.file is handled and replace:
+      if (req.file) {
+        const result = await uploadToCloudinary(req.file.buffer, {
+          folder: 'theasr/avatars',
+          transformation: [
+            { width: 300, height: 300, crop: 'fill', gravity: 'face', quality: 'auto' },
+          ],
+        });
+        updates.avatar = result.secure_url;
+      }
 
       const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true });
       return sendSuccess(res, { data: { user } });
