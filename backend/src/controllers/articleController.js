@@ -228,6 +228,28 @@ exports.uploadImage = async (req, res, next) => {
   }
 };
 
+// ── Admin: Get Single Article by ID ──────────────────────────────────────────
+exports.adminGetArticle = async (req, res, next) => {
+  try {
+    const article = await Article.findById(req.params.id)
+      .populate('author', 'name email avatar')
+      .populate('coAuthors', 'name avatar')
+      .populate('category', 'name slug color')
+      .populate('lastEditedBy', 'name');
+
+    if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
+
+    // Only author, editor, or admin can view
+    const canView = ['admin', 'superadmin', 'editor'].includes(req.user.role) ||
+      article.author._id.toString() === req.user._id.toString();
+    if (!canView) return sendError(res, { statusCode: 403, message: 'Access denied' });
+
+    return sendSuccess(res, { data: { article } });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // ── Admin: All Articles (with any status) ─────────────────────────────────────
 exports.adminGetArticles = async (req, res, next) => {
   try {

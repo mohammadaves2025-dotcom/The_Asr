@@ -169,16 +169,8 @@ function AIDrawer({ form, onApply, onClose }: {
   const callAI = async (task: string, prompt: string) => {
     setLoading(task);
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-      const data = await res.json();
+      const res = await articlesAdmin.aiAssist([{ role: 'user', content: prompt }]);
+      const data = res.data;
       const text = data.content?.[0]?.text || '';
 
       // Parse JSON arrays or plain text lines
@@ -372,8 +364,8 @@ export default function ArticleEditorPage() {
   const { isLoading: articleLoading, data: articleData } = useQuery({
     queryKey: ['admin', 'article', id],
     queryFn: async () => {
-      const res = await articlesAdmin.getAll({ id, limit: 1 });
-      return res.data?.data?.articles?.[0];
+      const res = await articlesAdmin.getById(id!);
+      return res.data?.data?.article;
     },
     enabled: isEditing,
     staleTime: Infinity,
@@ -418,13 +410,47 @@ export default function ArticleEditorPage() {
     const payload: any = {
       ...form,
       tags: form.tagsInput?.split(',').map(t => t.trim()).filter(Boolean) ?? [],
-      category: form.categoryId,
       status: statusOverride ?? form.status,
     };
+
+    // Only include category if it has a valid value
+    if (form.categoryId) {
+      payload.category = form.categoryId;
+    } else {
+      delete payload.category;
+    }
+
+    // Clean up featuredImage — remove if no URL
+    if (!payload.featuredImage?.url) {
+      delete payload.featuredImage;
+    } else {
+      // Strip empty string fields inside featuredImage
+      payload.featuredImage = Object.fromEntries(
+        Object.entries(payload.featuredImage).filter(([, v]) => v !== '')
+      );
+    }
+
+    // Clean up location — remove if all empty
+    if (!payload.location?.state && !payload.location?.district) {
+      delete payload.location;
+    }
+
+    // Clean up seo — remove empty string fields
+    if (payload.seo) {
+      payload.seo = Object.fromEntries(
+        Object.entries(payload.seo).filter(([, v]) => v !== '')
+      );
+      if (Object.keys(payload.seo).length === 0) delete payload.seo;
+    }
+
+    // Remove internal form-only fields
     delete payload.tagsInput;
     delete payload.categoryId;
     delete payload._id;
     delete payload.__v;
+    delete payload.createdAt;
+    delete payload.updatedAt;
+
     return payload;
   }, [form]);
 
@@ -451,6 +477,9 @@ export default function ArticleEditorPage() {
 
   const handleSave = (statusOverride?: string) => {
     if (!form.title?.trim()) { toast.error('Please enter a title first'); return; }
+    if (!form.categoryId) { toast.error('Please select a category'); return; }
+    if (!form.excerpt?.trim()) { toast.error('Please add an excerpt/summary'); return; }
+    if (!form.body?.trim()) { toast.error('Article body cannot be empty'); return; }
     setSaveState('saving');
     saveMutation.mutate(buildPayload(statusOverride));
   };

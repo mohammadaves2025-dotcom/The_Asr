@@ -10,12 +10,18 @@ const { uploadLimiter } = require('../middleware/rateLimiter');
 router.get('/homepage', articleController.getHomepageData);
 router.get('/', paginationValidator, optionalAuth, articleController.getArticles);
 
-// ── Article detail — must come before /:id routes so 'admin', 'upload' etc aren't caught as slugs
+// ── Admin: all articles + single article by ID ────────────────────────────────
 router.get('/admin/all',
   protect,
   authorize('editor', 'admin', 'superadmin'),
   paginationValidator,
   articleController.adminGetArticles
+);
+
+router.get('/admin/:id',
+  protect,
+  authorize('contributor', 'editor', 'admin', 'superadmin'),
+  articleController.adminGetArticle
 );
 
 router.post('/upload/image',

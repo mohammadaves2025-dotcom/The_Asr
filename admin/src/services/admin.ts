@@ -5,6 +5,9 @@ export const articlesAdmin = {
   getAll: (params: Record<string, any> = {}) =>
     api.get<ApiResponse<{ articles: Article[] }>>('/articles/admin/all', { params }),
 
+  getById: (id: string) =>
+    api.get<ApiResponse<{ article: Article }>>(`/articles/admin/${id}`),
+
   create: (data: Partial<Article>) =>
     api.post<ApiResponse<{ article: Article }>>('/articles', data),
 
@@ -20,6 +23,9 @@ export const articlesAdmin = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
+  aiAssist: (messages: { role: string; content: string }[]) =>
+    api.post('/ai/assist', { model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages }),
 };
 
 export const usersAdmin = {
