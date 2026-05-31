@@ -7,7 +7,7 @@ import {
 import { commentsAdmin } from '../services/admin';
 import StatusBadge from '../components/common/StatusBadge';
 import ConfirmModal from '../components/common/ConfirmModal';
-import { formatRelative, formatDateTime, cn } from '../utils/helpers';
+import { formatRelative, cn } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
 const STATUS_FILTERS = [
@@ -18,7 +18,7 @@ const STATUS_FILTERS = [
   { value: 'flagged', label: 'Flagged' },
 ];
 
-const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || 'http://localhost:3000';
+
 
 interface Comment {
   _id: string;
@@ -93,7 +93,7 @@ export default function CommentsPage() {
     setExpandedNote(null);
   };
 
-  const pendingCount = status === 'pending' ? meta?.total : undefined;
+  
 
   // ── Status tab counts (derive from current filter when matching) ────────────
   const tabCounts: Record<string, number | undefined> = {
@@ -263,7 +263,7 @@ function CommentRow({
   comment, moderationNote, onNoteChange, expandedNote,
   onToggleNote, onModerate, onDelete, isUpdating
 }: CommentRowProps) {
-  const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || 'http://localhost:3000';
+  
   const articleUrl = comment.article?.slug
     ? `${CLIENT_URL}/article/${comment.article.slug}`
     : null;

@@ -137,12 +137,16 @@ export default function ArticlesPage() {
                   </td>
                   <td className="table-td text-ink-muted whitespace-nowrap">{article.author.name}</td>
                   <td className="table-td">
-                    <span
-                      className="text-xs font-bold font-sans px-1.5 py-0.5"
-                      style={{ color: article.category?.color, backgroundColor: (article.category?.color || '#000') + '18' }}
-                    >
-                      {article.category?.name}
-                    </span>
+                    {typeof article.category === 'object' && article.category ? (
+                      <span
+                        className="text-xs font-bold font-sans px-1.5 py-0.5"
+                        style={{ color: article.category.color, backgroundColor: (article.category.color || '#000') + '18' }}
+                      >
+                        {article.category.name}
+                      </span>
+                    ) : (
+                      <span className="text-xs font-bold font-sans px-1.5 py-0.5">{article.category as string}</span>
+                    )}
                   </td>
                   <td className="table-td">
                     <select

@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft, Save, Loader, Clock, CheckCircle, AlertCircle,
-  Sparkles, Eye, EyeOff, ChevronRight, ChevronLeft, X,
+  Sparkles, Eye, X,
   Tag, Globe, Zap, Star, FileText, Settings, Copy, RefreshCw,
 } from 'lucide-react';
 import { articlesAdmin, categoriesAdmin } from '../services/admin';
