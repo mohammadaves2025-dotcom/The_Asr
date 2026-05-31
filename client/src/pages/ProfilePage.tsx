@@ -4,7 +4,7 @@ import { authService } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { User, Lock, Bookmark, LogOut, Clock, BookmarkX } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { formatDate } from '../utils/helpers';
 import type { Article, User as UserType } from '../types';

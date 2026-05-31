@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, Upload, AlertCircle, CheckCircle } from 'lucide-react';
+import { Send, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 
 const TYPES = [

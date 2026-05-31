@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone, Lock, Send, CheckCircle } from 'lucide-react';
+import { Mail, MapPin, Lock, Send, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 
 export default function ContactPage() {
