@@ -2,20 +2,20 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/server.js",
+      "src": "src/app.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/server.js"
+      "dest": "src/app.js"
     }
   ],
   "crons": [
     {
       "path": "/api/v1/internal/publish-scheduled",
-      "schedule": "* * * * *"
+      "schedule": "0 * * * *"
     }
   ]
 }
