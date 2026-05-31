@@ -265,7 +265,7 @@ function CommentRow({
 }: CommentRowProps) {
   
   const articleUrl = comment.article?.slug
-    ? `${CLIENT_URL}/article/${comment.article.slug}`
+    ? `${import.meta.env.VITE_CLIENT_URL || 'http://localhost:3000'}/article/${comment.article.slug}`
     : null;
 
   const isExpanded = expandedNote === comment._id;
