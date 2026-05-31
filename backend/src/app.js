@@ -77,6 +77,7 @@ app.get('/health', (req, res) => res.json({
 }));
 
 // ── Vercel Cron: publish scheduled articles ────────────────────────────────────
+
 const publishScheduledArticles = require('./jobs/publishScheduled');
 app.get('/api/v1/internal/publish-scheduled', async (req, res) => {
   const cronSecret = req.headers['authorization'];
