@@ -11,11 +11,11 @@ interface SeoMetaOptions {
   section?:     string;
 }
 
-const SITE_NAME = 'The Asr';
+const SITE_NAME = 'The Orbis Journal';
 const DEFAULT_DESCRIPTION =
   'Independent journalism on human rights, minorities, and social justice in India and beyond.';
 const DEFAULT_IMAGE = '/og-default.jpg'; // put a 1200×630 branded image in client/public/
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theasr.in';
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theorbisjournal.in';
 
 function setMeta(property: string, content: string, attr: 'name' | 'property' = 'property') {
   let el = document.querySelector(`meta[${attr}="${property}"]`);
@@ -56,7 +56,7 @@ export function useSeoMeta({
     document.title = fullTitle;
 
     // ── Standard meta ─────────────────────────────────────────────────────────
-    setMeta('description',         description,   'name');
+    setMeta('description',         description,    'name');
     setMeta('robots',              'index, follow', 'name');
 
     // ── Open Graph ────────────────────────────────────────────────────────────
@@ -76,8 +76,8 @@ export function useSeoMeta({
     }
 
     // ── Twitter / X Card ──────────────────────────────────────────────────────
-    setMeta('twitter:card',        'summary_large_image', 'name');
-    setMeta('twitter:site',        '@theasrnews',          'name'); // update to real handle
+    setMeta('twitter:card',        'summary_large_image',  'name');
+    setMeta('twitter:site',        '@theorbisjournal',     'name'); // update to real handle
     setMeta('twitter:title',       fullTitle,              'name');
     setMeta('twitter:description', description,            'name');
     setMeta('twitter:image',       fullImage,              'name');

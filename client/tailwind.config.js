@@ -5,9 +5,9 @@ export default {
     extend: {
       colors: {
         brand: {
-          navy: '#0d1e29',
-          'navy-dark': '#060f15',
-          'navy-light': '#1a3a4f',
+          navy: '#122837',           // ← corrected from #0d1e29
+          'navy-dark': '#0b1e2b',    // ← darkened proportionally
+          'navy-light': '#1e3f56',   // ← lightened proportionally
           yellow: '#FBFC09',
           red: '#c8392b',
           'red-dark': '#a82d23',
