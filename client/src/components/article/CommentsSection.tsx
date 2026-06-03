@@ -241,7 +241,7 @@ export default function CommentsSection({ articleId }: { articleId: string }) {
               placeholder={
                 isAuthenticated
                   ? 'Share your thoughts on this article…'
-                  : 'Write a comment… (you'll be asked to sign in when you submit)'
+                  : "Write a comment… (you'll be asked to sign in when you submit)"
               }
               rows={3}
               className="w-full border border-gray-200 px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors resize-none"
