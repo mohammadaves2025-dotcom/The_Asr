@@ -1,40 +1,92 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+// ─────────────────────────────────────────────────────────────────────────────
+// TagPage.tsx
+// client/src/pages/TagPage.tsx
+//
+// Changes from original:
+//  - ?page=N in URL so tag pages are bookmarkable / shareable
+//  - "Previous / Next" buttons replaced with numbered Pagination component
+//  - Page resets to 1 when the tag param changes
+// ─────────────────────────────────────────────────────────────────────────────
+import { useEffect } from 'react';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { articlesService } from '../services/articles';
-import ArticleCard from '../components/article/ArticleCard';
 import { ChevronRight } from 'lucide-react';
+import ArticleCard from '../components/article/ArticleCard';
+import Pagination from '../components/common/Pagination';
+import { articlesService } from '../services/articles';
+
+const LIMIT = 12;
 
 export default function TagPage() {
   const { tag } = useParams<{ tag: string }>();
-  const [page, setPage] = useState(1);
+
+  // ── Page in URL ───────────────────────────────────────────────────────────
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
+
+  const setPage = (n: number) => {
+    setSearchParams(n === 1 ? {} : { page: String(n) });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Reset when tag changes
+  useEffect(() => {
+    setSearchParams({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tag]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['tag', tag, page],
-    queryFn: () => articlesService.getAll({ tag, page, limit: 12, status: 'published' }),
-    enabled: !!tag,
+    queryFn: () =>
+      articlesService.getAll({
+        tag,
+        page,
+        limit:  LIMIT,
+        status: 'published',
+        sort:   '-publishedAt',
+      }),
+    enabled:   !!tag,
+    staleTime: 3 * 60 * 1000,
   });
 
-  const articles = data?.data?.data?.articles ?? [];
-  const meta = data?.data?.meta;
+  const articles   = data?.data?.data?.articles ?? [];
+  const total      = data?.data?.meta?.total      ?? 0;
+  const totalPages = data?.data?.meta?.totalPages ?? 1;
 
   return (
     <div className="container-site py-10">
+
+      {/* Header */}
       <header className="mb-8 pb-5 border-b-2 border-brand-navy">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 mb-3 text-[10px] font-sans text-ink-muted">
-          <Link to="/" className="hover:text-ink transition-colors">Home</Link>
+          <Link to="/" className="hover:text-ink transition-colors">
+            Home
+          </Link>
           <ChevronRight size={10} />
           <span className="text-ink">#{tag}</span>
         </nav>
-        <p className="section-label text-ink-muted mb-1">Tag</p>
+
+        <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-1 font-sans">
+          Tag
+        </p>
         <h1 className="text-4xl font-serif font-bold text-ink">#{tag}</h1>
-        {meta && <p className="text-sm text-ink-muted mt-1 font-sans">{meta.total} articles</p>}
+
+        {total > 0 && (
+          <p className="text-sm text-ink-muted mt-1.5 font-sans">
+            {total} article{total !== 1 ? 's' : ''}
+            {totalPages > 1 && (
+              <span className="ml-1 text-ink-faint">
+                — page {page} of {totalPages}
+              </span>
+            )}
+          </p>
+        )}
       </header>
 
+      {/* Loading skeleton */}
       {isLoading ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
-          {[1,2,3,4,5,6].map(i => (
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i}>
               <div className="h-48 bg-gray-200 mb-3" />
               <div className="h-4 bg-gray-200 mb-2 rounded" />
@@ -43,24 +95,30 @@ export default function TagPage() {
           ))}
         </div>
       ) : articles.length === 0 ? (
+        /* Empty state */
         <div className="text-center py-20">
-          <p className="text-ink-muted mb-4">No articles found with this tag.</p>
-          <Link to="/" className="btn-secondary">Browse all stories</Link>
+          <p className="text-ink-muted mb-4 font-sans">
+            No articles found with this tag.
+          </p>
+          <Link to="/" className="btn-secondary">
+            Browse all stories
+          </Link>
         </div>
       ) : (
         <>
+          {/* Article grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map(art => <ArticleCard key={art._id} article={art} />)}
+            {articles.map((art: any) => (
+              <ArticleCard key={art._id} article={art} />
+            ))}
           </div>
-          {meta && meta.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-12">
-              <button disabled={!meta.hasPrevPage} onClick={() => setPage(p => p - 1)}
-                className="btn-secondary text-sm disabled:opacity-40">← Previous</button>
-              <span className="text-sm text-ink-muted font-sans">Page {meta.page} of {meta.totalPages}</span>
-              <button disabled={!meta.hasNextPage} onClick={() => setPage(p => p + 1)}
-                className="btn-secondary text-sm disabled:opacity-40">Next →</button>
-            </div>
-          )}
+
+          {/* ── Numbered pagination (replaces Prev/Next buttons) ── */}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

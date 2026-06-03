@@ -1,20 +1,37 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
+import Pagination from '../components/common/Pagination';
 import { articlesService, categoriesService } from '../services/articles';
 import type { Article } from '../types';
 
 interface CategoryPageProps {
-  /** Hard-coded slug for alias routes like /verified, /in-their-words */
+  /** Hard-coded slug for alias routes like /in-their-words */
   fixedSlug?: string;
 }
+
+const LIMIT = 24;
 
 export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
   const { slug: paramSlug } = useParams<{ slug: string }>();
   const slug = paramSlug ?? fixedSlug;
-  const [page, setPage] = useState(1);
+
+  // ── Page state lives in URL (?page=N) so links are shareable ─────────────
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
+
+  const setPage = (n: number) => {
+    setSearchParams(n === 1 ? {} : { page: String(n) });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Reset to page 1 when slug changes
+  useEffect(() => {
+    setSearchParams({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
 
   const { data: catData } = useQuery({
     queryKey: ['category', slug],
@@ -24,36 +41,49 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
 
   const { data: articlesData, isLoading } = useQuery({
     queryKey: ['articles', 'category', slug, page],
-    queryFn: () => articlesService.getAll({ category: slug, status: 'published', limit: 24, page, sort: '-publishedAt' }),
-    enabled: !!slug,
+    queryFn: () =>
+      articlesService.getAll({
+        category:  slug,
+        status:    'published',
+        limit:     LIMIT,
+        page,
+        sort:      '-publishedAt',
+      }),
+    enabled:   !!slug,
+    staleTime: 3 * 60 * 1000,
   });
 
-  const category = catData?.data?.data?.category;
-  const articles: Article[] = articlesData?.data?.data?.articles ?? [];
-  const total: number = articlesData?.data?.meta?.total ?? 0; 
-  const hero = page === 1 ? articles[0] : null;
-  const rest = page === 1 ? articles.slice(1) : articles;
+  const category                = catData?.data?.data?.category;
+  const articles: Article[]     = articlesData?.data?.data?.articles ?? [];
+  const total: number           = articlesData?.data?.meta?.total       ?? 0;
+  const totalPages: number      = articlesData?.data?.meta?.totalPages  ?? 1;
+
+  // On page 1 show hero + grid; on subsequent pages show all as grid
+  const hero = page === 1 && articles.length > 0 ? articles[0] : null;
+  const rest = hero ? articles.slice(1) : articles;
 
   return (
     <div className="bg-paper min-h-screen">
-      {/* Category banner */}
+
+      {/* ── Category banner ──────────────────────────────────────────────── */}
       <div className="bg-brand-navy border-b border-white/10">
         <div className="container-site py-8 md:py-10">
 
           {/* Breadcrumb */}
-
           <nav className="flex items-center gap-1.5 mb-4 text-[10px] font-sans text-white/40">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
             <ChevronRight size={10} />
-            <span className="text-white/70">
+            <span className="text-white/70 capitalize">
               {category?.name ?? (slug ? slug.replace(/-/g, ' ') : 'Category')}
             </span>
           </nav>
 
           {category?.description && (
-            <div className="mb-1">
-              <span className="text-[9px] font-black uppercase tracking-[3px] text-white/30 font-sans">Section</span>
-            </div>
+            <p className="text-[9px] font-black uppercase tracking-[3px] text-white/30 mb-1 font-sans">
+              Section
+            </p>
           )}
 
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
@@ -61,50 +91,68 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
           </h1>
 
           {category?.description && (
-            <p className="text-white/50 text-[13px] font-sans max-w-xl leading-relaxed">{category.description}</p>
+            <p className="text-white/50 text-[13px] font-sans max-w-xl leading-relaxed">
+              {category.description}
+            </p>
           )}
 
+          {total > 0 && (
+            <p className="text-white/25 text-[11px] font-sans mt-3">
+              {total} article{total !== 1 ? 's' : ''}
+            </p>
+          )}
         </div>
       </div>
 
+      {/* ── Article grid ─────────────────────────────────────────────────── */}
       <div className="container-site py-8 md:py-12">
+
+        {/* Loading skeleton */}
         {isLoading && (
           <div className="grid md:grid-cols-3 gap-5 animate-pulse">
-            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-64 bg-gray-200" />)}
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-64 bg-gray-200" />
+            ))}
           </div>
         )}
 
+        {/* Empty state */}
         {!isLoading && articles.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-ink-muted font-sans mb-4">No articles found in this section yet.</p>
-            <Link to="/" className="btn-primary">← Back to Home</Link>
+            <p className="text-ink-muted font-sans mb-4">
+              No articles found in this section yet.
+            </p>
+            <Link to="/" className="btn-primary">
+              ← Back to Home
+            </Link>
           </div>
         )}
 
-        {!isLoading && hero && (
+        {/* Content */}
+        {!isLoading && articles.length > 0 && (
           <>
-            {/* Hero */}
-            <div className="mb-8 pb-8 border-b-2 border-ink">
-              <ArticleCard article={hero} variant="featured-side" />
-            </div>
+            {/* Hero — only on page 1 */}
+            {hero && (
+              <div className="mb-8 pb-8 border-b-2 border-ink">
+                <ArticleCard article={hero} variant="featured-side" />
+              </div>
+            )}
 
             {/* Grid */}
             {rest.length > 0 && (
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-                {rest.map(art => <ArticleCard key={art._id} article={art} />)}
+                {rest.map((art) => (
+                  <ArticleCard key={art._id} article={art} />
+                ))}
               </div>
             )}
 
-            {articles.length >= 24 && (page * 24) < total && (
-              <div className="text-center mt-10">
-                <button
-                  className="btn-secondary"
-                  onClick={() => setPage((p) => p + 1)}
-                >
-                  Load More <ArrowRight size={13} />
-                </button>
-              </div>
-            )}
+            {/* ── Numbered pagination (replaces Load More) ── */}
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </>
         )}
       </div>

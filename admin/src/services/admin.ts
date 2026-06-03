@@ -1,3 +1,6 @@
+// admin/src/services/admin.ts
+// Changes: added usersAdmin.updateProfile() method for the EditProfilePanel in UsersPage
+
 import api from './api';
 import type { Article, User, Submission, ApiResponse } from '../types';
 
@@ -37,6 +40,25 @@ export const usersAdmin = {
 
   toggleActive: (id: string) =>
     api.patch(`/users/admin/${id}/toggle-active`),
+
+  // ── NEW: full author profile update (name, designation, bio, avatar, socialLinks)
+  updateProfile: (
+    id: string,
+    data: {
+      name?:        string;
+      designation?: string;
+      bio?:         string;
+      avatar?:      string;
+      socialLinks?: {
+        twitter?:   string;
+        linkedin?:  string;
+        website?:   string;
+        instagram?: string;
+        facebook?:  string;
+        youtube?:   string;
+      };
+    }
+  ) => api.patch(`/users/admin/${id}/profile`, data),
 };
 
 export const commentsAdmin = {
@@ -49,7 +71,6 @@ export const commentsAdmin = {
   delete: (commentId: string) =>
     api.delete(`/comments/admin/${commentId}`),
 
-  // Per-article (kept for compatibility)
   getPending: (articleId: string) =>
     api.get(`/articles/${articleId}/comments`),
 };

@@ -390,6 +390,50 @@ const userController = {
       return sendSuccess(res, { message: `User ${user.isActive ? 'activated' : 'deactivated'}`, data: { isActive: user.isActive } });
     } catch (err) { next(err); }
   },
+  adminUpdateProfile: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+ 
+      // Fields admin is allowed to set on another user's profile
+      const allowed = [
+        'name',
+        'designation',
+        'bio',
+        'avatar',
+        'socialLinks',
+      ];
+ 
+      const updates = {};
+      allowed.forEach((k) => {
+        if (req.body[k] !== undefined) updates[k] = req.body[k];
+      });
+ 
+      // Prevent accidentally clearing socialLinks sub-fields:
+      // merge the incoming socialLinks with what's already stored
+      if (updates.socialLinks) {
+        const existing = await User.findById(id).select('socialLinks');
+        updates.socialLinks = {
+          ...(existing?.socialLinks?.toObject?.() ?? {}),
+          ...updates.socialLinks,
+        };
+        // Remove keys explicitly set to empty string so they don't litter the DB
+        Object.keys(updates.socialLinks).forEach((k) => {
+          if (!updates.socialLinks[k]) delete updates.socialLinks[k];
+        });
+      }
+ 
+      const user = await User.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true,
+      }).select('-refreshTokens -password');
+ 
+      if (!user) return sendError(res, { statusCode: 404, message: 'User not found' });
+ 
+      return sendSuccess(res, { message: 'Profile updated', data: { user } });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 module.exports = {

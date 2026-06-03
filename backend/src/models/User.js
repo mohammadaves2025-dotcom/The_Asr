@@ -1,3 +1,5 @@
+// backend/src/models/User.js
+// Changes: added instagram, facebook, youtube to socialLinks
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -23,55 +25,59 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       minlength: [8, 'Password must be at least 8 characters'],
-      select: false, // never returned by default
+      select: false,
     },
 
     // ── OAuth ──────────────────────────────────────────────────────────────
-    googleId: { type: String },
-    provider: { type: String, enum: ['local', 'google'], default: 'local' },
+    googleId:  { type: String },
+    provider:  { type: String, enum: ['local', 'google'], default: 'local' },
 
     // ── Profile ────────────────────────────────────────────────────────────
-    avatar: { type: String },
-    bio: { type: String, maxlength: [500, 'Bio cannot exceed 500 characters'] },
-    designation: { type: String, maxlength: 100 }, // e.g. "Senior Correspondent"
+    avatar:      { type: String },
+    bio:         { type: String, maxlength: [500, 'Bio cannot exceed 500 characters'] },
+    designation: { type: String, maxlength: 100 },
     socialLinks: {
-      twitter: String,
-      linkedin: String,
-      website: String,
+      twitter:   String,
+      linkedin:  String,
+      website:   String,
+      // ── NEW: added for author profile pages ──────────────────────────────
+      instagram: String,
+      facebook:  String,
+      youtube:   String,
     },
 
     // ── Role & Permissions ─────────────────────────────────────────────────
-    role: { type: String, enum: ROLES, default: 'subscriber' },
-    permissions: [{ type: String }], // for fine-grained overrides
+    role:        { type: String, enum: ROLES, default: 'subscriber' },
+    permissions: [{ type: String }],
 
     // ── Auth & Security ────────────────────────────────────────────────────
-    isVerified: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true },
+    isVerified:          { type: Boolean, default: false },
+    isActive:            { type: Boolean, default: true },
     refreshTokens: [
       {
-        token: String,
+        token:     String,
         createdAt: { type: Date, default: Date.now },
         userAgent: String,
-        ip: String,
+        ip:        String,
       },
     ],
-    passwordResetToken: String,
+    passwordResetToken:   String,
     passwordResetExpires: Date,
-    emailVerifyToken: String,
-    emailVerifyExpires: Date,
-    lastLogin: Date,
-    loginAttempts: { type: Number, default: 0 },
-    lockUntil: Date,
+    emailVerifyToken:     String,
+    emailVerifyExpires:   Date,
+    lastLogin:            Date,
+    loginAttempts:        { type: Number, default: 0 },
+    lockUntil:            Date,
 
     // ── Preferences ────────────────────────────────────────────────────────
     newsletterSubscribed: { type: Boolean, default: false },
-    savedArticles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
-    followedCategories: [String],
-    followedAuthors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    savedArticles:        [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+    followedCategories:   [String],
+    followedAuthors:      [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
+    toJSON:  { virtuals: true },
     toObject: { virtuals: true },
   }
 );
@@ -88,10 +94,10 @@ userSchema.virtual('isLocked').get(function () {
 });
 
 userSchema.virtual('articlesCount', {
-  ref: 'Article',
+  ref:        'Article',
   localField: '_id',
   foreignField: 'author',
-  count: true,
+  count:      true,
 });
 
 // ── Pre-save: hash password ───────────────────────────────────────────────────
@@ -109,14 +115,14 @@ userSchema.methods.comparePassword = async function (candidate) {
 userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
   this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  this.passwordResetExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+  this.passwordResetExpires = Date.now() + 60 * 60 * 1000;
   return resetToken;
 };
 
 userSchema.methods.createEmailVerifyToken = function () {
   const verifyToken = crypto.randomBytes(32).toString('hex');
   this.emailVerifyToken = crypto.createHash('sha256').update(verifyToken).digest('hex');
-  this.emailVerifyExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  this.emailVerifyExpires = Date.now() + 24 * 60 * 60 * 1000;
   return verifyToken;
 };
 
@@ -126,13 +132,12 @@ userSchema.methods.incLoginAttempts = async function () {
   }
   const updates = { $inc: { loginAttempts: 1 } };
   if (this.loginAttempts + 1 >= 5 && !this.isLocked) {
-    updates.$set = { lockUntil: Date.now() + 15 * 60 * 1000 }; // lock 15 min
+    updates.$set = { lockUntil: Date.now() + 15 * 60 * 1000 };
   }
   return this.updateOne(updates);
 };
 
 userSchema.methods.addRefreshToken = async function (token, userAgent, ip) {
-  // Keep max 5 sessions per user
   if (this.refreshTokens.length >= 5) this.refreshTokens.shift();
   this.refreshTokens.push({ token, userAgent, ip });
   return this.save();

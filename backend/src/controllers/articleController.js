@@ -49,34 +49,71 @@ exports.getArticles = async (req, res, next) => {
   }
 };
 
-// ── Get Single Article ────────────────────────────────────────────────────────
+//getArticle
 exports.getArticle = async (req, res, next) => {
   try {
     const { slug } = req.params;
+ 
     const article = await Article.findOne({ slug, status: 'published' })
-      .populate('author', 'name avatar bio designation socialLinks')
-      .populate('coAuthors', 'name avatar')
-      .populate('category', 'name slug color')
+      .populate('author',       'name avatar bio designation socialLinks')
+      .populate('coAuthors',    'name avatar')
+      .populate('category',     'name slug color')
       .populate('lastEditedBy', 'name');
-
+ 
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
-
-    // ← Remove the view increment that was here — frontend fires POST /:slug/views separately
-
-    const related = await Article.find({
-      _id: { $ne: article._id },
-      status: 'published',
-      $or: [
-        { category: article.category._id },
-        { tags: { $in: article.tags } },
-      ],
-    })
-      .limit(4)
-      .sort('-publishedAt')
-      .populate('author', 'name avatar')
-      .populate('category', 'name slug color')
-      .select('title slug excerpt featuredImage publishedAt readTime author category');
-
+ 
+    // ── Improved related articles (tag-count weighted) ────────────────────────
+    //
+    // Strategy:
+    //   1. Find up to 20 candidates from same category OR sharing any tag.
+    //   2. Score each candidate by how many tags it shares with this article.
+    //   3. Return the top 5 by score, then by recency as a tiebreaker.
+    //
+    // This is a pure-JS approach that works without any schema changes or
+    // full-text search infrastructure.
+ 
+    let related = [];
+ 
+    if (article.tags && article.tags.length > 0) {
+      const candidates = await Article.find({
+        _id:    { $ne: article._id },
+        status: 'published',
+        $or: [
+          { category: article.category._id },
+          { tags: { $in: article.tags } },
+        ],
+      })
+        .limit(20)
+        .sort('-publishedAt')
+        .populate('author',   'name avatar')
+        .populate('category', 'name slug color')
+        .select('title slug excerpt featuredImage publishedAt readTime author category tags');
+ 
+      // Score by shared tag count
+      const tagSet = new Set(article.tags.map((t) => t.toLowerCase()));
+ 
+      const scored = candidates
+        .map((c) => {
+          const sharedTags = (c.tags ?? []).filter((t) => tagSet.has(t.toLowerCase())).length;
+          return { article: c, score: sharedTags };
+        })
+        .sort((a, b) => b.score - a.score || 0); // sort by score desc (publishedAt already sorted)
+ 
+      related = scored.slice(0, 5).map((s) => s.article);
+    } else {
+      // No tags — fall back to same category
+      related = await Article.find({
+        _id:      { $ne: article._id },
+        status:   'published',
+        category: article.category._id,
+      })
+        .limit(5)
+        .sort('-publishedAt')
+        .populate('author',   'name avatar')
+        .populate('category', 'name slug color')
+        .select('title slug excerpt featuredImage publishedAt readTime author category');
+    }
+ 
     return sendSuccess(res, { data: { article, related } });
   } catch (err) {
     next(err);

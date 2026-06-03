@@ -1,30 +1,240 @@
+// admin/src/pages/UsersPage.tsx
+// Changes: added "Edit Profile" side panel for admins to manage author profiles
+// including all social links (twitter, instagram, facebook, linkedin, youtube, website),
+// designation, bio, and avatar URL. All other existing functionality unchanged.
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, UserCheck, UserX } from 'lucide-react';
+import { Search, UserCheck, UserX, Edit2, X, Save, Loader2 } from 'lucide-react';
 import { usersAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatDate, cn, ROLE_COLORS } from '../utils/helpers';
 import toast from 'react-hot-toast';
 import { useAdminAuth } from '../context/AuthContext';
+import api from '../services/api';
 import type { User } from '../types';
 
 const ROLES = ['', 'subscriber', 'contributor', 'editor', 'admin', 'superadmin'];
 
+// ── Extend the admin User type with fields we're now editing ─────────────────
+interface AuthorProfile extends User {
+  bio?:       string;
+  socialLinks?: {
+    twitter?:   string;
+    linkedin?:  string;
+    website?:   string;
+    instagram?: string;
+    facebook?:  string;
+    youtube?:   string;
+  };
+}
+
+// ── Edit Profile Panel ────────────────────────────────────────────────────────
+function EditProfilePanel({
+  user,
+  onClose,
+  onSaved,
+}: {
+  user: AuthorProfile;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [form, setForm] = useState({
+    name:        user.name        ?? '',
+    designation: user.designation ?? '',
+    bio:         user.bio         ?? '',
+    avatar:      user.avatar      ?? '',
+    twitter:     user.socialLinks?.twitter   ?? '',
+    linkedin:    user.socialLinks?.linkedin  ?? '',
+    website:     user.socialLinks?.website   ?? '',
+    instagram:   user.socialLinks?.instagram ?? '',
+    facebook:    user.socialLinks?.facebook  ?? '',
+    youtube:     user.socialLinks?.youtube   ?? '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((p) => ({ ...p, [k]: e.target.value }));
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await api.patch(`/users/admin/${user._id}/profile`, {
+        name:        form.name,
+        designation: form.designation,
+        bio:         form.bio,
+        avatar:      form.avatar || undefined,
+        socialLinks: {
+          twitter:   form.twitter   || undefined,
+          linkedin:  form.linkedin  || undefined,
+          website:   form.website   || undefined,
+          instagram: form.instagram || undefined,
+          facebook:  form.facebook  || undefined,
+          youtube:   form.youtube   || undefined,
+        },
+      });
+      toast.success('Profile updated');
+      onSaved();
+      onClose();
+    } catch {
+      toast.error('Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Backdrop */}
+      <div className="flex-1 bg-black/30" onClick={onClose} />
+
+      {/* Panel */}
+      <div className="w-full max-w-md bg-white shadow-2xl flex flex-col h-full overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-brand-navy">
+          <div className="flex items-center gap-2.5">
+            {user.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-brand-yellow flex items-center justify-center">
+                <span className="text-brand-navy font-bold text-sm">{user.name[0]}</span>
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-bold text-white">{user.name}</p>
+              <p className="text-[10px] text-white/50 font-sans capitalize">{user.role}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-white/50 hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Scrollable form */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+
+          {/* Basic info */}
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-3 font-sans">
+              Profile Information
+            </p>
+
+            <label className="block mb-3">
+              <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Full Name *</span>
+              <input
+                value={form.name}
+                onChange={set('name')}
+                className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy"
+              />
+            </label>
+
+            <label className="block mb-3">
+              <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Designation</span>
+              <input
+                value={form.designation}
+                onChange={set('designation')}
+                placeholder="e.g. Senior Correspondent, Guest Contributor"
+                className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy"
+              />
+            </label>
+
+            <label className="block mb-3">
+              <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Bio</span>
+              <textarea
+                value={form.bio}
+                onChange={set('bio')}
+                rows={3}
+                maxLength={500}
+                placeholder="Short author biography (max 500 characters)"
+                className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy resize-none"
+              />
+              <span className="text-[10px] text-ink-faint font-sans">{form.bio.length}/500</span>
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Avatar URL</span>
+              <input
+                value={form.avatar}
+                onChange={set('avatar')}
+                placeholder="https://..."
+                className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy font-mono text-xs"
+              />
+              {form.avatar && (
+                <img src={form.avatar} alt="Preview" className="mt-2 w-12 h-12 rounded-full object-cover border border-gray-200" />
+              )}
+            </label>
+          </div>
+
+          {/* Social links */}
+          <div className="pt-2">
+            <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-3 font-sans">
+              Social Links
+            </p>
+            {(
+              [
+                { key: 'twitter',   label: 'Twitter / X',     placeholder: 'https://twitter.com/handle'   },
+                { key: 'instagram', label: 'Instagram',        placeholder: 'https://instagram.com/handle' },
+                { key: 'facebook',  label: 'Facebook',         placeholder: 'https://facebook.com/page'    },
+                { key: 'linkedin',  label: 'LinkedIn',         placeholder: 'https://linkedin.com/in/...'  },
+                { key: 'youtube',   label: 'YouTube',          placeholder: 'https://youtube.com/@channel' },
+                { key: 'website',   label: 'Personal Website', placeholder: 'https://...'                  },
+              ] as const
+            ).map(({ key, label, placeholder }) => (
+              <label key={key} className="block mb-3">
+                <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">
+                  {label}
+                </span>
+                <input
+                  value={form[key]}
+                  onChange={set(key)}
+                  placeholder={placeholder}
+                  type="url"
+                  className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy font-mono text-xs"
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-200 flex gap-2">
+          <button
+            onClick={onClose}
+            className="flex-1 border border-gray-200 py-2.5 text-sm text-ink hover:bg-gray-50 transition-colors font-sans"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !form.name.trim()}
+            className="flex-1 bg-brand-navy text-brand-yellow py-2.5 text-sm font-bold hover:bg-brand-navy-dark disabled:opacity-40 transition-colors font-sans flex items-center justify-center gap-2"
+          >
+            {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+            {saving ? 'Saving…' : 'Save Profile'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 export default function UsersPage() {
   const qc = useQueryClient();
   const { user: currentUser } = useAdminAuth();
-  const [search, setSearch] = useState('');
-  const [role, setRole] = useState('');
-  const [page, setPage] = useState(1);
+  const [search,       setSearch]       = useState('');
+  const [role,         setRole]         = useState('');
+  const [page,         setPage]         = useState(1);
   const [toggleTarget, setToggleTarget] = useState<User | null>(null);
+  const [editTarget,   setEditTarget]   = useState<AuthorProfile | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'users', { search, role, page }],
-    queryFn: () => usersAdmin.getAll({ search: search || undefined, role: role || undefined, page, limit: 20 }),
+    queryFn:  () => usersAdmin.getAll({ search: search || undefined, role: role || undefined, page, limit: 20 }),
   });
 
   const users = data?.data?.data?.users || [];
-  const meta = data?.data?.meta;
+  const meta  = data?.data?.meta;
 
   const toggleMutation = useMutation({
     mutationFn: (id: string) => usersAdmin.toggleActive(id),
@@ -98,12 +308,18 @@ export default function UsersPage() {
                 Array(8).fill(0).map((_, i) => (
                   <tr key={i} className="table-row">
                     {Array(6).fill(0).map((_, j) => (
-                      <td key={j} className="table-td"><div className="h-4 bg-gray-100 rounded animate-pulse" /></td>
+                      <td key={j} className="table-td">
+                        <div className="h-4 bg-gray-100 rounded animate-pulse" />
+                      </td>
                     ))}
                   </tr>
                 ))
               ) : users.length === 0 ? (
-                <tr><td colSpan={6} className="table-td text-center text-ink-muted py-8">No users found</td></tr>
+                <tr>
+                  <td colSpan={6} className="table-td text-center text-ink-muted py-8">
+                    No users found
+                  </td>
+                </tr>
               ) : users.map((u) => (
                 <tr key={u._id} className={cn('table-row', !u.isActive && 'opacity-60')}>
                   <td className="table-td">
@@ -146,15 +362,28 @@ export default function UsersPage() {
                   </td>
                   <td className="table-td text-ink-muted text-xs whitespace-nowrap">{formatDate(u.createdAt)}</td>
                   <td className="table-td">
-                    {u._id !== currentUser?._id && (
-                      <button
-                        onClick={() => setToggleTarget(u)}
-                        className={cn('p-1.5 transition-colors', u.isActive ? 'text-accent-red hover:text-red-700' : 'text-accent-green hover:text-green-700')}
-                        title={u.isActive ? 'Deactivate' : 'Activate'}
-                      >
-                        {u.isActive ? <UserX size={15} /> : <UserCheck size={15} />}
-                      </button>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {/* Edit profile button — any admin can edit any author profile */}
+                      {['contributor', 'editor', 'admin', 'superadmin'].includes(u.role) && (
+                        <button
+                          onClick={() => setEditTarget(u as AuthorProfile)}
+                          className="p-1.5 text-ink-muted hover:text-brand-navy transition-colors"
+                          title="Edit author profile"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                      )}
+                      {/* Toggle active */}
+                      {u._id !== currentUser?._id && (
+                        <button
+                          onClick={() => setToggleTarget(u)}
+                          className={cn('p-1.5 transition-colors', u.isActive ? 'text-accent-red hover:text-red-700' : 'text-accent-green hover:text-green-700')}
+                          title={u.isActive ? 'Deactivate' : 'Activate'}
+                        >
+                          {u.isActive ? <UserX size={15} /> : <UserCheck size={15} />}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -173,6 +402,7 @@ export default function UsersPage() {
         )}
       </div>
 
+      {/* Confirm deactivate/activate modal */}
       <ConfirmModal
         isOpen={!!toggleTarget}
         title={toggleTarget?.isActive ? 'Deactivate User' : 'Activate User'}
@@ -182,6 +412,15 @@ export default function UsersPage() {
         onConfirm={() => toggleTarget && toggleMutation.mutate(toggleTarget._id)}
         onCancel={() => setToggleTarget(null)}
       />
+
+      {/* Edit profile side panel */}
+      {editTarget && (
+        <EditProfilePanel
+          user={editTarget}
+          onClose={() => setEditTarget(null)}
+          onSaved={() => qc.invalidateQueries({ queryKey: ['admin', 'users'] })}
+        />
+      )}
     </div>
   );
 }

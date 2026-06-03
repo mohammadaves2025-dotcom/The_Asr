@@ -3,6 +3,7 @@ import {
   Bold, Italic, Underline, Quote, Link2, Image,
   Heading2, Heading3, List, ListOrdered, Minus,
   X, Check, ExternalLink, Upload, Film, Code, Undo, Redo,
+  BookOpen,   // ← new: used for "Read Also" toolbar button
 } from 'lucide-react';
 import { articlesAdmin } from '../../services/admin';
 import toast from 'react-hot-toast';
@@ -146,7 +147,11 @@ function InlineImageDialog({ onInsert, onClose }: {
           {tab === 'upload' ? (
             <label className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 cursor-pointer hover:border-brand-navy transition-colors rounded">
               <Upload size={20} className="text-ink-muted" />
-              <span className="text-sm text-ink-muted">{uploading ? 'Uploading…' : url ? <span className="text-green-600 flex items-center gap-1"><Check size={12} /> Uploaded</span> : 'Click to select image'}</span>
+              <span className="text-sm text-ink-muted">
+                {uploading ? 'Uploading…' : url
+                  ? <span className="text-green-600 flex items-center gap-1"><Check size={12} /> Uploaded</span>
+                  : 'Click to select image'}
+              </span>
               <span className="text-xs text-ink-faint">JPG, PNG, WebP — max 10MB</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
             </label>
@@ -219,6 +224,110 @@ function InlineImageDialog({ onInsert, onClose }: {
   );
 }
 
+// ── NEW: Read Also dialog ─────────────────────────────────────────────────────
+// Opens a small modal where the editor pastes an article slug or full URL.
+// Inserts a styled <div class="read-also-block"> placeholder into the body HTML.
+// The frontend ArticlePage.tsx parses this div, fetches the article by slug,
+// and renders the proper thumbnail-left card in place of this placeholder.
+
+function ReadAlsoDialog({
+  onInsert,
+  onClose,
+}: {
+  onInsert: (slug: string) => void;
+  onClose: () => void;
+}) {
+  const [input, setInput] = useState('');
+
+  // Accept either a full URL like https://site.com/article/my-slug
+  // or just the bare slug my-slug
+  const extractSlug = (raw: string): string => {
+    const trimmed = raw.trim();
+    try {
+      const url = new URL(trimmed);
+      // e.g. /article/my-article-slug → last segment
+      const parts = url.pathname.split('/').filter(Boolean);
+      return parts[parts.length - 1] ?? trimmed;
+    } catch {
+      // Not a URL — treat as bare slug
+      return trimmed;
+    }
+  };
+
+  const handleInsert = () => {
+    const slug = extractSlug(input);
+    if (slug) {
+      onInsert(slug);
+      onClose();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white border border-gray-200 shadow-2xl w-[420px] p-5 rounded">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-sm text-ink flex items-center gap-2">
+            <BookOpen size={14} /> Insert "Read Also" Link
+          </h3>
+          <button type="button" onClick={onClose} className="text-ink-muted hover:text-ink">
+            <X size={16} />
+          </button>
+        </div>
+
+        <p className="text-xs text-ink-muted font-sans mb-3 leading-relaxed">
+          Paste the article URL or slug. This will render as a styled "Read Also" card
+          at this point in the article body.
+        </p>
+
+        <div className="mb-4">
+          <label className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">
+            Article URL or Slug *
+          </label>
+          <input
+            autoFocus
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && input.trim()) handleInsert(); }}
+            className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy rounded font-mono"
+            placeholder="https://theorbisjournal.in/article/my-slug  or  my-slug"
+          />
+        </div>
+
+        {/* Preview of what will be inserted */}
+        {input.trim() && (
+          <div className="border border-dashed border-brand-navy/30 bg-brand-navy/5 rounded p-3 mb-4">
+            <p className="text-[10px] font-black uppercase tracking-[1.5px] text-brand-red mb-1 font-sans">
+              Preview — Read Also block
+            </p>
+            <p className="text-[12px] text-ink-secondary font-sans truncate">
+              Slug: <span className="font-mono text-brand-navy">{extractSlug(input)}</span>
+            </p>
+            <p className="text-[10px] text-ink-muted font-sans mt-1">
+              Article card will render here on the frontend.
+            </p>
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <button type="button" onClick={onClose}
+            className="flex-1 border border-gray-200 py-2 text-sm text-ink hover:bg-gray-50 rounded transition-colors">
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleInsert}
+            disabled={!input.trim()}
+            className="flex-1 bg-brand-navy text-brand-yellow py-2 text-sm font-semibold hover:bg-brand-navy-dark disabled:opacity-40 rounded transition-colors"
+          >
+            Insert Read Also
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Editor ───────────────────────────────────────────────────────────────
 
 export default function RichTextEditor({
@@ -227,13 +336,14 @@ export default function RichTextEditor({
   placeholder = 'Start writing your article here…',
   minHeight = 480,
 }: RichTextEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const isInternalChange = useRef(false);
-  const savedSelection = useRef<Range | null>(null);
-  const [showLinkDialog, setShowLinkDialog] = useState(false);
-  const [showImageDialog, setShowImageDialog] = useState(false);
-  const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
-  const [wordCount, setWordCount] = useState(0);
+  const editorRef          = useRef<HTMLDivElement>(null);
+  const isInternalChange   = useRef(false);
+  const savedSelection     = useRef<Range | null>(null);
+  const [showLinkDialog,    setShowLinkDialog]    = useState(false);
+  const [showImageDialog,   setShowImageDialog]   = useState(false);
+  const [showReadAlsoDlg,   setShowReadAlsoDlg]   = useState(false);  // ← new
+  const [activeFormats,     setActiveFormats]      = useState<Set<string>>(new Set());
+  const [wordCount,         setWordCount]          = useState(0);
 
   // ── Init ────────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -269,7 +379,7 @@ export default function RichTextEditor({
   }, []);
 
   const updateWordCount = (el: HTMLDivElement) => {
-    const text = el.innerText || '';
+    const text  = el.innerText || '';
     const words = text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0;
     setWordCount(words);
   };
@@ -302,28 +412,47 @@ export default function RichTextEditor({
   const handleInsertLink = useCallback((url: string, text: string, newTab: boolean) => {
     editorRef.current?.focus();
     restoreSelection();
-    const sel = window.getSelection();
+    const sel          = window.getSelection();
     const selectedText = sel?.toString() || text || url;
-    const target = newTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const target       = newTab ? ' target="_blank" rel="noopener noreferrer"' : '';
     exec('insertHTML', `<a href="${url}"${target} class="article-link">${selectedText}</a>`);
   }, [exec, restoreSelection]);
 
   // ── Image ─────────────────────────────────────────────────────────────────────
   const handleInsertImage = useCallback((url: string, alt: string, caption: string, align: string, size: string) => {
-    const sizeMap: Record<string, string> = { small: '33%', medium: '50%', large: '75%', full: '100%' };
+    const sizeMap: Record<string, string>  = { small: '33%', medium: '50%', large: '75%', full: '100%' };
     const alignStyle: Record<string, string> = {
-      left: 'float:left; margin:0 1.5rem 1rem 0;',
-      right: 'float:right; margin:0 0 1rem 1.5rem;',
+      left:   'float:left; margin:0 1.5rem 1rem 0;',
+      right:  'float:right; margin:0 0 1rem 1.5rem;',
       center: 'display:block; margin:0 auto;',
-      full: 'display:block; margin:0 auto;',
+      full:   'display:block; margin:0 auto;',
     };
     const figStyle = align === 'center' || align === 'full'
       ? 'text-align:center; margin:1.5rem 0;'
       : `margin:1rem 0; ${align === 'left' ? 'float:left; margin-right:1.5rem;' : 'float:right; margin-left:1.5rem;'}`;
-    const capHtml = caption
+    const capHtml  = caption
       ? `<figcaption style="font-size:0.75rem;color:#64748b;font-style:italic;margin-top:0.375rem;">${caption}</figcaption>`
       : '';
     const html = `<figure style="${figStyle}"><img src="${url}" alt="${alt}" style="max-width:${sizeMap[size]};width:100%;height:auto;${alignStyle[align]}" />${capHtml}</figure><p><br></p>`;
+    insertHTML(html);
+  }, [insertHTML]);
+
+  // ── NEW: Read Also ─────────────────────────────────────────────────────────
+  // Inserts a div with class "read-also-block" and data-slug attribute.
+  // ArticlePage.tsx on the frontend parses this div, fetches the article,
+  // and replaces it with a styled thumbnail-left card.
+  const handleInsertReadAlso = useCallback((slug: string) => {
+    const html = `
+<div
+  class="read-also-block"
+  data-slug="${slug}"
+  style="border:1.5px dashed #e2e8f0;padding:0.75rem 1rem;margin:1.5rem 0;border-radius:4px;background:#f8fafc;font-family:sans-serif;"
+>
+  <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#c8392b;">Read Also</span><br/>
+  <span style="font-size:12px;color:#64748b;font-family:monospace;">${slug}</span>
+  <span style="font-size:11px;color:#94a3b8;"> — card renders on frontend</span>
+</div>
+<p><br></p>`.trim();
     insertHTML(html);
   }, [insertHTML]);
 
@@ -359,9 +488,9 @@ export default function RichTextEditor({
     const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
     const vm = url.match(/vimeo\.com\/(\d+)/);
     let embed = '';
-    if (yt) embed = `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1.5rem 0;"><iframe src="https://www.youtube.com/embed/${yt[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>`;
+    if (yt)      embed = `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1.5rem 0;"><iframe src="https://www.youtube.com/embed/${yt[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>`;
     else if (vm) embed = `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1.5rem 0;"><iframe src="https://player.vimeo.com/video/${vm[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>`;
-    else embed = `<div style="margin:1.5rem 0;"><iframe src="${url}" width="100%" height="400" frameborder="0" allowfullscreen></iframe></div>`;
+    else         embed = `<div style="margin:1.5rem 0;"><iframe src="${url}" width="100%" height="400" frameborder="0" allowfullscreen></iframe></div>`;
     insertHTML(embed + '<p><br></p>');
   }, [insertHTML]);
 
@@ -410,7 +539,7 @@ export default function RichTextEditor({
 
         <Divider />
 
-        {/* Insert */}
+        {/* Insert buttons */}
         <button type="button" title="Insert Link (Ctrl+K)"
           onMouseDown={e => { e.preventDefault(); saveSelection(); setShowLinkDialog(true); }}
           className="flex items-center gap-1.5 px-2.5 h-8 text-[11px] font-semibold font-sans text-ink-secondary hover:bg-gray-100 rounded border border-gray-200 transition-colors">
@@ -433,6 +562,16 @@ export default function RichTextEditor({
           }}
           className="flex items-center gap-1.5 px-2.5 h-8 text-[11px] font-semibold font-sans text-ink-secondary hover:bg-gray-100 rounded border border-gray-200 transition-colors">
           <Quote size={12} /> Pull Quote
+        </button>
+
+        {/* ── NEW: Read Also button ── */}
+        <button
+          type="button"
+          title="Insert Read Also block"
+          onMouseDown={e => { e.preventDefault(); saveSelection(); setShowReadAlsoDlg(true); }}
+          className="flex items-center gap-1.5 px-2.5 h-8 text-[11px] font-semibold font-sans text-brand-red hover:bg-red-50 rounded border border-red-200 transition-colors"
+        >
+          <BookOpen size={12} /> Read Also
         </button>
 
         <div className="ml-auto">
@@ -469,8 +608,9 @@ export default function RichTextEditor({
       </div>
 
       {/* ── Dialogs ── */}
-      {showLinkDialog && <LinkDialog onInsert={handleInsertLink} onClose={() => setShowLinkDialog(false)} />}
-      {showImageDialog && <InlineImageDialog onInsert={handleInsertImage} onClose={() => setShowImageDialog(false)} />}
+      {showLinkDialog   && <LinkDialog         onInsert={handleInsertLink}    onClose={() => setShowLinkDialog(false)} />}
+      {showImageDialog  && <InlineImageDialog  onInsert={handleInsertImage}   onClose={() => setShowImageDialog(false)} />}
+      {showReadAlsoDlg  && <ReadAlsoDialog     onInsert={handleInsertReadAlso} onClose={() => setShowReadAlsoDlg(false)} />}
 
       {/* ── Editor styles ── */}
       <style>{`
@@ -501,6 +641,7 @@ export default function RichTextEditor({
         .rich-editor-body th, .rich-editor-body td { padding:0.625rem 0.75rem; border:1px solid #e2e8f0; text-align:left; }
         .rich-editor-body th { background:#f1f5f9; font-weight:600; }
         .rich-editor-body tr:nth-child(even) td { background:#f8fafc; }
+        .rich-editor-body .read-also-block { border:1.5px dashed #e2e8f0; padding:0.75rem 1rem; margin:1.5rem 0; border-radius:4px; background:#f8fafc; }
         .rich-editor-body ::selection { background:rgba(18,40,55,0.15); }
       `}</style>
     </div>
