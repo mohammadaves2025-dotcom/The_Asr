@@ -32,7 +32,7 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
 
   if (status === 'success') {
     return (
-      <div className={`p-6 flex items-center gap-3 ${variant === 'dark' ? 'bg-brand-navy text-white' : 'bg-surface-secondary border border-gray-200'}`}>
+      <div className={`p-6 rounded-2xl flex items-center gap-3 ${variant === 'dark' ? 'bg-brand-navy text-white' : 'bg-surface-secondary border border-gray-200'}`}>
         <CheckCircle size={20} className="text-brand-yellow flex-shrink-0" />
         <div>
           <p className="font-serif font-bold text-base">You're subscribed!</p>
@@ -53,12 +53,12 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
           onChange={e => setEmail(e.target.value)}
           placeholder="your@email.com"
           required
-          className="flex-1 border border-gray-300 px-3 py-2.5 text-sm font-sans outline-none focus:border-brand-navy text-ink"
+          className="flex-1 border border-gray-300 px-3 py-2.5 text-sm font-sans outline-none focus:border-brand-navy text-ink rounded-lg"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="btn-primary py-2.5 px-4 disabled:opacity-60"
+          className="btn-primary py-2.5 px-4 disabled:opacity-60 rounded-lg"
         >
           <Send size={13} />
         </button>
@@ -68,7 +68,7 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
 
   // dark variant (used in article page and homepage sidebar)
   return (
-    <div className={`p-6 ${variant === 'dark' ? 'bg-brand-navy text-white' : 'bg-surface-secondary border border-gray-200'}`}>
+    <div className={`p-6 rounded-2xl ${variant === 'dark' ? 'bg-brand-navy text-white' : 'bg-surface-secondary border border-gray-200'}`}>
       <p className={`text-[9px] font-black uppercase tracking-[3px] mb-2 font-sans ${variant === 'dark' ? 'text-brand-yellow' : 'text-ink-muted'}`}>
         Free Newsletter
       </p>
@@ -84,7 +84,7 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Your name (optional)"
-          className={`border px-3 py-2.5 text-sm outline-none font-sans transition-colors ${
+          className={`border px-3 py-2.5 text-sm outline-none font-sans transition-colors rounded-lg ${
             variant === 'dark'
               ? 'bg-white/8 border-white/15 text-white placeholder:text-white/25 focus:border-brand-yellow/50'
               : 'bg-white border-gray-300 text-ink placeholder:text-ink-muted focus:border-brand-navy'
@@ -96,7 +96,7 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
           onChange={e => setEmail(e.target.value)}
           placeholder="your@email.com"
           required
-          className={`border px-3 py-2.5 text-sm outline-none font-sans transition-colors ${
+          className={`border px-3 py-2.5 text-sm outline-none font-sans transition-colors rounded-lg ${
             variant === 'dark'
               ? 'bg-white/8 border-white/15 text-white placeholder:text-white/25 focus:border-brand-yellow/50'
               : 'bg-white border-gray-300 text-ink placeholder:text-ink-muted focus:border-brand-navy'
@@ -105,7 +105,7 @@ export default function NewsletterInline({ source = 'inline', variant = 'dark' }
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy font-black text-[10px] uppercase tracking-[2px] py-2.5 hover:bg-yellow-400 transition-colors disabled:opacity-60 font-sans"
+          className="flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy font-black text-[10px] uppercase tracking-[2px] py-2.5 rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-60 font-sans"
         >
           {status === 'loading' ? 'Subscribing…' : <><Send size={12} /> Subscribe Free</>}
         </button>

@@ -75,7 +75,7 @@ export default function AISummary({ title, excerpt, body, slug }: Props) {
   if (!loading && !error && bullets.length === 0) return null;
 
   return (
-    <div className="border-l-4 border-brand-navy bg-surface-secondary mb-8 overflow-hidden">
+    <div className="border-l-4 border-brand-navy bg-surface-secondary mb-8 overflow-hidden rounded-xl">
       {/* Header */}
       <button
         onClick={() => setExpanded((v) => !v)}

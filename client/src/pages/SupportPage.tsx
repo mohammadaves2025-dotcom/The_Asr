@@ -75,7 +75,7 @@ export default function SupportPage() {
             <div className="flex gap-2 mb-6">
               {(['once', 'monthly'] as const).map(f => (
                 <button key={f} onClick={() => setFrequency(f)}
-                  className={`flex-1 py-2.5 text-sm font-bold uppercase tracking-widest border-2 transition-all ${frequency === f ? 'bg-brand-navy text-brand-yellow border-brand-navy' : 'border-gray-200 text-ink hover:border-brand-navy'}`}>
+                  className={`flex-1 py-2.5 text-sm font-bold uppercase tracking-widest border-2 rounded-lg transition-all ${frequency === f ? 'bg-brand-navy text-brand-yellow border-brand-navy' : 'border-gray-200 text-ink hover:border-brand-navy'}`}>
                   {f === 'once' ? 'One-time' : 'Monthly'}
                 </button>
               ))}
@@ -85,7 +85,7 @@ export default function SupportPage() {
             <div className="grid grid-cols-3 gap-2 mb-4">
               {AMOUNTS.map(a => (
                 <button key={a} onClick={() => { setSelected(a); setCustom(''); }}
-                  className={`py-3 text-sm font-bold border-2 transition-all ${selected === a && !custom ? 'bg-brand-navy text-brand-yellow border-brand-navy' : 'border-gray-200 text-ink hover:border-brand-navy'}`}>
+                  className={`py-3 text-sm font-bold border-2 rounded-lg transition-all ${selected === a && !custom ? 'bg-brand-navy text-brand-yellow border-brand-navy' : 'border-gray-200 text-ink hover:border-brand-navy'}`}>
                   {a}
                 </button>
               ))}
@@ -93,7 +93,7 @@ export default function SupportPage() {
                 onChange={e => { setCustom(e.target.value); setSelected(''); }}
                 placeholder="Custom ₹"
                 min="1"
-                className="col-span-3 border-2 border-gray-200 px-4 py-3 text-sm font-sans text-ink outline-none focus:border-brand-navy transition-colors text-center"
+                className="col-span-3 border-2 border-gray-200 px-4 py-3 text-sm font-sans text-ink outline-none focus:border-brand-navy transition-colors text-center rounded-lg"
               />
             </div>
 
@@ -111,14 +111,14 @@ export default function SupportPage() {
             </p>
 
             {/* UPI QR + VPA */}
-            <div className="border border-gray-200 p-5 bg-surface-secondary">
+            <div className="border border-gray-200 p-5 bg-surface-secondary rounded-xl">
               <p className="text-[10px] font-black uppercase tracking-[2px] text-ink-muted mb-4 text-center">
                 Scan to pay · {displayAmount}
               </p>
 
               <UpiQR upiLink={upiLink} />
 
-              <div className="mt-4 flex items-center justify-between gap-3 border border-gray-200 bg-white px-4 py-3">
+              <div className="mt-4 flex items-center justify-between gap-3 border border-gray-200 bg-white px-4 py-3 rounded-lg">
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-[2px] text-ink-muted mb-0.5">UPI ID</p>
                   <p className="font-mono text-sm font-bold text-ink">{UPI_VPA}</p>
@@ -147,7 +147,7 @@ export default function SupportPage() {
             <div className="space-y-5">
               {WHY_ITEMS.map(item => (
                 <div key={item.title} className="flex gap-4">
-                  <div className="w-10 h-10 bg-brand-yellow flex items-center justify-center flex-shrink-0 text-brand-navy">
+                  <div className="w-10 h-10 bg-brand-yellow rounded-xl flex items-center justify-center flex-shrink-0 text-brand-navy">
                     {item.icon}
                   </div>
                   <div>
@@ -158,7 +158,7 @@ export default function SupportPage() {
               ))}
             </div>
 
-            <div className="mt-8 p-6 bg-brand-navy text-white">
+            <div className="mt-8 p-6 bg-brand-navy text-white rounded-2xl">
               <p className="text-[10px] font-bold uppercase tracking-[3px] text-brand-yellow mb-3">Where your money goes</p>
               {[
                 { label: 'Field reporting & travel', pct: 40 },
@@ -178,7 +178,7 @@ export default function SupportPage() {
               ))}
             </div>
 
-            <div className="mt-5 p-4 border border-gray-200">
+            <div className="mt-5 p-4 border border-gray-200 rounded-xl">
               <p className="text-[10px] font-black uppercase tracking-[2px] text-ink-muted mb-1">Transparency</p>
               <p className="text-[13px] text-ink-secondary font-sans leading-relaxed">
                 We publish a full breakdown of our revenue and expenses annually.{' '}
@@ -197,7 +197,7 @@ export default function SupportPage() {
               { title: 'Gift a Subscription', desc: "Support us in a friend's name. Great gift for someone who cares.", cta: 'Gift now' },
               { title: 'Sponsor a Reporter', desc: 'Support a young journalist from a marginalized community.', cta: 'Learn more' },
             ].map(item => (
-              <div key={item.title} className="border-2 border-gray-200 p-5 hover:border-brand-navy transition-colors group">
+              <div key={item.title} className="border-2 border-gray-200 p-5 rounded-xl hover:border-brand-navy transition-colors group">
                 <h3 className="font-serif font-bold text-base text-ink mb-2 group-hover:text-brand-navy">{item.title}</h3>
                 <p className="text-sm text-ink-muted font-sans mb-4 leading-relaxed">{item.desc}</p>
                 <button className="text-xs font-bold uppercase tracking-widest text-brand-navy hover:underline">{item.cta} →</button>

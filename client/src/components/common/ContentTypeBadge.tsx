@@ -17,8 +17,8 @@ const TYPE_MAP: Record<string, { label: string; color: string }> = {
 export default function ContentTypeBadge({ type, className = '' }: Props) {
   const m = TYPE_MAP[type] ?? { label: type, color: 'bg-gray-100 text-ink-muted' };
   return (
-    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 ${m.color} ${className}`}>
+    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 rounded-full ${m.color} ${className}`}>
       {m.label}
     </span>
   );
-}
+} 

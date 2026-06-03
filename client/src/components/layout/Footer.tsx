@@ -69,7 +69,7 @@ export default function Footer() {
           </div>
           <Link
             to="/support"
-            className="flex items-center gap-2 bg-brand-yellow text-brand-navy font-black text-[10px] uppercase tracking-[2px] px-6 py-3 hover:bg-yellow-400 transition-colors font-sans flex-shrink-0"
+            className="flex items-center gap-2 bg-brand-yellow text-brand-navy font-black text-[10px] uppercase tracking-[2px] px-6 py-3 rounded-lg hover:bg-yellow-400 transition-colors font-sans flex-shrink-0"
           >
             Support The Orbis Journal <ArrowRight size={12} />
           </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={s.label}
-                  className="border border-white/15 text-white/40 hover:text-white hover:border-white/40 text-[10px] font-bold px-2.5 py-1.5 transition-all font-sans"
+                  className="border border-white/15 text-white/40 hover:text-white hover:border-white/40 text-[10px] font-bold px-2.5 py-1.5 rounded-md transition-all font-sans"
                 >
                   {s.short}
                 </a>

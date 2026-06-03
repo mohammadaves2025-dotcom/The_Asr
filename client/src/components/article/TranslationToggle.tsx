@@ -94,7 +94,7 @@ export default function TranslationToggle({
   return (
     <div className="flex items-center flex-wrap gap-3 mb-6">
       {/* Language buttons */}
-      <div className="flex items-center gap-1 border border-gray-200 p-0.5">
+      <div className="flex items-center gap-1 border border-gray-200 p-0.5 rounded-lg">
         {(Object.keys(LANG_LABELS) as Lang[]).map((lang) => (
           <button
             key={lang}
@@ -121,7 +121,7 @@ export default function TranslationToggle({
 
       {/* AI badge — only show for non-English */}
       {activeLang !== 'en' && (
-        <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[1.5px] px-2 py-1 bg-amber-50 border border-amber-200 text-amber-700 font-sans">
+        <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[1.5px] px-2 py-1 bg-amber-50 border border-amber-200 text-amber-700 font-sans rounded-full">
           <AlertCircle size={9} /> AI Translation — may not be fully accurate
         </span>
       )}

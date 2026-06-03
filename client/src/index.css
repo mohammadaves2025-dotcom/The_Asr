@@ -17,15 +17,15 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-yellow px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-brand-red hover:text-white active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-yellow px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] rounded-lg transition-all duration-200 hover:bg-brand-red hover:text-white active:scale-95;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 border border-brand-navy bg-transparent text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-brand-navy hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 border border-brand-navy bg-transparent text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] rounded-lg transition-all duration-200 hover:bg-brand-navy hover:text-white;
   }
 
   .btn-yellow {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] transition-all duration-200 hover:bg-yellow-400 active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 bg-brand-yellow text-brand-navy px-5 py-2.5 text-xs font-bold font-sans uppercase tracking-[2px] rounded-lg transition-all duration-200 hover:bg-yellow-400 active:scale-95;
   }
 
   .btn-ghost {
@@ -45,7 +45,7 @@
   }
 
   .input-field {
-    @apply w-full border border-gray-300 bg-white px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy focus:ring-0 transition-colors;
+    @apply w-full border border-gray-300 bg-white px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy focus:ring-0 transition-colors rounded-lg;
   }
 
   .form-label {
@@ -74,7 +74,7 @@
 
   /* Card styles */
   .card-base {
-    @apply bg-white border border-gray-200 transition-all duration-300 hover:shadow-card-hover;
+    @apply bg-white border border-gray-200 rounded-xl transition-all duration-300 hover:shadow-card-hover;
   }
 
   /* Badge styles */

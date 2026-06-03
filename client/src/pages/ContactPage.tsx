@@ -55,7 +55,7 @@ export default function ContactPage() {
               <p>The Asr Media,<br />New Delhi – 110001, India</p>
             </div>
           </div>
-          <div className="bg-brand-navy text-white p-5">
+          <div className="bg-brand-navy text-white p-5 rounded-xl">
             <p className="text-[10px] font-bold uppercase tracking-[3px] text-brand-yellow mb-2">Confidential Tips</p>
             <p className="text-sm text-white/60 font-sans leading-relaxed">
               All tips are treated with strict confidentiality. For sensitive leaks, use Signal or our SecureDrop. We never reveal sources.
@@ -91,7 +91,7 @@ export default function ContactPage() {
                 <label className="form-label">Message *</label>
                 <textarea rows={7} required value={form.message} onChange={e => setForm({...form, message: e.target.value})} className="input-field resize-y" />
               </div>
-              {error && <p className="text-red-600 text-sm font-sans">{error}</p>}
+              {error && <p className="text-red-600 text-sm font-sans rounded">{error}</p>}
               <button type="submit" disabled={status === 'loading'} className="btn-primary gap-2 disabled:opacity-70">
                 <Send size={15} /> {status === 'loading' ? 'Sending…' : 'Send Message'}
               </button>

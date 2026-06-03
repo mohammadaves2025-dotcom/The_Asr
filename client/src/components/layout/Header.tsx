@@ -125,7 +125,7 @@ export default function Header() {
             )}
             <Link
               to="/support"
-              className="bg-brand-yellow text-brand-navy px-3 py-1 text-[10px] font-black uppercase tracking-[2px] hover:bg-yellow-400 transition-colors"
+              className="bg-brand-yellow text-brand-navy px-3 py-1 text-[10px] font-black uppercase tracking-[2px] rounded-md hover:bg-yellow-400 transition-colors"
             >
               Support Us
             </Link>
@@ -216,7 +216,7 @@ export default function Header() {
               </button>
 
               {moreOpen && (
-                <div className="absolute right-0 top-full mt-0 w-52 bg-white shadow-overlay border border-gray-200 z-50 py-1">
+                <div className="absolute right-0 top-full mt-0 w-52 bg-white shadow-overlay border border-gray-200 rounded-xl z-50 py-1">
                   {MORE_ITEMS.map((item) => (
                     <NavLink
                       key={item.href}
@@ -355,7 +355,7 @@ export default function Header() {
             {isAuthenticated ? (
               <button
                 onClick={() => { logout(); setMobileOpen(false); }}
-                className="text-center border border-white/20 text-white text-[10px] font-black uppercase tracking-[2px] py-3 hover:bg-white/10 transition-colors font-sans"
+                className="text-center border border-white/20 text-white text-[10px] font-black uppercase tracking-[2px] py-3 rounded-lg hover:bg-white/10 transition-colors font-sans"
               >
                 Logout
               </button>
@@ -363,7 +363,7 @@ export default function Header() {
               <Link
                 to="/login"
                 onClick={() => setMobileOpen(false)}
-                className="text-center border border-white/20 text-white text-[10px] font-black uppercase tracking-[2px] py-3 hover:bg-white/10 transition-colors font-sans"
+                className="text-center border border-white/20 text-white text-[10px] font-black uppercase tracking-[2px] py-3 rounded-lg hover:bg-white/10 transition-colors font-sans"
               >
                 Sign In
               </Link>
@@ -371,7 +371,7 @@ export default function Header() {
             <Link
               to="/support"
               onClick={() => setMobileOpen(false)}
-              className="text-center bg-brand-yellow text-brand-navy text-[10px] font-black uppercase tracking-[2px] py-3 hover:bg-yellow-400 transition-colors font-sans"
+              className="text-center bg-brand-yellow text-brand-navy text-[10px] font-black uppercase tracking-[2px] py-3 rounded-lg hover:bg-yellow-400 transition-colors font-sans"
             >
               Donate
             </Link>

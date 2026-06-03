@@ -61,7 +61,7 @@ function ShareBar({ article }: { article: Article }) {
         href={`https://twitter.com/intent/tweet?text=${text}&url=${url}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
+        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-ink hover:text-white hover:border-ink transition-all font-sans rounded-lg"
       >
         Twitter / X
       </a>
@@ -69,7 +69,7 @@ function ShareBar({ article }: { article: Article }) {
         href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all font-sans"
+        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all font-sans rounded-lg"
       >
         Facebook
       </a>
@@ -77,7 +77,7 @@ function ShareBar({ article }: { article: Article }) {
         href={`https://api.whatsapp.com/send?text=${text}%20${url}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-green-600 hover:text-white hover:border-green-600 transition-all font-sans"
+        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-green-600 hover:text-white hover:border-green-600 transition-all font-sans rounded-lg"
       >
         WhatsApp
       </a>
@@ -86,13 +86,13 @@ function ShareBar({ article }: { article: Article }) {
         href={`https://t.me/share/url?url=${url}&text=${text}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-[#2AABEE] hover:text-white hover:border-[#2AABEE] transition-all font-sans"
+        className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-[#2AABEE] hover:text-white hover:border-[#2AABEE] transition-all font-sans rounded-lg"
       >
         <Send size={11} /> Telegram
       </a>
       <button
         onClick={copyLink}
-        className="ml-auto flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-gray-100 transition-all font-sans"
+        className="ml-auto flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-[11px] font-bold hover:bg-gray-100 transition-all font-sans rounded-lg"
       >
         <Link2 size={11} /> {copied ? 'Copied!' : 'Copy Link'}
       </button>
@@ -201,7 +201,7 @@ function GoogleSignInPrompt({
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm bg-brand-navy text-white shadow-overlay border border-white/10 animate-fade-up">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm bg-brand-navy text-white shadow-overlay border border-white/10 rounded-2xl animate-fade-up">
       <div className="p-5">
         <button
           onClick={onDismiss}
@@ -221,7 +221,7 @@ function GoogleSignInPrompt({
         </p>
         <button
           onClick={handleSignIn}
-          className="w-full flex items-center justify-center gap-3 bg-white text-ink font-bold text-[12px] font-sans py-3 hover:bg-gray-100 transition-colors"
+          className="w-full flex items-center justify-center gap-3 bg-white text-ink font-bold text-[12px] font-sans py-3 rounded-lg hover:bg-gray-100 transition-colors"
         >
           {/* Google "G" SVG — no external import needed */}
           <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
@@ -410,17 +410,17 @@ export default function ArticlePage() {
               {/* Labels */}
               <div className="flex items-center flex-wrap gap-2 mb-4">
                 {article.isBreaking && (
-                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
+                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white rounded-full">
                     Breaking
                   </span>
                 )}
                 {article.isVerified && (
-                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-green-50 text-green-800">
+                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-green-50 text-green-800 rounded-full">
                     ✓ Verified
                   </span>
                 )}
                 {article.isEditorsPick && (
-                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-yellow text-brand-navy">
+                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-yellow text-brand-navy rounded-full">
                     Features
                   </span>
                 )}
@@ -610,7 +610,7 @@ export default function ArticlePage() {
                     <Link
                       key={tag}
                       to={`/tag/${encodeURIComponent(tag)}`}
-                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 border border-gray-200 text-ink-muted hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
+                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 border border-gray-200 text-ink-muted hover:bg-ink hover:text-white hover:border-ink transition-all font-sans rounded-lg"
                     >
                       #{tag}
                     </Link>
@@ -646,7 +646,7 @@ export default function ArticlePage() {
                     {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
                       <button
                         key={a}
-                        className="border border-gray-200 text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
+                        className="border border-gray-200 rounded-lg text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
                       >
                         {a}
                       </button>
@@ -654,7 +654,7 @@ export default function ArticlePage() {
                   </div>
                   <Link
                     to="/support"
-                    className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 hover:bg-brand-navy-dark transition-colors font-sans"
+                    className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-brand-navy-dark transition-colors font-sans"
                   >
                     Donate →
                   </Link>

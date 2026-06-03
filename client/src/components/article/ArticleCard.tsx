@@ -25,7 +25,7 @@ function ContentLabel({ type }: { type?: string }) {
   if (!type) return null;
   const m = CONTENT_TYPE_MAP[type] ?? { label: type, color: 'bg-gray-100 text-ink-muted' };
   return (
-    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 ${m.color}`}>
+    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 rounded-full ${m.color}`}>
       {m.label}
     </span>
   );
@@ -99,7 +99,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
       <div className="group flex gap-4 py-5 border-b border-gray-100 last:border-0">
         {imageUrl && (
           <Link to={`/article/${article.slug}`} className="flex-shrink-0">
-            <div className="w-20 h-20 overflow-hidden bg-gray-100">
+            <div className="w-20 h-20 overflow-hidden bg-gray-100 rounded-lg">
               <img
                 src={imageUrl} alt={imageAlt}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -129,7 +129,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   // ── Featured Side ─────────────────────────────────────────────────────────
   if (variant === 'featured-side') {
     return (
-      <div className="group block overflow-hidden bg-white border border-gray-200 hover:shadow-card-hover transition-all duration-300">
+      <div className="group block overflow-hidden bg-white border border-gray-200 rounded-xl hover:shadow-card-hover transition-all duration-300">
         <div className="relative overflow-hidden bg-gray-100" style={{ aspectRatio: '16/9' }}>
           {imageUrl && (
             <img
@@ -141,7 +141,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <div className="flex items-center gap-2 mb-2.5">
               {article.isBreaking && (
-                <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
+                <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white rounded-full">
                   Breaking
                 </span>
               )}
@@ -201,12 +201,12 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         <div className="relative flex flex-col justify-end p-6 md:p-8 h-full" style={{ minHeight: '480px' }}>
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {article.isBreaking && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
+              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white rounded-full">
                 Breaking
               </span>
             )}
             {article.category?.name && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-white/15 text-white backdrop-blur-sm">
+              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-white/15 text-white backdrop-blur-sm rounded-full">
                 {article.category.name}
               </span>
             )}
@@ -249,7 +249,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
 
   // ── Default card ──────────────────────────────────────────────────────────
   return (
-    <div className="group bg-white border border-gray-200 overflow-hidden hover:shadow-card-hover transition-all duration-300 flex flex-col">
+    <div className="group bg-white border border-gray-200 overflow-hidden rounded-xl hover:shadow-card-hover transition-all duration-300 flex flex-col">
       {imageUrl && (
         <Link to={`/article/${article.slug}`} className="block overflow-hidden flex-shrink-0">
           <div className="relative bg-gray-100" style={{ aspectRatio: '16/9' }}>
@@ -258,12 +258,12 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
             />
             {article.isBreaking && (
-              <span className="absolute top-3 left-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
+              <span className="absolute top-3 left-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white rounded-full">
                 Breaking
               </span>
             )}
             {article.isEditorsPick && (
-              <span className="absolute top-3 right-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-yellow text-brand-navy">
+              <span className="absolute top-3 right-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-yellow text-brand-navy rounded-full">
                 Editor's Pick
               </span>
             )}

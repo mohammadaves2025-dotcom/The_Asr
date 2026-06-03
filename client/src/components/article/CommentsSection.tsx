@@ -121,7 +121,7 @@ function CommentItem({
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Write a reply…"
                 rows={2}
-                className="w-full border border-gray-200 px-3 py-2 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors resize-none"
+                className="w-full border border-gray-200 px-3 py-2 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors resize-none rounded-lg"
               />
               <div className="flex gap-2 mt-2">
                 <button
@@ -243,7 +243,7 @@ export default function CommentsSection({ articleId }: { articleId: string }) {
                   : "Write a comment… (you'll be asked to sign in when you submit)"
               }
               rows={3}
-              className="w-full border border-gray-200 px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors resize-none"
+              className="w-full border border-gray-200 px-4 py-3 text-sm font-sans text-ink placeholder:text-ink-muted outline-none focus:border-brand-navy transition-colors resize-none rounded-lg"
             />
             <div className="flex items-center justify-between mt-2 gap-3 flex-wrap">
               {/* Hint for non-logged-in users */}

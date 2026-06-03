@@ -50,7 +50,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="flex items-center gap-1 px-3 py-2 border border-gray-200 text-[11px] font-bold font-sans text-ink-muted hover:text-brand-navy hover:border-brand-navy disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="flex items-center gap-1 px-3 py-2 border border-gray-200 rounded-lg text-[11px] font-bold font-sans text-ink-muted hover:text-brand-navy hover:border-brand-navy disabled:opacity-30 disabled:cursor-not-allowed transition-all"
         aria-label="Previous page"
       >
         <ChevronLeft size={13} /> Prev
@@ -70,7 +70,7 @@ export default function Pagination({
             key={p}
             onClick={() => onPageChange(p as number)}
             aria-current={p === page ? 'page' : undefined}
-            className={`w-9 h-9 flex items-center justify-center text-[12px] font-bold font-sans border transition-all ${
+            className={`w-9 h-9 flex items-center justify-center text-[12px] font-bold font-sans border rounded-lg transition-all ${
               p === page
                 ? 'bg-brand-navy text-brand-yellow border-brand-navy'
                 : 'border-gray-200 text-ink-muted hover:text-brand-navy hover:border-brand-navy'
@@ -85,7 +85,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="flex items-center gap-1 px-3 py-2 border border-gray-200 text-[11px] font-bold font-sans text-ink-muted hover:text-brand-navy hover:border-brand-navy disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="flex items-center gap-1 px-3 py-2 border border-gray-200 rounded-lg text-[11px] font-bold font-sans text-ink-muted hover:text-brand-navy hover:border-brand-navy disabled:opacity-30 disabled:cursor-not-allowed transition-all"
         aria-label="Next page"
       >
         Next <ChevronRight size={13} />
