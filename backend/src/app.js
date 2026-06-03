@@ -44,11 +44,14 @@ app.use(xssSanitize);
 const allowedOrigins = [
   process.env.CLIENT_URL  || 'http://localhost:3000',
   process.env.ADMIN_URL   || 'http://localhost:5174',
-];
+].filter(Boolean).map(o => o.replace(/\/$/, '')); // strip trailing slashes
+
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true);
-    if (allowedOrigins.includes(origin)) return cb(null, true);
+    if (!origin) return cb(null, true); // same-origin / curl
+    const clean = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(clean)) return cb(null, true);
+    console.error('[CORS BLOCKED]', origin, '| Allowed:', allowedOrigins);
     cb(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
