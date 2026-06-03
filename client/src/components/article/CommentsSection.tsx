@@ -164,7 +164,6 @@ function CommentItem({
 // ── Main comments section ─────────────────────────────────────────────────────
 export default function CommentsSection({ articleId }: { articleId: string }) {
   const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [commentText, setCommentText] = useState('');
   const qc = useQueryClient();
 

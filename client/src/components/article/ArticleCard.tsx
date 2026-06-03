@@ -176,7 +176,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 <p className="text-[10px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
               </div>
             </div>
-            {article.readTime > 0 && (
+            {(article.readTime ?? 0) > 0 && (
               <span className="flex items-center gap-1 text-[10px] text-ink-muted font-sans">
                 <Clock size={11} /> {article.readTime}m
               </span>
@@ -236,7 +236,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
             )}
             <span className="text-white/80 text-[12px] font-sans font-medium">{authorName}</span>
             <span className="text-white/45 text-[12px] font-sans">{formatDate(publishDate)}</span>
-            {article.readTime > 0 && (
+            {(article.readTime ?? 0) > 0 && (
               <span className="text-white/45 text-[12px] font-sans flex items-center gap-1">
                 <Clock size={11} /> {article.readTime}m read
               </span>
@@ -292,11 +292,11 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
             <p className="text-[10px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
           </div>
           <div className="flex items-center gap-3 text-ink-muted text-[10px] font-sans">
-            {article.readTime > 0 && (
+            {(article.readTime ?? 0) > 0 && (
               <span className="flex items-center gap-1"><Clock size={10} /> {article.readTime}m</span>
             )}
             {(article.views ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Eye size={10} /> {article.views.toLocaleString()}</span>
+              <span className="flex items-center gap-1"><Eye size={10} /> {(article.views ?? 0).toLocaleString()}</span>
             )}
           </div>
         </div>

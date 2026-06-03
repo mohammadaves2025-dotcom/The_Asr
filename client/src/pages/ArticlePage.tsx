@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   Clock,
@@ -254,7 +254,6 @@ const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theorbisjournal.in';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate  = useNavigate();
   const { isAuthenticated } = useAuth();
 
   // ── Google Sign-In prompt state ───────────────────────────────────────────
@@ -497,7 +496,7 @@ export default function ArticlePage() {
                   {formatDateLong(article.publishedAt ?? article.createdAt)}
                 </div>
 
-                {article.readTime > 0 && (
+                {(article.readTime ?? 0) > 0 && (
                   <div className="flex items-center gap-1.5 text-[11px] text-ink-muted font-sans">
                     <Clock size={11} /> {article.readTime} min read
                   </div>

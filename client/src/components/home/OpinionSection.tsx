@@ -40,11 +40,11 @@ export default function OpinionSection({ articles }: Props) {
               </p>
 
               <div className="flex items-center gap-3 mt-5 pt-4 border-t border-gray-100">
-                {article.author.avatar && (
+                {article.author?.avatar && (
                   <img src={article.author.avatar} alt={article.author.name} className="w-9 h-9 rounded-full object-cover" />
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-ink">{article.author.name}</p>
+                  <p className="text-sm font-semibold text-ink">{article.author?.name}</p>
                   <p className="text-xs text-ink-muted">{formatDate(article.publishedAt || article.createdAt)}</p>
                 </div>
               </div>

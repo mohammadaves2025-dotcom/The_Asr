@@ -41,7 +41,7 @@ export default function HeroSection({ hero, featured }: Props) {
             )}
 
             <div className="flex items-center gap-2.5 mb-5 flex-wrap">
-              <CategoryBadge category={hero.category} />
+              <CategoryBadge category={hero.category!} />
               <ContentTypeBadge type={hero.contentType} />
               {hero.isVerified && (
                 <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1.5 bg-accent-emerald/10 text-accent-emerald rounded-full flex items-center gap-1">
@@ -73,16 +73,16 @@ export default function HeroSection({ hero, featured }: Props) {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t-2 border-gray-200">
               <div className="flex items-center gap-4">
-                {hero.author.avatar ? (
+                {hero.author?.avatar ? (
                   <img src={hero.author.avatar} alt={hero.author.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-brand-yellow shadow-md" />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-navy to-brand-navy-dark text-white flex items-center justify-center font-bold text-sm ring-2 ring-brand-yellow">
-                    {hero.author.name[0]}
+                    {hero.author?.name?.[0] ?? '?'}
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-ink">{hero.author.name}</p>
-                  {hero.author.designation && (
+                  <p className="text-sm font-semibold text-ink">{hero.author?.name}</p>
+                  {hero.author?.designation && (
                     <p className="text-xs text-ink-muted font-medium">{hero.author.designation}</p>
                   )}
                 </div>
@@ -94,7 +94,7 @@ export default function HeroSection({ hero, featured }: Props) {
                 </div>
                 <div className="badge-minimal">
                   <Clock size={13} />
-                  <span>{formatReadTime(hero.readTime)}</span>
+                  <span>{formatReadTime(hero.readTime ?? 0)}</span>
                 </div>
                 <Link
                   to={`/article/${hero.slug}`}
@@ -120,14 +120,14 @@ export default function HeroSection({ hero, featured }: Props) {
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <CategoryBadge category={article.category} size="xs" />
+                    <CategoryBadge category={article.category!} size="xs" />
                     <Link to={`/article/${article.slug}`} className="no-underline block mt-1.5 group/pick">
                       <h3 className="text-base font-serif font-semibold text-ink leading-snug line-clamp-3 group-hover/pick:text-brand-navy transition-colors duration-300">
                         {article.title}
                       </h3>
                     </Link>
                     <div className="flex items-center gap-2 mt-2.5 text-xs text-ink-muted">
-                      <span className="font-medium">{article.author.name}</span>
+                      <span className="font-medium">{article.author?.name}</span>
                       <span className="text-ink-faint">·</span>
                       <span>{formatDate(article.publishedAt || article.createdAt)}</span>
                     </div>
