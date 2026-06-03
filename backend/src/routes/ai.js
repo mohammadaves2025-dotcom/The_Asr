@@ -96,14 +96,14 @@ Body: ${bodyText.slice(0, 2500)}`;
 
     const text = await callAnthropic([{ role: 'user', content: prompt }], 400);
 
-    let summary: string[] = [];
+    let summary = [];
     try {
       const cleaned = text.replace(/```json|```/g, '').trim();
       summary = JSON.parse(cleaned);
     } catch {
       summary = text
         .split('\n')
-        .map((l: string) => l.replace(/^[-•*\d.)\s]+/, '').trim())
+        .map((l) => l.replace(/^[-•*\d.)\s]+/, '').trim())
         .filter(Boolean)
         .slice(0, 3);
     }
@@ -145,7 +145,7 @@ Excerpt: ${excerpt || title}`;
 
     const text = await callAnthropic([{ role: 'user', content: prompt }], 600);
 
-    let translation: { title: string; excerpt: string } | null = null;
+    let translation = null;
     try {
       const cleaned = text.replace(/```json|```/g, '').trim();
       translation = JSON.parse(cleaned);
