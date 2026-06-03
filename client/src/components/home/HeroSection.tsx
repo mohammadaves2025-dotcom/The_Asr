@@ -62,12 +62,12 @@ export default function HeroSection({ hero, featured }: Props) {
             </Link>
 
             {hero.subtitle && (
-              <p className="text-xl text-ink-secondary font-sans font-medium mt-4 leading-relaxed line-clamp-2 mb-4">
+              <p className="text-2xl text-ink-secondary font-sans font-medium mt-4 leading-relaxed line-clamp-2 mb-4">
                 {hero.subtitle}
               </p>
             )}
 
-            <p className="text-lg text-ink-secondary leading-relaxed line-clamp-4 mb-6 font-light">
+            <p className="text-xl text-ink-secondary leading-relaxed line-clamp-4 mb-6 font-light">
               {hero.excerpt}
             </p>
 
@@ -122,11 +122,11 @@ export default function HeroSection({ hero, featured }: Props) {
                   <div className="flex-1 min-w-0">
                     <CategoryBadge category={article.category!} size="xs" />
                     <Link to={`/article/${article.slug}`} className="no-underline block mt-1.5 group/pick">
-                      <h3 className="text-base font-serif font-semibold text-ink leading-snug line-clamp-3 group-hover/pick:text-brand-navy transition-colors duration-300">
+                      <h3 className="text-[17px] font-serif font-semibold text-ink leading-snug line-clamp-3 group-hover/pick:text-brand-navy transition-colors duration-300">
                         {article.title}
                       </h3>
                     </Link>
-                    <div className="flex items-center gap-2 mt-2.5 text-xs text-ink-muted">
+                    <div className="flex items-center gap-2 mt-2.5 text-[12px] text-ink-muted">
                       <span className="font-medium">{article.author?.name}</span>
                       <span className="text-ink-faint">·</span>
                       <span>{formatDate(article.publishedAt || article.createdAt)}</span>
