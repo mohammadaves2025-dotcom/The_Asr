@@ -79,7 +79,7 @@ function TheLead({ articles }: { articles: Article[] }) {
       <div className="flex items-center gap-2 mb-5 pb-3 border-b-2 border-ink">
         <TrendingUp size={14} className="text-ink" />
         {/* Renamed from "Most Read" to "The Lead" */}
-        <h2 className="text-base font-serif font-bold text-ink">The Lead</h2>
+        <h2 className="text-sm font-serif font-bold text-ink">The Lead</h2>
       </div>
       <ol>
         {articles.slice(0, 5).map((art, i) => (
@@ -93,7 +93,7 @@ function TheLead({ articles }: { articles: Article[] }) {
             <div className="flex-1 min-w-0">
               <Link
                 to={`/article/${art.slug}`}
-                className="text-[15px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
+                className="text-[13px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
               >
                 {art.title}
               </Link>
@@ -235,7 +235,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               className="group relative flex flex-col border-b sm:border-b-0 sm:border-r border-gray-200 last:border-r-0"
             >
               <div
-                className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10 rounded-br-lg`}
+                className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10`}
               >
                 <span className={`text-[11px] font-black font-sans ${accent.text}`}>
                   {String(i + 1).padStart(2, '0')}
@@ -260,7 +260,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               <div className="flex flex-col flex-1 p-4 pt-3">
                 <div className="mb-2 mt-1">
                   <span
-                    className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text} rounded-full`}
+                    className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text}`}
                   >
                     {art.contentType === 'investigation'
                       ? 'Investigation'
@@ -313,7 +313,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         })}
       </div>
 
-      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between rounded-b-xl">
+      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
         <div className="flex items-center gap-3">
           <Star size={14} className="text-brand-yellow flex-shrink-0" fill="currentColor" />
           <p className="text-[12px] text-ink-secondary font-sans leading-relaxed">
@@ -431,9 +431,7 @@ export default function HomePage() {
           <section className="mb-10 border-b-2 border-ink pb-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
               <div className="lg:col-span-8">
-                <div className="rounded-2xl overflow-hidden shadow-xl">
-                  <ArticleCard article={hero} variant="hero" />
-                </div>
+                <ArticleCard article={hero} variant="hero" />
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
                 {/* Renamed "Editor's Picks" to "Features" per client */}
@@ -506,6 +504,116 @@ export default function HomePage() {
             {/* The Orbis Original (was "Stories That Mattered" with "Impact Journalism" label) */}
             <TheOrbisOriginal articles={storiesThatMattered} />
 
+            {/* ── Must Read — prominent standalone section ── */}
+            {mustReads.length > 0 && (
+              <section>
+                <div className="flex items-end justify-between mb-6 pb-3 border-b-2 border-brand-red">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-1 font-sans">Essential Reading</p>
+                    <h2 className="text-2xl font-serif font-bold text-ink">Must Read</h2>
+                  </div>
+                  <Link to="/search" className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
+                    More <ArrowRight size={11} />
+                  </Link>
+                </div>
+                <div className="grid md:grid-cols-2 gap-5">
+                  {mustReads.slice(0, 4).map((art) => (
+                    <ArticleCard key={art._id} article={art} variant="featured-side" />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── In Their Words ── */}
+            {articles.filter((a) => a.category?.slug === 'in-their-words').length > 0 && (
+              <section>
+                <SectionHead label="Voices" title="In Their Words" href="/in-their-words" accent="#0d1e29" />
+                <div className="grid md:grid-cols-3 gap-5">
+                  {articles.filter((a) => a.category?.slug === 'in-their-words').slice(0, 3).map((art) => (
+                    <ArticleCard key={art._id} article={art} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── Double Lens ── */}
+            {articles.length >= 2 && (
+              <section>
+                <div className="mb-6 pb-3 border-b-2 border-brand-navy">
+                  <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Perspective</p>
+                  <h2 className="text-2xl font-serif font-bold text-ink mb-1">Double Lens</h2>
+                  <p className="text-[12px] text-ink-muted font-sans max-w-lg leading-relaxed">
+                    We bring together stories that appear similar on the surface but lead to very different outcomes, revealing deeper social and political realities.
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-0 border border-gray-200 rounded-xl overflow-hidden">
+                  {articles.filter((a) => a.contentType === 'ground-report').slice(0, 2).map((art, i) => (
+                    <div key={art._id} className={`p-5 ${i === 0 ? 'border-b md:border-b-0 md:border-r border-gray-200' : ''}`}>
+                      <span className="text-[9px] font-black uppercase tracking-[2px] px-2 py-0.5 bg-brand-navy text-brand-yellow rounded-full font-sans">
+                        {i === 0 ? 'Lens A' : 'Lens B'}
+                      </span>
+                      <Link to={`/article/${art.slug}`} className="block mt-3 no-underline">
+                        {art.featuredImage?.url && (
+                          <img src={art.featuredImage.url} alt={art.title} className="w-full h-40 object-cover rounded-lg mb-3" />
+                        )}
+                        <h3 className="font-serif font-bold text-[17px] text-ink leading-snug hover:text-brand-navy transition-colors line-clamp-3">
+                          {art.title}
+                        </h3>
+                      </Link>
+                      {art.excerpt && (
+                        <p className="text-[12px] text-ink-muted font-sans mt-2 line-clamp-2 leading-relaxed">{art.excerpt}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── Through the Lens (Photo Essays) ── */}
+            {articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo'))).length > 0 && (
+              <section>
+                <SectionHead label="Visual Journalism" title="Through the Lens" href="/search" accent="#6d28d9" />
+                <div className="grid md:grid-cols-3 gap-4">
+                  {articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo'))).slice(0, 3).map((art) => (
+                    <Link key={art._id} to={`/article/${art.slug}`} className="group block no-underline">
+                      <div className="aspect-square overflow-hidden rounded-xl bg-gray-100 mb-3">
+                        {art.featuredImage?.url ? (
+                          <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-purple-900 to-brand-navy" />
+                        )}
+                      </div>
+                      <h3 className="font-serif font-bold text-[15px] text-ink group-hover:text-brand-navy transition-colors leading-snug line-clamp-2">{art.title}</h3>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── Google News CTA ── */}
+            <section>
+              <div className="flex flex-col sm:flex-row items-center gap-4 bg-surface-secondary border border-gray-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 flex-1">
+                  <svg viewBox="0 0 24 24" width="32" height="32" aria-label="Google News">
+                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z"/>
+                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z"/>
+                  </svg>
+                  <div>
+                    <p className="text-[13px] font-serif font-bold text-ink">Follow us on Google News</p>
+                    <p className="text-[11px] text-ink-muted font-sans">Add The Orbis Journal as your preferred news source</p>
+                  </div>
+                </div>
+                <a
+                  href="https://news.google.com/publications/CAAqBwgKMLnO7QswyvjrAw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-brand-navy text-white text-[11px] font-black uppercase tracking-[1.5px] px-5 py-2.5 rounded-lg hover:bg-brand-navy/90 transition-colors font-sans flex-shrink-0"
+                >
+                  Follow Now <ArrowRight size={12} />
+                </a>
+              </div>
+            </section>
+
             {/* More stories */}
             {moreGrid.length > 0 && (
               <section>
@@ -574,7 +682,7 @@ export default function HomePage() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-center border border-gray-200 py-2.5 text-[10px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-lg transition-all font-sans rounded-lg"
+                    className="text-center border border-gray-200 py-2.5 text-[10px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-all font-sans rounded-lg"
                   >
                     {s.name}
                   </a>
