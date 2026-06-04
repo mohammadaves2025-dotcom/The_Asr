@@ -129,7 +129,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   // ── Featured Side ─────────────────────────────────────────────────────────
   if (variant === 'featured-side') {
     return (
-      <div className="group block overflow-hidden bg-white border border-gray-200 hover:shadow-card-hover transition-all duration-300">
+      <div className="group block overflow-hidden bg-white border border-gray-200 rounded-xl hover:shadow-card-hover transition-all duration-300">
         <div className="relative overflow-hidden bg-gray-100" style={{ aspectRatio: '16/9' }}>
           {imageUrl && (
             <img
@@ -249,7 +249,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
 
   // ── Default card ──────────────────────────────────────────────────────────
   return (
-    <div className="group bg-white border border-gray-200 overflow-hidden hover:shadow-card-hover transition-all duration-300 flex flex-col">
+    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-card-hover transition-all duration-300 flex flex-col">
       {imageUrl && (
         <Link to={`/article/${article.slug}`} className="block overflow-hidden flex-shrink-0">
           <div className="relative bg-gray-100" style={{ aspectRatio: '16/9' }}>

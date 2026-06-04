@@ -14,18 +14,19 @@ function BreakingTicker({ articles }: { articles: Article[] }) {
   if (!articles.length) return null;
   const text = articles.map((a) => a.title).join('   ·   ');
   return (
-    // Consistent with the updated standalone component: bg-brand-red, white text
-    <div className="bg-brand-red text-white flex items-stretch overflow-hidden border-b border-white/10">
-      <div className="flex-shrink-0 bg-brand-navy px-4 flex items-center gap-2 min-w-[90px]">
+    <div className="bg-brand-navy flex items-stretch overflow-hidden border-b border-white/10">
+      {/* Label pill — red background, yellow text */}
+      <div className="flex-shrink-0 bg-brand-red px-4 flex items-center gap-2 min-w-[90px]">
         <Zap size={11} className="text-brand-yellow" fill="currentColor" />
         <span className="text-[9px] font-black tracking-[3px] uppercase text-brand-yellow whitespace-nowrap">
           Breaking
         </span>
       </div>
+      {/* Ticker body — navy with yellow text and fade edges */}
       <div className="flex-1 overflow-hidden py-2.5 relative">
-        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-red to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-red to-transparent z-10" />
-        <div className="whitespace-nowrap inline-flex items-center ticker-animate text-[13px] font-sans font-medium text-white">
+        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10" />
+        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10" />
+        <div className="whitespace-nowrap inline-flex items-center ticker-animate text-[13px] font-sans font-medium text-brand-yellow">
           {text}&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;{text}
         </div>
       </div>
@@ -87,9 +88,26 @@ function TheLead({ articles }: { articles: Article[] }) {
             key={art._id}
             className="group border-b border-gray-100 last:border-0 py-4 flex items-start gap-3"
           >
-            <span className="text-[28px] font-serif font-black text-gray-100 leading-none flex-shrink-0 mt-0.5 w-8 text-center">
+            {/* Rank number */}
+            <span className="text-[22px] font-serif font-black text-gray-200 leading-none flex-shrink-0 mt-0.5 w-6 text-center">
               {i + 1}
             </span>
+            {/* Thumbnail */}
+            <Link
+              to={`/article/${art.slug}`}
+              className="flex-shrink-0 block w-16 h-16 rounded-lg overflow-hidden bg-gray-100"
+            >
+              {art.featuredImage?.url ? (
+                <img
+                  src={art.featuredImage.url}
+                  alt={art.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-brand-navy/20 to-brand-navy/5" />
+              )}
+            </Link>
+            {/* Title + meta */}
             <div className="flex-1 min-w-0">
               <Link
                 to={`/article/${art.slug}`}
@@ -221,7 +239,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         </Link>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-200 rounded-xl overflow-hidden">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {articles.slice(0, 4).map((art, i) => {
           const accent = ACCENTS[i % ACCENTS.length];
           const authorName =
@@ -232,7 +250,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
           return (
             <div
               key={art._id}
-              className="group relative flex flex-col border-b sm:border-b-0 sm:border-r border-gray-200 last:border-r-0"
+              className="group relative flex flex-col border border-gray-200 rounded-xl overflow-hidden"
             >
               <div
                 className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10`}
