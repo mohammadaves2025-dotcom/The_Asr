@@ -88,10 +88,6 @@ function TheLead({ articles }: { articles: Article[] }) {
             key={art._id}
             className="group border-b border-gray-100 last:border-0 py-4 flex items-start gap-3"
           >
-            {/* Rank number */}
-            <span className="text-[22px] font-serif font-black text-gray-200 leading-none flex-shrink-0 mt-0.5 w-6 text-center">
-              {i + 1}
-            </span>
             {/* Thumbnail */}
             <Link
               to={`/article/${art.slug}`}
@@ -448,12 +444,12 @@ export default function HomePage() {
         {hero && (
           <section className="mb-10 border-b-2 border-ink pb-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
-              <div className="lg:col-span-8">
+              <div className="lg:col-span-8 rounded-lg">
                 <ArticleCard article={hero} variant="hero" />
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
                 {/* Renamed "Editor's Picks" to "Features" per client */}
-                <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-4">
+                <p className="text-[15px] font-black uppercase tracking-[3px] text-brand-red mb-4">
                   Features
                 </p>
                 {sideStories.map((art) => (
