@@ -4,7 +4,7 @@ import { ArrowRight, Zap, TrendingUp, Star } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import { useSeoMeta } from '../hooks/useSeoMeta';
-import { formatDate } from '../utils/helpers';
+import { formatDate, resolveAuthorName } from '../utils/helpers';
 import type { Article } from '../types';
 
 // ── Breaking Ticker (inline homepage version) ──────────────────────────────────
@@ -155,7 +155,7 @@ function OpinionCard({ article }: { article: Article }) {
   const authorName =
     article.isGuestAuthor && article.guestAuthorName
       ? article.guestAuthorName
-      : article.author?.name ?? 'The Orbis Journal';
+      : resolveAuthorName(article.author?.name);
   return (
     <div className="group py-5 border-b border-gray-100 last:border-0 flex gap-4">
       <div className="flex-1 min-w-0">
@@ -180,7 +180,14 @@ function OpinionCard({ article }: { article: Article }) {
               <span className="text-white font-bold text-[9px]">{authorName[0]}</span>
             </div>
           )}
-          <span className="text-[11px] text-ink-secondary font-sans font-medium">{authorName}</span>
+          <span className="text-[11px] text-ink-secondary font-sans font-medium flex items-center gap-1">
+            {authorName}
+            {authorName === 'The Orbis Journal Desk' && (
+              <span title="Verified" className="inline-flex items-center justify-center w-3 h-3 rounded-full bg-blue-500 flex-shrink-0">
+                <svg viewBox="0 0 24 24" width="7" height="7" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+              </span>
+            )}
+          </span>
         </div>
       </div>
       {article.featuredImage?.url && (
@@ -241,7 +248,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
           const authorName =
             art.isGuestAuthor && art.guestAuthorName
               ? art.guestAuthorName
-              : art.author?.name ?? 'The Orbis Journal';
+              : resolveAuthorName(art.author?.name);
 
           return (
             <div

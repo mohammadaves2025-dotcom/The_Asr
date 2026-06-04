@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Eye, Clock } from 'lucide-react';
-import { formatDate } from '../../utils/helpers';
+import { formatDate, resolveAuthorName } from '../../utils/helpers';
 import type { Article } from '../../types';
 
 // ── Content type label map — matches backend CONTENT_TYPES enum exactly ───────
@@ -54,10 +54,9 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   const imageAlt  = article.featuredImage?.alt ?? article.title;
   const publishDate = article.publishedAt ?? article.createdAt;
   // Safe author name — handles guest authors, missing author, undefined
-  const authorName =
-    article.isGuestAuthor && article.guestAuthorName
-      ? article.guestAuthorName
-      : article.author?.name ?? 'The Asr';
+  const authorName = article.isGuestAuthor && article.guestAuthorName
+    ? article.guestAuthorName
+    : resolveAuthorName(article.author?.name);
 
   // ── Text-only (sidebar list) ───────────────────────────────────────────────
   if (variant === 'text-only') {
@@ -99,7 +98,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
       <div className="group flex gap-4 py-5 border-b border-gray-100 last:border-0">
         {imageUrl && (
           <Link to={`/article/${article.slug}`} className="flex-shrink-0">
-            <div className="w-20 h-20 overflow-hidden bg-gray-100">
+            <div className="w-20 h-20 overflow-hidden bg-gray-100 rounded-lg">
               <img
                 src={imageUrl} alt={imageAlt}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -172,7 +171,14 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 </div>
               )}
               <div>
-                <p className="text-[12px] font-semibold text-ink font-sans">{authorName}</p>
+                <p className="text-[12px] font-semibold text-ink font-sans flex items-center gap-1">
+              {authorName}
+              {authorName === 'The Orbis Journal Desk' && (
+                <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                </span>
+              )}
+            </p>
                 <p className="text-[11px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
               </div>
             </div>
@@ -234,7 +240,14 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 <span className="text-brand-navy font-black text-[11px]">{authorName[0]}</span>
               </div>
             )}
-            <span className="text-white/80 text-[12px] font-sans font-medium">{authorName}</span>
+            <span className="text-white/80 text-[12px] font-sans font-medium flex items-center gap-1">
+              {authorName}
+              {authorName === 'The Orbis Journal Desk' && (
+                <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                </span>
+              )}
+            </span>
             <span className="text-white/45 text-[12px] font-sans">{formatDate(publishDate)}</span>
             {(article.readTime ?? 0) > 0 && (
               <span className="text-white/45 text-[12px] font-sans flex items-center gap-1">
@@ -288,7 +301,14 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         )}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
           <div>
-            <p className="text-[12px] font-semibold text-ink font-sans">{authorName}</p>
+            <p className="text-[12px] font-semibold text-ink font-sans flex items-center gap-1">
+              {authorName}
+              {authorName === 'The Orbis Journal Desk' && (
+                <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                </span>
+              )}
+            </p>
             <p className="text-[11px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
           </div>
           <div className="flex items-center gap-3 text-ink-muted text-[10px] font-sans">

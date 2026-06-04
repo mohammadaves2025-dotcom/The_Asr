@@ -17,7 +17,7 @@ import AISummary from '../components/article/AISummary';
 import TranslationToggle from '../components/article/TranslationToggle';
 import { articlesService } from '../services/articles';
 import { useAuth } from '../context/AuthContext';
-import { formatDateLong } from '../utils/helpers';
+import { formatDateLong, resolveAuthorName } from '../utils/helpers';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import api from '../services/api';
 import type { Article, User } from '../types';
@@ -102,10 +102,9 @@ function ShareBar({ article }: { article: Article }) {
 
 // ── Author card ───────────────────────────────────────────────────────────────
 function AuthorCard({ article }: { article: Article }) {
-  const authorName =
-    article.isGuestAuthor && article.guestAuthorName
-      ? article.guestAuthorName
-      : article.author?.name ?? 'The Orbis Journal Desk';
+  const authorName = article.isGuestAuthor && article.guestAuthorName
+    ? article.guestAuthorName
+    : resolveAuthorName(article.author?.name);
   const authorBio = article.isGuestAuthor
     ? article.guestAuthorBio
     : article.author?.bio;
@@ -305,10 +304,9 @@ export default function ArticlePage() {
   const related: Article[] =
     (data?.data?.data as { related?: Article[] })?.related ?? [];
 
-  const authorName =
-    article?.isGuestAuthor && article?.guestAuthorName
-      ? article.guestAuthorName
-      : article?.author?.name ?? 'The Orbis Journal Desk';
+  const authorName = article?.isGuestAuthor && article?.guestAuthorName
+    ? article.guestAuthorName
+    : resolveAuthorName(article?.author?.name);
 
   const { isSaved, toggle: toggleBookmark, isPending: bookmarkPending } =
     useBookmark(article?._id ?? '');
@@ -539,7 +537,7 @@ export default function ArticlePage() {
 
               {/* Corrections banner */}
               {hasCorrections && (
-                <div className="bg-amber-50 border border-amber-200 px-4 py-3 mb-6 flex items-start gap-2">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-start gap-2">
                   <AlertTriangle
                     size={14}
                     className="text-amber-600 flex-shrink-0 mt-0.5"
@@ -645,7 +643,7 @@ export default function ArticlePage() {
                     <Link
                       key={tag}
                       to={`/tag/${encodeURIComponent(tag)}`}
-                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 border border-gray-200 text-ink-muted hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
+                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 border border-gray-200 rounded-lg text-ink-muted hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
                     >
                       #{tag}
                     </Link>
