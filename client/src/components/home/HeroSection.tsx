@@ -12,121 +12,139 @@ interface Props {
 
 export default function HeroSection({ hero, featured }: Props) {
   return (
-    <section className="border-b-2 border-gray-100 bg-gradient-to-b from-surface to-surface-secondary">
-      <div className="container-site py-12 lg:py-16">
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Main hero */}
-          <div className="lg:col-span-2 group animate-fade-in">
-            {hero.featuredImage?.url ? (
-              <Link to={`/article/${hero.slug}`} className="block overflow-hidden mb-8 bg-gray-100 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-700">
-                <div className="aspect-video overflow-hidden relative">
-                  <img
-                    src={hero.featuredImage.url}
-                    alt={hero.featuredImage.alt || hero.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    loading="eager"
-                  />
-                  {hero.isBreaking && (
-                    <div className="absolute top-4 right-4 flex items-center gap-2 bg-accent-red text-white px-4 py-2 rounded-full animate-pulse">
-                      <Flame size={14} fill="currentColor" />
-                      <span className="text-xs font-bold font-sans uppercase tracking-widest">Breaking</span>
-                    </div>
+    <section className="bg-white border-b-2 border-gray-100">
+      <div className="container-site py-10 lg:py-14">
+        <div className="grid lg:grid-cols-3 gap-0 lg:gap-10">
+
+          {/* ── Main hero — full image with dark overlay + text on top ── */}
+          <div className="lg:col-span-2 animate-fade-in">
+            <Link
+              to={`/article/${hero.slug}`}
+              className="group block relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500"
+              style={{ minHeight: '480px' }}
+            >
+              {/* Image */}
+              {hero.featuredImage?.url ? (
+                <img
+                  src={hero.featuredImage.url}
+                  alt={hero.featuredImage.alt || hero.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="eager"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-navy-dark" />
+              )}
+
+              {/* Strong gradient overlay for readable text */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/50 to-black/10" />
+
+              {/* Breaking badge top-right */}
+              {hero.isBreaking && (
+                <div className="absolute top-4 right-4 flex items-center gap-2 bg-brand-red text-white px-4 py-2 rounded-full animate-pulse z-10">
+                  <Flame size={13} fill="currentColor" />
+                  <span className="text-[10px] font-black font-sans uppercase tracking-widest">Breaking</span>
+                </div>
+              )}
+
+              {/* Text content pinned to bottom */}
+              <div className="absolute bottom-0 left-0 right-0 p-7 md:p-10 z-10">
+                {/* Badges */}
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  {hero.category?.name && (
+                    <span className="text-[10px] font-black uppercase tracking-[2px] px-3 py-1 bg-brand-yellow text-brand-navy rounded-full">
+                      {hero.category.name}
+                    </span>
+                  )}
+                  <ContentTypeBadge type={hero.contentType} />
+                  {hero.isVerified && (
+                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-white/20 text-white backdrop-blur-sm rounded-full flex items-center gap-1">
+                      <CheckCircle size={11} /> Verified
+                    </span>
+                  )}
+                  {hero.isEditorsPick && (
+                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-white/20 text-white backdrop-blur-sm rounded-full">
+                      Editor's Pick
+                    </span>
                   )}
                 </div>
-              </Link>
-            ) : (
-              <div className="aspect-video bg-gradient-to-br from-brand-navy to-brand-navy-dark mb-8 flex items-end p-8 rounded-2xl">
-                <div />
-              </div>
-            )}
 
-            <div className="flex items-center gap-2.5 mb-5 flex-wrap">
-              <CategoryBadge category={hero.category!} />
-              <ContentTypeBadge type={hero.contentType} />
-              {hero.isVerified && (
-                <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1.5 bg-accent-emerald/10 text-accent-emerald rounded-full flex items-center gap-1">
-                  <CheckCircle size={11} /> Verified
-                </span>
-              )}
-              {hero.isEditorsPick && (
-                <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1.5 bg-brand-yellow/20 text-brand-navy rounded-full">
-                  Editor's Pick
-                </span>
-              )}
-            </div>
+                {/* Title */}
+                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-black text-white leading-tight mb-3 drop-shadow-lg">
+                  {hero.title}
+                </h1>
 
-            <Link to={`/article/${hero.slug}`} className="no-underline block group/title">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-ink leading-tight text-balance mb-4 transition-all duration-500 group-hover/title:text-brand-navy">
-                {hero.title}
-              </h1>
-            </Link>
-
-            {hero.subtitle && (
-              <p className="text-2xl text-ink-secondary font-sans font-medium mt-4 leading-relaxed line-clamp-2 mb-4">
-                {hero.subtitle}
-              </p>
-            )}
-
-            <p className="text-xl text-ink-secondary leading-relaxed line-clamp-4 mb-6 font-light">
-              {hero.excerpt}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t-2 border-gray-200">
-              <div className="flex items-center gap-4">
-                {hero.author?.avatar ? (
-                  <img src={hero.author.avatar} alt={hero.author.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-brand-yellow shadow-md" />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-navy to-brand-navy-dark text-white flex items-center justify-center font-bold text-sm ring-2 ring-brand-yellow">
-                    {hero.author?.name?.[0] ?? '?'}
-                  </div>
+                {/* Subtitle */}
+                {(hero.subtitle || hero.excerpt) && (
+                  <p className="text-white/80 text-base md:text-lg font-sans leading-relaxed line-clamp-2 mb-5 font-light max-w-2xl">
+                    {hero.subtitle || hero.excerpt}
+                  </p>
                 )}
-                <div>
-                  <p className="text-sm font-semibold text-ink">{hero.author?.name}</p>
-                  {hero.author?.designation && (
-                    <p className="text-xs text-ink-muted font-medium">{hero.author.designation}</p>
-                  )}
-                </div>
-              </div>
 
-              <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-                <div className="badge-minimal">
-                  <span>{formatDate(hero.publishedAt || hero.createdAt)}</span>
+                {/* Author + meta + CTA */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    {hero.author?.avatar ? (
+                      <img src={hero.author.avatar} alt={hero.author.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-brand-yellow" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-brand-yellow flex items-center justify-center font-bold text-brand-navy text-sm ring-2 ring-white/30">
+                        {hero.author?.name?.[0] ?? '?'}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-white text-[13px] font-semibold font-sans leading-none">{hero.author?.name}</p>
+                      <div className="flex items-center gap-2 mt-1 text-white/55 text-[11px] font-sans">
+                        <span>{formatDate(hero.publishedAt || hero.createdAt)}</span>
+                        <span>·</span>
+                        <Clock size={10} className="inline" />
+                        <span>{formatReadTime(hero.readTime ?? 0)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <span className="inline-flex items-center gap-2 bg-brand-yellow text-brand-navy font-black text-[11px] uppercase tracking-[2px] px-5 py-2.5 rounded-lg hover:bg-yellow-300 transition-colors">
+                    Read Full <ArrowRight size={13} />
+                  </span>
                 </div>
-                <div className="badge-minimal">
-                  <Clock size={13} />
-                  <span>{formatReadTime(hero.readTime ?? 0)}</span>
-                </div>
-                <Link
-                  to={`/article/${hero.slug}`}
-                  className="btn-primary py-3 px-6 text-xs no-underline"
-                >
-                  Read Full <ArrowRight size={14} />
-                </Link>
               </div>
-            </div>
+            </Link>
           </div>
 
-          {/* Featured sidebar */}
-          <div className="border-t-2 lg:border-t-0 lg:border-l-2 border-gray-200 pt-8 lg:pt-0 lg:pl-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h2 className="section-heading mb-8">Editor's Picks</h2>
-            <div className="space-y-6">
+          {/* ── Featured sidebar — with images ── */}
+          <div className="border-t-2 lg:border-t-0 lg:border-l-2 border-gray-100 pt-8 lg:pt-0 lg:pl-10 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-6 font-sans">
+              Editor's Picks
+            </p>
+            <div className="space-y-5">
               {featured.slice(0, 4).map((article, i) => (
-                <div key={article._id} className="group flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-yellow to-brand-yellow-dark flex items-center justify-center">
-                      <span className="text-lg font-serif font-bold text-brand-navy leading-none">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-                  </div>
+                <div key={article._id} className="group flex gap-3 pb-5 border-b border-gray-100 last:border-0 last:pb-0">
+                  {/* Thumbnail */}
+                  <Link to={`/article/${article.slug}`} className="flex-shrink-0">
+                    {article.featuredImage?.url ? (
+                      <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
+                        <img
+                          src={article.featuredImage.url}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
+                        <span className="text-2xl font-serif font-black text-brand-yellow">
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                    )}
+                  </Link>
+
+                  {/* Text */}
                   <div className="flex-1 min-w-0">
                     <CategoryBadge category={article.category!} size="xs" />
                     <Link to={`/article/${article.slug}`} className="no-underline block mt-1.5 group/pick">
-                      <h3 className="text-[17px] font-serif font-semibold text-ink leading-snug line-clamp-3 group-hover/pick:text-brand-navy transition-colors duration-300">
+                      <h3 className="text-[15px] font-serif font-bold text-ink leading-snug line-clamp-3 group-hover/pick:text-brand-navy transition-colors duration-200">
                         {article.title}
                       </h3>
                     </Link>
-                    <div className="flex items-center gap-2 mt-2.5 text-[12px] text-ink-muted">
+                    <div className="flex items-center gap-1.5 mt-2 text-[11px] text-ink-muted font-sans">
                       <span className="font-medium">{article.author?.name}</span>
                       <span className="text-ink-faint">·</span>
                       <span>{formatDate(article.publishedAt || article.createdAt)}</span>
@@ -136,6 +154,7 @@ export default function HeroSection({ hero, featured }: Props) {
               ))}
             </div>
           </div>
+
         </div>
       </div>
     </section>

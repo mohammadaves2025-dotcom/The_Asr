@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, User, LogOut, ChevronRight, ChevronDown } from 'lucide-react';
+import { Search, Menu, X, User, LogOut, ChevronRight, ChevronDown , ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { categoriesService } from '../../services/articles';
@@ -160,12 +160,12 @@ export default function Header() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2.5 text-ink-muted hover:text-brand-navy hover:bg-surface-secondary transition-all"
+              className="p-2.5 text-ink-muted hover:text-brand-navy hover:bg-surface-secondary transition-all rounded-lg"
               aria-label="Search"
             >
               <Search size={17} strokeWidth={2} />
             </button>
-            <Link to="/support" className="hidden md:flex btn-primary py-2 px-4 text-[10px]">
+            <Link to="/support" className="hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg">
               Donate
             </Link>
             <button
@@ -243,40 +243,44 @@ export default function Header() {
       {/* ── Search Overlay ───────────────────────────────────────────────────── */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-50 bg-brand-navy/97 flex flex-col items-center justify-start pt-28 px-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setSearchOpen(false);
-          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-24 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}
         >
           <div className="w-full max-w-2xl animate-fade-up">
-            <p className="text-[10px] font-bold uppercase tracking-[3px] text-white/30 mb-6 font-sans">
-              Search The Orbis Journal
-            </p>
-            <form onSubmit={handleSearch} className="flex items-end border-b-2 border-brand-yellow pb-2">
-              <input
-                ref={searchRef}
-                type="text"
-                value={searchQ}
-                onChange={(e) => setSearchQ(e.target.value)}
-                placeholder="Articles, topics, journalists…"
-                className="flex-1 bg-transparent text-white text-2xl md:text-3xl font-serif placeholder:text-white/20 outline-none py-2"
-              />
-              <button type="submit" className="text-brand-yellow hover:text-white transition-colors px-3 pb-2">
-                <Search size={22} />
-              </button>
-            </form>
-            <p className="text-white/20 text-xs font-sans mt-4">
-              Press{' '}
-              <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-white/40">Enter</kbd> to search ·{' '}
-              <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-white/40">Esc</kbd> to close
-            </p>
+            {/* Search card */}
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+                <Search size={18} className="text-ink-muted flex-shrink-0" />
+                <form onSubmit={handleSearch} className="flex-1">
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    value={searchQ}
+                    onChange={(e) => setSearchQ(e.target.value)}
+                    placeholder="Search articles, topics, journalists…"
+                    className="w-full text-lg font-serif text-ink placeholder:text-ink-muted/50 outline-none bg-transparent"
+                  />
+                </form>
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  className="p-1.5 text-ink-muted hover:text-ink hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="px-5 py-3 bg-surface-secondary flex items-center justify-between">
+                <p className="text-[11px] text-ink-muted font-sans">
+                  Press <kbd className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-[10px] text-ink shadow-sm">Enter</kbd> to search
+                </p>
+                <button
+                  onClick={handleSearch as any}
+                  className="flex items-center gap-1.5 text-[11px] font-bold text-brand-navy hover:text-brand-red transition-colors font-sans"
+                >
+                  Search <ArrowRight size={12} />
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={() => setSearchOpen(false)}
-            className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
-          >
-            <X size={24} />
-          </button>
         </div>
       )}
 

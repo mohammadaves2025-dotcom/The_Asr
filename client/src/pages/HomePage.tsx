@@ -59,7 +59,7 @@ function SectionHead({
             {label}
           </p>
         )}
-        <h2 className="text-xl font-serif font-bold text-ink">{title}</h2>
+        <h2 className="text-2xl font-serif font-bold text-ink">{title}</h2>
       </div>
       <Link
         to={href}
@@ -75,11 +75,11 @@ function SectionHead({
 // Renamed from "Most Read" → "The Lead" per client instructions
 function TheLead({ articles }: { articles: Article[] }) {
   return (
-    <div className="border border-gray-200 p-5">
+    <div className="border border-gray-200 p-5 rounded-xl">
       <div className="flex items-center gap-2 mb-5 pb-3 border-b-2 border-ink">
         <TrendingUp size={14} className="text-ink" />
         {/* Renamed from "Most Read" to "The Lead" */}
-        <h2 className="text-sm font-serif font-bold text-ink">The Lead</h2>
+        <h2 className="text-base font-serif font-bold text-ink">The Lead</h2>
       </div>
       <ol>
         {articles.slice(0, 5).map((art, i) => (
@@ -93,7 +93,7 @@ function TheLead({ articles }: { articles: Article[] }) {
             <div className="flex-1 min-w-0">
               <Link
                 to={`/article/${art.slug}`}
-                className="text-[13px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
+                className="text-[15px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
               >
                 {art.title}
               </Link>
@@ -109,7 +109,7 @@ function TheLead({ articles }: { articles: Article[] }) {
 // ── Donate Card ───────────────────────────────────────────────────────────────
 function DonateCard() {
   return (
-    <div className="border-2 border-brand-navy p-5">
+    <div className="border-2 border-brand-navy p-5 rounded-xl">
       <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-2 font-sans">
         Support Independent Journalism
       </p>
@@ -120,7 +120,7 @@ function DonateCard() {
         {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
           <button
             key={a}
-            className="border border-gray-200 text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
+            className="border border-gray-200 rounded-lg text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
           >
             {a}
           </button>
@@ -128,7 +128,7 @@ function DonateCard() {
       </div>
       <Link
         to="/support"
-        className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 hover:bg-brand-navy-dark transition-colors font-sans"
+        className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-brand-navy-dark transition-colors font-sans"
       >
         Donate Now →
       </Link>
@@ -145,12 +145,12 @@ function OpinionCard({ article }: { article: Article }) {
   return (
     <div className="group py-5 border-b border-gray-100 last:border-0 flex gap-4">
       <div className="flex-1 min-w-0">
-        <span className="inline-block text-[9px] font-black uppercase tracking-[1.5px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 mb-2">
+        <span className="inline-block text-[9px] font-black uppercase tracking-[1.5px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 mb-2 rounded-full">
           Opinion
         </span>
         <Link
           to={`/article/${article.slug}`}
-          className="block font-serif font-bold text-[15px] text-ink line-clamp-2 leading-snug group-hover:text-brand-navy transition-colors mb-2"
+          className="block font-serif font-bold text-[17px] text-ink line-clamp-2 leading-snug group-hover:text-brand-navy transition-colors mb-2"
         >
           {article.title}
         </Link>
@@ -171,7 +171,7 @@ function OpinionCard({ article }: { article: Article }) {
       </div>
       {article.featuredImage?.url && (
         <Link to={`/article/${article.slug}`} className="flex-shrink-0">
-          <div className="w-20 h-20 overflow-hidden bg-gray-100">
+          <div className="w-20 h-20 overflow-hidden bg-gray-100 rounded-lg">
             <img
               src={article.featuredImage.url}
               alt={article.title}
@@ -221,7 +221,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         </Link>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-200">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-200 rounded-xl overflow-hidden">
         {articles.slice(0, 4).map((art, i) => {
           const accent = ACCENTS[i % ACCENTS.length];
           const authorName =
@@ -235,7 +235,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               className="group relative flex flex-col border-b sm:border-b-0 sm:border-r border-gray-200 last:border-r-0"
             >
               <div
-                className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10`}
+                className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10 rounded-br-lg`}
               >
                 <span className={`text-[11px] font-black font-sans ${accent.text}`}>
                   {String(i + 1).padStart(2, '0')}
@@ -260,7 +260,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               <div className="flex flex-col flex-1 p-4 pt-3">
                 <div className="mb-2 mt-1">
                   <span
-                    className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text}`}
+                    className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text} rounded-full`}
                   >
                     {art.contentType === 'investigation'
                       ? 'Investigation'
@@ -313,7 +313,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         })}
       </div>
 
-      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
+      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between rounded-b-xl">
         <div className="flex items-center gap-3">
           <Star size={14} className="text-brand-yellow flex-shrink-0" fill="currentColor" />
           <p className="text-[12px] text-ink-secondary font-sans leading-relaxed">
@@ -422,21 +422,7 @@ export default function HomePage() {
     <div className="bg-paper min-h-screen">
       {breaking.length > 0 && <BreakingTicker articles={breaking} />}
 
-      {/* Support bar */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="container-site flex items-center justify-between py-1.5">
-          <p className="text-[10px] text-ink-muted font-sans hidden md:block">
-            <span className="font-semibold text-ink">The Orbis Journal</span> · Independent,
-            reader-funded journalism on human rights &amp; minorities
-          </p>
-          <Link
-            to="/support"
-            className="ml-auto text-[9px] font-black uppercase tracking-[2px] text-brand-red hover:text-brand-red-dark transition-colors font-sans"
-          >
-            Support Our Work →
-          </Link>
-        </div>
-      </div>
+
 
       <div className="container-site py-7 md:py-10">
 
@@ -445,7 +431,9 @@ export default function HomePage() {
           <section className="mb-10 border-b-2 border-ink pb-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
               <div className="lg:col-span-8">
-                <ArticleCard article={hero} variant="hero" />
+                <div className="rounded-2xl overflow-hidden shadow-xl">
+                  <ArticleCard article={hero} variant="hero" />
+                </div>
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
                 {/* Renamed "Editor's Picks" to "Features" per client */}
@@ -568,7 +556,7 @@ export default function HomePage() {
             <DonateCard />
 
             {/* Follow Us — Telegram removed, LinkedIn added */}
-            <div className="border border-gray-200 p-5">
+            <div className="border border-gray-200 p-5 rounded-xl">
               <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-4 font-sans">
                 Follow Us
               </p>
@@ -586,7 +574,7 @@ export default function HomePage() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-center border border-gray-200 py-2.5 text-[10px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-all font-sans"
+                    className="text-center border border-gray-200 py-2.5 text-[10px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-lg transition-all font-sans rounded-lg"
                   >
                     {s.name}
                   </a>
