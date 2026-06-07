@@ -10,7 +10,9 @@ import api from '../services/api';
 import type { User } from '../types';
 
 const ROLES = ['', 'subscriber', 'contributor', 'editor', 'admin', 'superadmin'];
-const CREATE_ROLES = ['contributor', 'editor', 'admin'];
+const CREATE_ROLES = ['contributor', 'editor', 'admin'] as const;
+
+type UserRole = 'subscriber' | 'contributor' | 'editor' | 'admin' | 'superadmin';
 
 // ── Extend the admin User type with fields we're now editing ──────────────
 interface AuthorProfile extends User {
@@ -44,19 +46,19 @@ function VerifiedBadge({ className = '' }: { className?: string }) {
 // ── Create User Modal ───────────────────────────────────────────────────────
 function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
   const [form, setForm] = useState({
-    name:        '' as string,
-    email:       '' as string,
-    password:    '' as string,
-    role:        'contributor' as string,
-    designation: '' as string,
-    bio:         '' as string,
-    avatar:      '' as string,
-    twitter:     '' as string,
-    linkedin:    '' as string,
-    website:     '' as string,
-    instagram:   '' as string,
-    facebook:    '' as string,
-    youtube:     '' as string,
+    name:        '',
+    email:       '',
+    password:    '',
+    role:        'contributor',
+    designation: '',
+    bio:         '',
+    avatar:      '',
+    twitter:     '',
+    linkedin:    '',
+    website:     '',
+    instagram:   '',
+    facebook:    '',
+    youtube:     '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +81,7 @@ function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreate
         name:        form.name,
         email:       form.email,
         password:    form.password,
-        role:        form.role,
+        role:        form.role as UserRole,
         designation: form.designation || undefined,
         bio:         form.bio || undefined,
         avatar:      form.avatar || undefined,
@@ -91,7 +93,7 @@ function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreate
           facebook:  form.facebook  || undefined,
           youtube:   form.youtube   || undefined,
         },
-      });
+      } as any);
       toast.success('User created');
       onCreated();
       onClose();
@@ -147,7 +149,11 @@ function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreate
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block">
               <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Role *</span>
-              <select value={form.role} onChange={set('role')} className="admin-select w-full text-sm">
+              <select
+                value={form.role}
+                onChange={set('role')}
+                className="admin-select w-full text-sm"
+              >
                 {CREATE_ROLES.map((r) => (
                   <option key={r} value={r}>{r}</option>
                 ))}
@@ -294,7 +300,7 @@ function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onC
             </label>
             <label className="block">
               <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Avatar URL</span>
-              <input value={form.avatar} onChange={setVal('avatar')} placeholder="https://..." className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy font-mono text-xs" />
+              <input value={form.avatar} onChange={setVal('avatar')} placeholder="https://..." className="w-full border border-gray-200 px-3 py-2 outline-none focus:border-brand-navy font-mono text-xs" />
               {form.avatar && <img src={form.avatar} alt="Preview" className="mt-2 w-12 h-12 rounded-full object-cover border border-gray-200" />}
             </label>
           </div>
@@ -312,7 +318,7 @@ function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onC
             ).map(({ key, label, placeholder }) => (
               <label key={key} className="block mb-3">
                 <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">{label}</span>
-                <input value={form[key]} onChange={setVal(key)} placeholder={placeholder} type="url" className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy font-mono text-xs" />
+                <input value={form[key]} onChange={setVal(key)} placeholder={placeholder} type="url" className="w-full border border-gray-200 px-3 py-2 outline-none focus:border-brand-navy font-mono text-xs" />
               </label>
             ))}
           </div>
