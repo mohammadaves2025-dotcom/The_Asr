@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Eye, Clock } from 'lucide-react';
+import {Clock } from 'lucide-react';
 import { formatDate, resolveAuthorName } from '../../utils/helpers';
 import type { Article } from '../../types';
 
