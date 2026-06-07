@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./client/node_modules/**)",
+      "Read(./admin/node_modules/**)",
+      "Read(./backend/node_modules/**)",
+      "Read(./**/package-lock.json)",
+      "Read(./**/yarn.lock)",
+      "Read(./**/.git/**)",
+      "Read(./client/dist/**)",
+      "Read(./admin/dist/**)"
+    ]
+  }
+}

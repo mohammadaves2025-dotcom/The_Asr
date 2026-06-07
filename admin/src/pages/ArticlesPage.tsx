@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, Plus, Eye, Trash2, Star, Zap, CircleCheck as CheckCircle } from 'lucide-react';
-import { articlesAdmin } from '../services/admin';
+import { articlesAdmin, usersAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatRelative, cn } from '../utils/helpers';
 import toast from 'react-hot-toast';
@@ -14,12 +14,28 @@ export default function ArticlesPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const [author, setAuthor] = useState('');
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
 
+  // Fetch users for the author filter dropdown
+  const { data: staffData } = useQuery({
+    queryKey: ['admin', 'users', 'all-staff'],
+    queryFn: () => usersAdmin.getAll({ limit: 200 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const allUsers = staffData?.data?.data?.users ?? [];
+
   const { data, isLoading } = useQuery({
-    queryKey: ['admin', 'articles', { search, status, page }],
-    queryFn: () => articlesAdmin.getAll({ search: search || undefined, status: status || undefined, page, limit: 20 }),
+    queryKey: ['admin', 'articles', { search, status, author, page }],
+    queryFn: () => articlesAdmin.getAll({
+      search: search || undefined,
+      status: status || undefined,
+      author: author || undefined,
+      page,
+      limit: 20,
+    }),
   });
 
   const articles = data?.data?.data?.articles || [];
@@ -62,10 +78,7 @@ export default function ArticlesPage() {
         <div>
           <p className="text-xs font-sans text-ink-muted">{meta?.total || 0} total articles</p>
         </div>
-        <Link
-          to="/articles/new"
-          className="admin-btn-primary gap-2 text-xs"
-        >
+        <Link to="/articles/new" className="admin-btn-primary gap-2 text-xs">
           <Plus size={14} /> New Article
         </Link>
       </div>
@@ -89,6 +102,16 @@ export default function ArticlesPage() {
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>{s || 'All Statuses'}</option>
+          ))}
+        </select>
+        <select
+          value={author}
+          onChange={(e) => { setAuthor(e.target.value); setPage(1); }}
+          className="admin-select w-auto min-w-[160px] text-sm"
+        >
+          <option value="">All Authors</option>
+          {allUsers.map((u) => (
+            <option key={u._id} value={u._id}>{u.name}</option>
           ))}
         </select>
       </div>

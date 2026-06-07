@@ -49,6 +49,7 @@ const userRouter = express.Router();
 // -- Admin routes (static prefix — must come before /:id) ---------------------
 userRouter.get('/admin/list', protect, authorize('admin', 'superadmin'), paginationValidator, userController.adminList);
 userRouter.patch('/admin/:id/role', protect, authorize('superadmin'), userController.adminUpdateRole);
+userRouter.post('/admin/create', protect, authorize('superadmin'), userController.adminCreate);
 userRouter.patch('/admin/:id/toggle-active', protect, authorize('admin', 'superadmin'), userController.adminToggleActive);
  userRouter.patch(
     '/admin/:id/profile',
@@ -56,6 +57,8 @@ userRouter.patch('/admin/:id/toggle-active', protect, authorize('admin', 'supera
     authorize('admin', 'superadmin'),
     userController.adminUpdateProfile
   );
+
+userRouter.delete('/admin/:id', protect, authorize('superadmin'), userController.adminDelete);
 
 // -- Authenticated user (self) routes (static prefix) -------------------------
 userRouter.patch('/me/profile', protect, uploadAvatar.single('avatar'), userController.updateProfile);

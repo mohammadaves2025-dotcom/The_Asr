@@ -164,7 +164,7 @@ export default function AuthorPage() {
 
   // Is this a guest contributor vs. a staff writer?
   const isContributor = author.role === 'contributor';
-  const isStaff = ['editor', 'admin', 'superadmin'].includes(author.role);
+  const isStaff = ['editor', 'admin', 'superadmin'].includes(author.role);;
 
   return (
     <div>
@@ -203,7 +203,7 @@ export default function AuthorPage() {
                 {isStaff
                   ? 'Staff Writer'
                   : isContributor
-                  ? 'Guest Contributor'
+                  ? 'Contributing Writer'
                   : 'Author'}
               </p>
 
@@ -213,19 +213,13 @@ export default function AuthorPage() {
                   {author.name}
                 </h1>
                 {/* Blue verified badge for staff */}
-                {isStaff && (
+                {(isStaff || isContributor) && (
                   <BadgeCheck
                     size={26}
                     className="text-blue-400 flex-shrink-0"
                     fill="currentColor"
                     strokeWidth={1.5}
                   />
-                )}
-                {/* Guest contributor label */}
-                {isContributor && (
-                  <span className="text-[9px] font-black uppercase tracking-[2px] px-2 py-1 border border-white/25 text-white/50 rounded-full">
-                    Guest
-                  </span>
                 )}
               </div>
 
@@ -265,7 +259,7 @@ export default function AuthorPage() {
       {/* ── Articles by this author ──────────────────────────────────────────── */}
       <div className="container-site py-10">
         <h2 className="text-xl font-serif font-bold text-ink mb-6 pb-3 border-b-2 border-brand-navy">
-          Articles by {author.name}
+          Stories by {author.name}
         </h2>
 
         {articlesLoading ? (

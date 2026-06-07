@@ -137,6 +137,11 @@ const articleSchema = new mongoose.Schema(
         correctedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
       },
     ],
+
+    // ── Related Articles ──────────────────────────────────────────────────
+    relatedArticles: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Article' },
+    ],
   },
   {
     timestamps: true,
@@ -177,6 +182,14 @@ articleSchema.pre('save', async function (next) {
   if (this.isModified('body')) {
     const wordCount = this.body.replace(/<[^>]*>/g, '').split(/\s+/).length;
     this.readTime = Math.ceil(wordCount / 200);
+  }
+
+  // Auto-clear previous breaking article when this one becomes breaking
+  if (this.isModified('isBreaking') && this.isBreaking) {
+    await mongoose.model('Article').updateMany(
+      { isBreaking: true, _id: { $ne: this._id } },
+      { isBreaking: false }
+    );
   }
 
   // Auto-set publishedAt when status changes to published

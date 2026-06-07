@@ -362,10 +362,41 @@ const userController = {
       ];
       const skip = (page - 1) * limit;
       const [users, total] = await Promise.all([
-        User.find(filter).sort('-createdAt').skip(skip).limit(Number(limit)).select('-refreshTokens'),
+        User.find(filter).sort('-createdAt').skip(skip).limit(Number(limit)).select('-refreshTokens').populate('articlesCount'),
         User.countDocuments(filter),
       ]);
       return sendSuccess(res, { data: { users }, meta: { total, page: Number(page) } });
+    } catch (err) { next(err); }
+  },
+
+  adminCreate: async (req, res, next) => {
+    try {
+      const { name, email, password, role, designation, bio, socialLinks } = req.body;
+
+      if (!name || !email || !password) {
+        return sendError(res, { statusCode: 400, message: 'Name, email and password are required' });
+      }
+
+      const existing = await User.findOne({ email });
+      if (existing) return sendError(res, { statusCode: 409, message: 'Email already registered' });
+
+      const user = await User.create({
+        name,
+        email,
+        password,
+        role: role || 'contributor',
+        designation: designation || undefined,
+        bio: bio || undefined,
+        socialLinks: socialLinks || undefined,
+        provider: 'local',
+        isVerified: true,
+      });
+
+      return sendSuccess(res, {
+        statusCode: 201,
+        message: 'User created successfully',
+        data: { user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar } },
+      });
     } catch (err) { next(err); }
   },
 
@@ -433,6 +464,17 @@ const userController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  adminDelete: async (req, res, next) => {
+    try {
+      if (req.params.id === req.user._id.toString()) {
+        return sendError(res, { statusCode: 400, message: 'Cannot delete yourself' });
+      }
+      const user = await User.findByIdAndDelete(req.params.id);
+      if (!user) return sendError(res, { statusCode: 404, message: 'User not found' });
+      return sendSuccess(res, { message: 'User deleted' });
+    } catch (err) { next(err); }
   },
 };
 

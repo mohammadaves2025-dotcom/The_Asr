@@ -42,6 +42,12 @@ export const usersAdmin = {
     api.patch(`/users/admin/${id}/toggle-active`),
 
   // ── NEW: full author profile update (name, designation, bio, avatar, socialLinks)
+  create: (data: Partial<User>) =>
+    api.post<ApiResponse<{ user: User }>>('/users/admin/create', data),
+
+  delete: (id: string) =>
+    api.delete(`/users/admin/${id}`),
+
   updateProfile: (
     id: string,
     data: {

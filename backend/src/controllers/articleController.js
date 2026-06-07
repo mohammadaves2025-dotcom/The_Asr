@@ -34,7 +34,7 @@ exports.getArticles = async (req, res, next) => {
         .sort(search ? { score: { $meta: 'textScore' } } : sort)
         .skip(skip)
         .limit(Number(limit))
-        .populate('author', 'name avatar designation')
+        .populate('author', 'name avatar role designation')
         .populate('category', 'name slug color')
         .select('-body -editHistory -corrections -gallery'),
       Article.countDocuments(filter),
@@ -58,7 +58,8 @@ exports.getArticle = async (req, res, next) => {
       .populate('author',       'name avatar bio designation socialLinks')
       .populate('coAuthors',    'name avatar')
       .populate('category',     'name slug color')
-      .populate('lastEditedBy', 'name');
+      .populate('lastEditedBy', 'name')
+      .populate('relatedArticles', 'title slug excerpt featuredImage publishedAt readTime author category');
  
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
  
@@ -129,7 +130,7 @@ exports.getHomepageData = async (req, res, next) => {
       // Hero: single top featured story
       Article.findOne({ ...published, isFeatured: true })
         .sort('-publishedAt')
-        .populate('author', 'name avatar')
+        .populate('author', 'name avatar role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category contentType'),
 
@@ -137,7 +138,7 @@ exports.getHomepageData = async (req, res, next) => {
       Article.find({ ...published, isEditorsPick: true })
         .sort('-publishedAt')
         .limit(4)
-        .populate('author', 'name')
+        .populate('author', 'name role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category'),
 
@@ -145,7 +146,7 @@ exports.getHomepageData = async (req, res, next) => {
       Article.find(published)
         .sort('-publishedAt')
         .limit(8)
-        .populate('author', 'name')
+        .populate('author', 'name role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category contentType'),
 
@@ -159,7 +160,7 @@ exports.getHomepageData = async (req, res, next) => {
       Article.find({ ...published, contentType: { $in: ['opinion', 'analysis'] } })
         .sort('-publishedAt')
         .limit(3)
-        .populate('author', 'name avatar')
+        .populate('author', 'name avatar role')
         .populate('category', 'name slug')
         .select('title slug author category contentType publishedAt'),
 
@@ -283,7 +284,8 @@ exports.adminGetArticle = async (req, res, next) => {
       .populate('author', 'name email avatar')
       .populate('coAuthors', 'name avatar')
       .populate('category', 'name slug color')
-      .populate('lastEditedBy', 'name');
+      .populate('lastEditedBy', 'name')
+      .populate('relatedArticles', 'title slug excerpt featuredImage publishedAt readTime author category');
 
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
@@ -314,7 +316,7 @@ exports.adminGetArticles = async (req, res, next) => {
         .sort('-updatedAt')
         .skip(skip)
         .limit(Number(limit))
-        .populate('author', 'name email')
+        .populate('author', 'name email role')
         .populate('category', 'name slug')
         .select('-body'),
       Article.countDocuments(filter),

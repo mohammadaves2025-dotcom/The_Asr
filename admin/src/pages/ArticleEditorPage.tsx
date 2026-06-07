@@ -28,6 +28,7 @@ const LANGUAGES = [
 interface FormState extends Partial<Article> {
   tagsInput?: string;
   categoryId?: string;
+  relatedArticleIds?: string[];
 }
 
 // ── Save indicator ────────────────────────────────────────────────────────────
@@ -152,6 +153,62 @@ function LivePreview({ title, subtitle, excerpt, body, featuredImage, category }
         .prose-preview code { background: #f1f5f9; padding: 2px 6px; font-family: monospace; font-size: 0.875em; border-radius: 3px; }
         .prose-preview hr { border: 0; border-top: 2px solid #e2e8f0; margin: 2rem 0; }
       `}</style>
+    </div>
+  );
+}
+
+// ── Related Articles Panel ──────────────────────────────────────────────────
+function RelatedArticlesPanel({ ids, onChange }: {
+  ids: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const [query, setQuery] = useState('');
+  const { data } = useQuery({
+    queryKey: ['admin', 'articles', 'search', query],
+    queryFn: () => articlesAdmin.getAll({ search: query, limit: 8, status: 'published' }),
+    enabled: query.length > 2,
+  });
+  const articles = data?.data?.data?.articles ?? [];
+
+  const add = (id: string) => {
+    if (ids.length >= 5 || ids.includes(id)) return;
+    onChange([...ids, id]);
+  };
+  const remove = (id: string) => {
+    onChange(ids.filter(i => i !== id));
+  };
+
+  return (
+    <div className="space-y-2">
+      <input
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="Search published articles..."
+        className="admin-input w-full text-xs"
+      />
+      {/* Selected */}
+      {ids.length > 0 && (
+        <div className="space-y-1">
+          {ids.map(id => (
+            <div key={id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs font-sans">
+              <span className="text-ink font-medium truncate">{id}</span>
+              <button onClick={() => remove(id)} className="text-accent-red hover:text-red-700"><X size={12} /></button>
+            </div>
+          ))}
+        </div>
+      )}
+      {/* Search results */}
+      {query.length > 2 && articles.length > 0 && (
+        <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+          {articles.map((art: any) => (
+            <button key={art._id} onClick={() => { add(art._id); setQuery(''); }} disabled={ids.includes(art._id)} className="w-full text-left px-3 py-2 text-xs font-sans hover:bg-gray-50 disabled:opacity-40 border-b last:border-0">
+              <p className="font-semibold text-ink line-clamp-1">{art.title}</p>
+              <p className="text-ink-muted mt-0.5">{art.contentType}</p>
+            </button>
+          ))}
+        </div>
+      )}
+      {ids.length >= 5 && <p className="text-[10px] text-amber-600 font-sans">Maximum 5 selected</p>}
     </div>
   );
 }
@@ -342,6 +399,7 @@ export default function ArticleEditorPage() {
     isFeatured: false, isBreaking: false, isEditorsPick: false,
     isMustRead: false, isVerified: false, isPremium: false,
     isGuestAuthor: false, guestAuthorName: '', guestAuthorBio: '',
+    relatedArticleIds: [],
   });
 
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -377,6 +435,7 @@ export default function ArticleEditorPage() {
       ...articleData,
       tagsInput: articleData.tags?.join(', ') ?? '',
       categoryId: typeof articleData.category === 'object' ? articleData.category._id : articleData.category,
+      relatedArticleIds: (articleData as any).relatedArticles?.map((a: any) => a._id?.toString?.() ?? a._id) ?? [],
     });
   }, [articleData]);
 
@@ -412,6 +471,10 @@ export default function ArticleEditorPage() {
       tags: form.tagsInput?.split(',').map(t => t.trim()).filter(Boolean) ?? [],
       status: statusOverride ?? form.status,
     };
+
+    // Convert relatedArticleIds to relatedArticles for the API
+    payload.relatedArticles = (form as any).relatedArticleIds || [];
+    delete payload.relatedArticleIds;
 
     // Only include category if it has a valid value
     if (form.categoryId) {
@@ -872,6 +935,17 @@ export default function ArticleEditorPage() {
                     <input type="text" value={form.location?.district ?? ''} onChange={e => setNested('location', 'district', e.target.value)} className="admin-input" placeholder="e.g. Muzaffarnagar" />
                   </div>
                 </div>
+              </div>
+
+              <div className="border-t border-gray-100" />
+
+              {/* Related Articles */}
+              <div>
+                <SectionLabel title="Related Articles" />
+                <RelatedArticlesPanel
+                  ids={(form as any).relatedArticleIds || []}
+                  onChange={(ids) => set('relatedArticleIds', ids)}
+                />
               </div>
 
               <div className="border-t border-gray-100" />

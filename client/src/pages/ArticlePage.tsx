@@ -657,6 +657,18 @@ export default function ArticlePage() {
               {/* Author card */}
               <AuthorCard article={article} />
 
+              {/* Related Articles — manually linked */}
+              {(article as any).relatedArticles && ((article as any).relatedArticles as Article[]).length > 0 && (
+                <div className="mt-12 pt-10 border-t-2 border-ink">
+                  <h3 className="text-2xl font-serif font-bold text-ink mb-6 italic">Related Articles</h3>
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {((article as any).relatedArticles as Article[]).map((art: Article) => (
+                      <ArticleCard key={art._id} article={art} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Newsletter CTA removed per client instruction */}
 
               {/* Comments — with sign-in gate (handled inside CommentsSection) */}
