@@ -54,7 +54,7 @@ export default function RegisterPage() {
               Free access to all articles, save stories, follow journalists, and never miss a report.
             </p>
           </div>
-          <p className="text-xs text-white/30 font-sans">&copy; {new Date().getFullYear()} Maktoob Media</p>
+          <p className="text-xs text-white/30 font-sans">&copy; {new Date().getFullYear()} The Orbis Journal Media</p>
         </div>
       </div>
 
@@ -66,7 +66,7 @@ export default function RegisterPage() {
           </div>
 
           <h1 className="text-3xl font-serif font-bold text-ink mb-2">Create an account</h1>
-          <p className="text-sm text-ink-muted font-sans mb-8">Free access to all Maktoob stories</p>
+          <p className="text-sm text-ink-muted font-sans mb-8">Free access to all The Orbis Journal stories</p>
 
           {error && (
             <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-status-error px-4 py-3 mb-6 text-sm font-sans">

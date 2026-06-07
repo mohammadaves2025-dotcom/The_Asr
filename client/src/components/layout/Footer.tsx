@@ -51,7 +51,6 @@ const NAV_SECTIONS = [
   {
     title: 'Formats',
     links: [
-      { label: 'Investigations',  href: '/category/investigation' },
       { label: 'Opinion',         href: '/category/opinion' },
       { label: 'In Their Words',  href: '/in-their-words' },
       { label: 'Explainers',      href: '/category/explainers' },

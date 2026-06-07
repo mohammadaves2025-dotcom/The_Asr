@@ -92,7 +92,7 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Utility Bar ─────────────────────────────────────────────────────── */}
+      {/* ── Utility Bar ───────────────────────────────────────────────────────
       <div className="bg-brand-navy text-white">
         <div className="container-site flex items-center justify-between h-9">
           <span className="text-white/40 text-[10px] font-sans tracking-[2px] uppercase hidden sm:block">
@@ -131,7 +131,7 @@ export default function Header() {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* ── Main Header ─────────────────────────────────────────────────────── */}
       <header
@@ -166,7 +166,7 @@ export default function Header() {
               <Search size={17} strokeWidth={2} />
             </button>
             <Link to="/support" className="hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg">
-              Donate
+              Support Us
             </Link>
             <button
               onClick={() => setMobileOpen(true)}

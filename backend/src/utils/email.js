@@ -34,7 +34,7 @@ const baseTemplate = (content) => `
   <div class="wrap">
     <div class="header"><div class="logo">Maktoob<span>.</span></div></div>
     <div class="body">${content}</div>
-    <div class="footer">© ${new Date().getFullYear()} Maktoob Media · Independent. Rights. Accountability.</div>
+    <div class="footer">© ${new Date().getFullYear()} The Orbis Journal · Independent. Rights. Accountability.</div>
   </div>
 </body>
 </html>`;
@@ -58,9 +58,9 @@ const sendEmail = async ({ to, subject, html }) => {
 const sendWelcomeEmail = (to, name) =>
   sendEmail({
     to,
-    subject: 'Welcome to Maktoob Media',
+    subject: 'Welcome to The Orbis Journal Media',
     html: `<h2>Welcome, ${name}.</h2>
-      <p>Thank you for joining Maktoob Media — independent journalism covering human rights,
+      <p>Thank you for joining The Orbis Journal Media — independent journalism covering human rights,
       minorities, and accountability across India.</p>
       <p>You can now read, comment, save articles, and support our newsroom.</p>
       <a href="${process.env.CLIENT_URL}" class="btn">Read Today's Stories →</a>`,
@@ -69,7 +69,7 @@ const sendWelcomeEmail = (to, name) =>
 const sendPasswordResetEmail = (to, name, resetUrl) =>
   sendEmail({
     to,
-    subject: 'Reset your Maktoob password',
+    subject: 'Reset your The Orbis Journal password',
     html: `<h2>Password reset request</h2>
       <p>Hi ${name}, we received a request to reset your password. This link expires in 1 hour.</p>
       <a href="${resetUrl}" class="btn">Reset Password →</a>
@@ -79,9 +79,9 @@ const sendPasswordResetEmail = (to, name, resetUrl) =>
 const sendNewsletterConfirmEmail = (to, confirmUrl) =>
   sendEmail({
     to,
-    subject: 'Confirm your Maktoob Dispatch subscription',
+    subject: 'Confirm your The Orbis Journal Dispatch subscription',
     html: `<h2>One click to confirm</h2>
-      <p>You're almost subscribed to The Maktoob Dispatch — our weekly digest of the most
+      <p>You're almost subscribed to The The Orbis Journal Dispatch — our weekly digest of the most
       important rights and accountability stories.</p>
       <a href="${confirmUrl}" class="btn">Confirm Subscription →</a>`,
   });

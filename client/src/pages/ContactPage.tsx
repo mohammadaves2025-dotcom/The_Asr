@@ -52,7 +52,7 @@ export default function ContactPage() {
             <h3 className="font-bold text-ink text-sm uppercase tracking-widest mb-4">Office</h3>
             <div className="flex items-start gap-3 text-sm text-ink-muted font-sans">
               <MapPin size={14} className="mt-0.5 flex-shrink-0" />
-              <p>The Asr Media,<br />New Delhi – 110001, India</p>
+              <p>The Orbis Journal ,<br />New Delhi – 110001, India</p>
             </div>
           </div>
           <div className="bg-brand-navy text-white p-5 rounded-xl">

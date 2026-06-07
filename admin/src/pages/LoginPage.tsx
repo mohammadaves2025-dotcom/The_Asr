@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="text-center text-xs text-white/20 mt-6 font-sans">
-          &copy; {new Date().getFullYear()} Maktoob Media
+          &copy; {new Date().getFullYear()} The Orbis Journal 
         </p>
       </div>
     </div>

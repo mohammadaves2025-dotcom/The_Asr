@@ -40,12 +40,12 @@ export default function TermsPage() {
         <PolicySection title="Content ownership and copyright">
           <p>
             All articles, photographs, videos, graphics, and other content published on the Site are the intellectual
-            property of The Asr Media or, where credited, of the respective contributor or rights holder. Content is
+            property of The Orbis Journal Media or, where credited, of the respective contributor or rights holder. Content is
             protected by Indian copyright law and applicable international treaties.
           </p>
           <p>
             You may share our articles on social media or link to them from other websites, provided you clearly attribute
-            The Asr and include a direct link to the original article. Brief quotations (up to 100 words) for the purpose
+            TThe Orbis Journal and include a direct link to the original article. Brief quotations (up to 100 words) for the purpose
             of commentary, criticism, or review are permitted under fair use.
           </p>
           <p>
@@ -69,7 +69,7 @@ export default function TermsPage() {
 
         <PolicySection title="Comments and user submissions">
           <p>
-            By posting a comment or submitting content to the Site, you grant The Asr a non-exclusive, royalty-free licence
+            By posting a comment or submitting content to the Site, you grant The Orbis Journal a non-exclusive, royalty-free licence
             to publish, display, and distribute your submission. You represent that you own the rights to your submission and
             that it does not infringe the rights of any third party.
           </p>
@@ -88,12 +88,12 @@ export default function TermsPage() {
 
         <PolicySection title="Disclaimer and limitation of liability">
           <p>
-            The Asr publishes journalism in good faith and strives for accuracy. However, we do not warrant that content on
+            The Orbis Journal publishes journalism in good faith and strives for accuracy. However, we do not warrant that content on
             the Site is always complete, accurate, or up to date. Nothing on this Site constitutes legal, medical, or
             financial advice.
           </p>
           <p>
-            To the maximum extent permitted by law, The Asr Media shall not be liable for any indirect, incidental, or
+            To the maximum extent permitted by law, The Orbis Journal Media shall not be liable for any indirect, incidental, or
             consequential damages arising from your use of the Site or reliance on its content.
           </p>
         </PolicySection>

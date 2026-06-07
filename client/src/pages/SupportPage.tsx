@@ -5,8 +5,8 @@ import { Heart, Shield, Zap, Users, ExternalLink, Copy, CheckCircle } from 'luci
 const AMOUNTS = ['₹200', '₹500', '₹1000', '₹2000', '₹5000'];
 
 // Replace with your actual UPI VPA
-const UPI_VPA = 'theasr@upi';
-const UPI_NAME = 'The Asr Media';
+const UPI_VPA = 'theorbisjournal@upi';
+const UPI_NAME = 'The Orbis Journal Media';
 const UPI_NOTE = 'Support independent journalism';
 
 const WHY_ITEMS = [
@@ -57,7 +57,7 @@ export default function SupportPage() {
         <div className="container-site max-w-4xl text-center">
           <p className="text-[10px] font-black uppercase tracking-[4px] text-brand-yellow mb-4">Support Independent Journalism</p>
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
-            The Asr is reader-funded.<br />Entirely.
+            The Orbis Journal is reader-funded.<br />Entirely.
           </h1>
           <p className="text-white/60 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
             No ads. No corporate funding. No government grants. Every story we publish is made possible by readers like you who believe accountability journalism matters.

@@ -36,12 +36,12 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="bg-brand-navy py-20 md:py-28">
         <div className="container-site max-w-4xl">
-          <p className="text-[10px] font-bold uppercase tracking-[4px] text-brand-yellow mb-4">About The Asr</p>
+          <p className="text-[10px] font-bold uppercase tracking-[4px] text-brand-yellow mb-4">About The Orbis Journal</p>
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-white leading-tight mb-6">
             Journalism that centres<br />those at the margins.
           </h1>
           <p className="text-white/60 text-lg font-sans leading-relaxed max-w-2xl">
-            The Asr (Arabic: the epoch, the era) was founded on the belief that independent journalism is a public good — and that stories about minority communities, human rights violations, and social justice deserve the same rigour and prominence as mainstream political news.
+            The Orbis Journal (In Greek, it translates to "around the world" or "worldly", implying a global or universal nature.) was founded on the belief that independent journalism is a public good — and that stories about minority communities, human rights violations, and social justice deserve the same rigour and prominence as mainstream political news.
           </p>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function AboutPage() {
               India's mainstream media has largely abandoned marginalised communities. Muslim minorities, Dalits, Adivasis, LGBTQIA+ people, and religious minorities rarely see their stories told with accuracy, empathy, or urgency.
             </p>
             <p className="text-ink-secondary font-sans leading-relaxed mb-6">
-              The Asr fills that gap — not with advocacy, but with rigorous, fact-based journalism that gives voice to those who have been systematically silenced.
+              The Orbis Journal fills that gap — not with advocacy, but with rigorous, fact-based journalism that gives voice to those who have been systematically silenced.
             </p>
             <Link to="/support" className="btn-primary">Support Our Mission</Link>
           </div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
 
       {/* Team */}
       <div className="container-site max-w-4xl py-14 md:py-20">
-        <p className="text-[10px] font-bold uppercase tracking-[3px] text-ink-muted mb-3">The People Behind The Asr</p>
+        <p className="text-[10px] font-bold uppercase tracking-[3px] text-ink-muted mb-3">The People Behind The Orbis Journal</p>
         <h2 className="text-3xl font-serif font-bold text-ink mb-10">Our team</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {TEAM.map(member => (

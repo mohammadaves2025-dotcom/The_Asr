@@ -59,13 +59,13 @@ export default function GrievancePage() {
 
         <div className="bg-brand-navy/5 border border-brand-navy/20 px-5 py-5 mb-10">
           <p className="text-[11px] font-black uppercase tracking-[2px] text-brand-navy mb-1 font-sans">Grievance Officer</p>
-          <p className="text-[15px] font-serif font-semibold text-ink mb-0.5">The Asr Editorial Desk</p>
+          <p className="text-[15px] font-serif font-semibold text-ink mb-0.5">The Orbis Journal Editorial Desk</p>
           <p className="text-[13px] text-ink-muted font-sans">grievance@theasr.in · Response within 14 working days</p>
         </div>
 
         <PolicySection title="Purpose of this process">
           <p>
-            The Asr is committed to accountable journalism. If you believe we have misrepresented facts, violated your
+            The Orbis Journal is committed to accountable journalism. If you believe we have misrepresented facts, violated your
             privacy, published inaccurate information about you or your community, or otherwise failed to meet our
             editorial standards, you have the right to a formal review of your complaint.
           </p>
@@ -125,7 +125,7 @@ export default function GrievancePage() {
         <PolicySection title="Mandatory disclosure under IT Rules 2021">
           <p>
             In compliance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021,
-            The Asr designates a Grievance Officer for digital content complaints. Complaints under the IT Rules may be
+            The Orbis Journal designates a Grievance Officer for digital content complaints. Complaints under the IT Rules may be
             submitted to grievance@theasr.in and will be addressed within the timelines prescribed under applicable law.
           </p>
         </PolicySection>

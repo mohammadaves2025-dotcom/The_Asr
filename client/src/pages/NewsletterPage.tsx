@@ -28,7 +28,7 @@ export default function NewsletterPage() {
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[4px] text-brand-yellow mb-3">Free · No Spam · Weekly</p>
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 leading-tight">
-          The Asr Dispatch
+          The Orbis Journal Dispatch
         </h1>
         <p className="text-white/60 text-base font-sans leading-relaxed mb-10 max-w-md mx-auto">
           Every week, the most important stories on human rights, minorities, and accountability — curated by our editors. Free, always.

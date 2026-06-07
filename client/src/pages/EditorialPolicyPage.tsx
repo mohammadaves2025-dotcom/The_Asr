@@ -31,13 +31,13 @@ export default function EditorialPolicyPage() {
 
         <PolicySection title="Our editorial mission">
           <p>
-            The Asr publishes original journalism on human rights, minority communities, social justice, and accountability.
+            The Orbis Journal publishes original journalism on human rights, minority communities, social justice, and accountability.
             Our editorial decisions are guided solely by the public interest and the experiences of communities that are
             systematically underreported or misrepresented in mainstream media.
           </p>
           <p>
             We are committed to factual, fair, and independent journalism. Our reporting is never shaped by the preferences
-            of funders, advertisers, or any government. No person or organisation that provides financial support to The Asr
+            of funders, advertisers, or any government. No person or organisation that provides financial support to The Orbis Journal
             may influence editorial decisions — this is non-negotiable.
           </p>
         </PolicySection>
@@ -85,7 +85,7 @@ export default function EditorialPolicyPage() {
 
         <PolicySection title="Conflicts of interest">
           <p>
-            Journalists at The Asr must disclose any personal, financial, or political relationship with a story they are
+            Journalists at The Orbis Journal must disclose any personal, financial, or political relationship with a story they are
             covering. Where a conflict exists, the journalist will be reassigned. Staff may not cover organisations they
             have previously worked for within the past two years.
           </p>

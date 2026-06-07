@@ -37,7 +37,7 @@ export default function FundingPage() {
 
         <PolicySection title="Why we publish this">
           <p>
-            Trust in journalism depends on knowing who pays for it. The Asr publishes this funding disclosure because
+            Trust in journalism depends on knowing who pays for it. The Orbis Journal publishes this funding disclosure because
             readers deserve to know what interests — if any — might influence our editorial decisions. We believe
             financial transparency is inseparable from editorial credibility.
           </p>
@@ -50,7 +50,7 @@ export default function FundingPage() {
 
         <PolicySection title="Our funding model">
           <p>
-            The Asr is funded entirely by readers and independent foundations. We do not carry advertising. We do not
+            The Orbis Journal is funded entirely by readers and independent foundations. We do not carry advertising. We do not
             accept money from governments, political parties, or corporations with a stake in the subjects we cover.
           </p>
           <p>

@@ -39,7 +39,7 @@ export default function CorrectionsPage() {
 
         <PolicySection title="Our commitment to accuracy">
           <p>
-            Getting facts right is the foundation of credible journalism. When The Asr makes an error — whether
+            Getting facts right is the foundation of credible journalism. When The Orbis Journal makes an error — whether
             a wrong date, a misquoted figure, an inaccurate characterisation, or a more serious factual mistake — we
             correct it promptly and transparently. We do not quietly alter articles without noting the change.
           </p>

@@ -54,7 +54,7 @@ export default function LoginPage() {
             </p>
           </div>
           <p className="text-xs text-white/30 font-sans">
-            &copy; {new Date().getFullYear()} Maktoob Media
+            &copy; {new Date().getFullYear()} The Orbis Journal Media
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
           </div>
 
           <h1 className="text-3xl font-serif font-bold text-ink mb-2">Welcome back</h1>
-          <p className="text-sm text-ink-muted font-sans mb-8">Sign in to your Maktoob account</p>
+          <p className="text-sm text-ink-muted font-sans mb-8">Sign in to your The Orbis Journal account</p>
 
           {error && (
             <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-status-error px-4 py-3 mb-6 text-sm font-sans">

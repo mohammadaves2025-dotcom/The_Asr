@@ -199,7 +199,7 @@ function AIDrawer({ form, onApply, onClose }: {
       icon: <Zap size={14} />,
       desc: 'Get 5 compelling headline options',
       field: 'title',
-      prompt: `You are a journalist's assistant for The Asr, an independent news publication. Given this article body, suggest 5 compelling, clear, and journalistically sound headlines. Return ONLY a JSON array of strings, no commentary.\n\nArticle body:\n${bodyText}`,
+      prompt: `You are a journalist's assistant for The Orbis Journal, an independent news publication. Given this article body, suggest 5 compelling, clear, and journalistically sound headlines. Return ONLY a JSON array of strings, no commentary.\n\nArticle body:\n${bodyText}`,
     },
     {
       id: 'excerpt',

@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 
         <PolicySection title="Overview">
           <p>
-            The Asr ("we", "our", "the newsroom") is committed to protecting your privacy. This policy explains what personal
+            The Orbis Journal ("we", "our", "the newsroom") is committed to protecting your privacy. This policy explains what personal
             information we collect when you visit theasr.in, why we collect it, and how we handle it. We collect the minimum
             data necessary to operate the site and communicate with our readers. We do not sell your data to anyone, ever.
           </p>

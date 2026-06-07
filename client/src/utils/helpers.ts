@@ -70,7 +70,7 @@ export const formatReadTime = (mins: number): string => {
 
 // Normalise raw author names coming from the backend.
 // "Admin" is the default admin account name — display as the editorial desk instead.
-const DESK_NAMES = new Set(['Admin', 'admin', 'The Asr', 'The Orbis Journal']);
+const DESK_NAMES = new Set(['Admin', 'admin', 'The Orbis Journal', 'The Orbis Journal']);
 export function resolveAuthorName(raw: string | undefined | null): string {
   if (!raw || DESK_NAMES.has(raw.trim())) return 'The Orbis Journal Desk';
   return raw.trim();

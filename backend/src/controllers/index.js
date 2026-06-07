@@ -215,7 +215,7 @@ const newsletterController = {
       subscriber.confirmTokenExpires = undefined;
       await subscriber.save();
 
-      return sendSuccess(res, { message: 'Subscription confirmed — welcome to The Maktoob Dispatch!' });
+      return sendSuccess(res, { message: 'Subscription confirmed — welcome to The The Orbis Journal Dispatch!' });
     } catch (err) { next(err); }
   },
 

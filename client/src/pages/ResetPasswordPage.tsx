@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             </p>
           </div>
           <p className="text-xs text-white/30 font-sans">
-            &copy; {new Date().getFullYear()} Maktoob Media
+            &copy; {new Date().getFullYear()} The Orbis Journal Media
           </p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
             <>
               <h1 className="text-3xl font-serif font-bold text-ink mb-2">Set new password</h1>
               <p className="text-sm text-ink-muted font-sans mb-8">
-                Choose a strong password for your Maktoob account.
+                Choose a strong password for your The Orbis Journal account.
               </p>
 
               {error && (

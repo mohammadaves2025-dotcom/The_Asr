@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
           <p className="text-xs text-white/30 font-sans">
-            &copy; {new Date().getFullYear()} Maktoob Media
+            &copy; {new Date().getFullYear()} The Orbis Journal Media
           </p>
         </div>
       </div>

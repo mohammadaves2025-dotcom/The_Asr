@@ -238,7 +238,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
           to="/category/investigation"
           className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[2px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0"
         >
-          All Investigations <ArrowRight size={11} />
+          All Stories <ArrowRight size={11} />
         </Link>
       </div>
 
@@ -334,15 +334,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         })}
       </div>
 
-      <div className="border border-t-0 border-gray-200 bg-brand-navy/5 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Star size={14} className="text-brand-yellow flex-shrink-0" fill="currentColor" />
-          <p className="text-[12px] text-ink-secondary font-sans leading-relaxed">
-            These stories shaped policy, sparked legal action, or gave voice to communities ignored
-            elsewhere.
-          </p>
-        </div>
-      </div>
+    
     </section>
   );
 }
