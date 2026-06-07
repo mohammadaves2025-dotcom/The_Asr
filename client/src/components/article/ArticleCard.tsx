@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import {Clock } from 'lucide-react';
+import { Eye, Clock } from 'lucide-react';
 import { formatDate, resolveAuthorName } from '../../utils/helpers';
 import type { Article } from '../../types';
 
@@ -25,7 +25,8 @@ function ContentLabel({ type }: { type?: string }) {
   if (!type) return null;
   const m = CONTENT_TYPE_MAP[type] ?? { label: type, color: 'bg-gray-100 text-ink-muted' };
   return (
-    <span className={`inline-block text-[9px] font-black uppercase tracking-[1.5px] px-2 py-0.5 ${m.color}`}>
+    // bumped: text-[9px] → text-[11px]
+    <span className={`inline-block text-[11px] font-black uppercase tracking-[1.5px] px-2 py-0.5 ${m.color}`}>
       {m.label}
     </span>
   );
@@ -37,7 +38,8 @@ function CategoryLabel({ name, slug }: { name?: string; slug?: string }) {
     <Link
       to={`/category/${slug}`}
       onClick={e => e.stopPropagation()}
-      className="text-[9px] font-black uppercase tracking-[2px] text-brand-red hover:text-brand-red-dark transition-colors"
+      // bumped: text-[9px] → text-[11px]
+      className="text-[11px] font-black uppercase tracking-[2px] text-brand-red hover:text-brand-red-dark transition-colors"
     >
       {name}
     </Link>
@@ -53,7 +55,6 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   const imageUrl  = article.featuredImage?.url ?? '';
   const imageAlt  = article.featuredImage?.alt ?? article.title;
   const publishDate = article.publishedAt ?? article.createdAt;
-  // Safe author name — handles guest authors, missing author, undefined
   const authorName = article.isGuestAuthor && article.guestAuthorName
     ? article.guestAuthorName
     : resolveAuthorName(article.author?.name);
@@ -65,11 +66,13 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
         <Link
           to={`/article/${article.slug}`}
-          className="block mt-1.5 font-serif font-semibold text-[16px] leading-snug text-ink group-hover:text-brand-navy transition-colors"
+          // bumped: text-[16px] → text-[17px]
+          className="block mt-1.5 font-serif font-semibold text-[17px] leading-snug text-ink group-hover:text-brand-navy transition-colors"
         >
           {article.title}
         </Link>
-        <p className="text-[12px] text-ink-muted mt-1.5 font-sans">
+        {/* bumped: text-[12px] → text-[13px] */}
+        <p className="text-[13px] text-ink-muted mt-1.5 font-sans">
           {authorName} · {formatDate(publishDate)}
         </p>
       </div>
@@ -83,11 +86,13 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         <ContentLabel type={article.contentType} />
         <Link
           to={`/article/${article.slug}`}
-          className="block mt-2 text-[15px] font-serif font-semibold text-ink leading-snug group-hover:text-brand-navy transition-colors"
+          // bumped: text-[15px] → text-[16px]
+          className="block mt-2 text-[16px] font-serif font-semibold text-ink leading-snug group-hover:text-brand-navy transition-colors"
         >
           {article.title}
         </Link>
-        <p className="text-[12px] text-ink-muted mt-1.5 font-sans">{formatDate(publishDate)}</p>
+        {/* bumped: text-[12px] → text-[13px] */}
+        <p className="text-[13px] text-ink-muted mt-1.5 font-sans">{formatDate(publishDate)}</p>
       </div>
     );
   }
@@ -113,11 +118,13 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           </div>
           <Link
             to={`/article/${article.slug}`}
-            className="block font-serif font-bold text-[16px] text-ink line-clamp-2 group-hover:text-brand-navy transition-colors leading-snug"
+            // bumped: text-[16px] → text-[17px]
+            className="block font-serif font-bold text-[17px] text-ink line-clamp-2 group-hover:text-brand-navy transition-colors leading-snug"
           >
             {article.title}
           </Link>
-          <p className="text-[12px] text-ink-muted mt-2 font-sans">
+          {/* bumped: text-[12px] → text-[13px] */}
+          <p className="text-[13px] text-ink-muted mt-2 font-sans">
             {authorName} · {formatDate(publishDate)}
           </p>
         </div>
@@ -140,7 +147,8 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <div className="flex items-center gap-2 mb-2.5">
               {article.isBreaking && (
-                <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
+                // bumped: text-[9px] → text-[11px]
+                <span className="text-[11px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
                   Breaking
                 </span>
               )}
@@ -155,7 +163,8 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           </div>
         </div>
         <div className="p-5">
-          <p className="text-[14px] text-ink-secondary line-clamp-2 leading-relaxed font-sans mb-4">
+          {/* bumped: text-[14px] → text-[15px] */}
+          <p className="text-[15px] text-ink-secondary line-clamp-2 leading-relaxed font-sans mb-4">
             {article.excerpt}
           </p>
           <div className="flex items-center justify-between">
@@ -167,23 +176,27 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 />
               ) : (
                 <div className="w-7 h-7 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
-                  <span className="text-brand-yellow font-bold text-[10px]">{authorName[0]}</span>
+                  {/* bumped: text-[10px] → text-[11px] */}
+                  <span className="text-brand-yellow font-bold text-[11px]">{authorName[0]}</span>
                 </div>
               )}
               <div>
-                <p className="text-[12px] font-semibold text-ink font-sans flex items-center gap-1">
-              {authorName}
-              {authorName === 'The Orbis Journal Desk' && (
-                <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
-                  <svg viewBox="0 0 24 24" width="8" height="8" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-                </span>
-              )}
-            </p>
-                <p className="text-[11px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
+                {/* bumped: text-[12px] → text-[13px] */}
+                <p className="text-[13px] font-semibold text-ink font-sans flex items-center gap-1">
+                  {authorName}
+                  {authorName === 'The Orbis Journal Desk' && (
+                    <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
+                      <svg viewBox="0 0 24 24" width="8" height="8" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    </span>
+                  )}
+                </p>
+                {/* bumped: text-[11px] → text-[12px] */}
+                <p className="text-[12px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
               </div>
             </div>
             {(article.readTime ?? 0) > 0 && (
-              <span className="flex items-center gap-1 text-[10px] text-ink-muted font-sans">
+              // bumped: text-[10px] → text-[12px]
+              <span className="flex items-center gap-1 text-[12px] text-ink-muted font-sans">
                 <Clock size={11} /> {article.readTime}m
               </span>
             )}
@@ -207,12 +220,14 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         <div className="relative flex flex-col justify-end p-6 md:p-8 h-full" style={{ minHeight: '480px' }}>
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {article.isBreaking && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
+              // bumped: text-[9px] → text-[11px]
+              <span className="text-[11px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
                 Breaking
               </span>
             )}
             {article.category?.name && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-white/15 text-white backdrop-blur-sm">
+              // bumped: text-[9px] → text-[11px]
+              <span className="text-[11px] font-black tracking-[2px] uppercase px-2 py-1 bg-white/15 text-white backdrop-blur-sm">
                 {article.category.name}
               </span>
             )}
@@ -237,10 +252,12 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               />
             ) : (
               <div className="w-8 h-8 rounded-full bg-brand-yellow flex items-center justify-center flex-shrink-0">
-                <span className="text-brand-navy font-black text-[11px]">{authorName[0]}</span>
+                {/* bumped: text-[11px] → text-[12px] */}
+                <span className="text-brand-navy font-black text-[12px]">{authorName[0]}</span>
               </div>
             )}
-            <span className="text-white/80 text-[12px] font-sans font-medium flex items-center gap-1">
+            {/* bumped: text-[12px] → text-[13px] */}
+            <span className="text-white/80 text-[13px] font-sans font-medium flex items-center gap-1">
               {authorName}
               {authorName === 'The Orbis Journal Desk' && (
                 <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
@@ -248,9 +265,10 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 </span>
               )}
             </span>
-            <span className="text-white/45 text-[12px] font-sans">{formatDate(publishDate)}</span>
+            {/* bumped: text-[12px] → text-[13px] */}
+            <span className="text-white/45 text-[13px] font-sans">{formatDate(publishDate)}</span>
             {(article.readTime ?? 0) > 0 && (
-              <span className="text-white/45 text-[12px] font-sans flex items-center gap-1">
+              <span className="text-white/45 text-[13px] font-sans flex items-center gap-1">
                 <Clock size={11} /> {article.readTime}m read
               </span>
             )}
@@ -271,12 +289,14 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
             />
             {article.isBreaking && (
-              <span className="absolute top-3 left-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
+              // bumped: text-[9px] → text-[11px]
+              <span className="absolute top-3 left-3 text-[11px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
                 Breaking
               </span>
             )}
             {article.isEditorsPick && (
-              <span className="absolute top-3 right-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-yellow text-brand-navy">
+              // bumped: text-[9px] → text-[11px]
+              <span className="absolute top-3 right-3 text-[11px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-yellow text-brand-navy">
                 Editor's Pick
               </span>
             )}
@@ -290,18 +310,21 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         </div>
         <Link
           to={`/article/${article.slug}`}
-          className="block font-serif font-bold text-[17px] text-ink line-clamp-2 group-hover:text-brand-navy transition-colors leading-snug flex-1"
+          // bumped: text-[17px] → text-[18px]
+          className="block font-serif font-bold text-[18px] text-ink line-clamp-2 group-hover:text-brand-navy transition-colors leading-snug flex-1"
         >
           {article.title}
         </Link>
         {article.excerpt && (
-          <p className="text-[13px] text-ink-muted line-clamp-2 mt-2 leading-relaxed font-sans">
+          // bumped: text-[13px] → text-[14px]
+          <p className="text-[14px] text-ink-muted line-clamp-2 mt-2 leading-relaxed font-sans">
             {article.excerpt}
           </p>
         )}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
           <div>
-            <p className="text-[12px] font-semibold text-ink font-sans flex items-center gap-1">
+            {/* bumped: text-[12px] → text-[13px] */}
+            <p className="text-[13px] font-semibold text-ink font-sans flex items-center gap-1">
               {authorName}
               {authorName === 'The Orbis Journal Desk' && (
                 <span title="Verified" className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 flex-shrink-0">
@@ -309,13 +332,17 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 </span>
               )}
             </p>
-            <p className="text-[11px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
+            {/* bumped: text-[11px] → text-[12px] */}
+            <p className="text-[12px] text-ink-muted font-sans">{formatDate(publishDate)}</p>
           </div>
-          <div className="flex items-center gap-3 text-ink-muted text-[10px] font-sans">
+          {/* bumped: text-[10px] → text-[12px] */}
+          <div className="flex items-center gap-3 text-ink-muted text-[12px] font-sans">
             {(article.readTime ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Clock size={10} /> {article.readTime}m</span>
+              <span className="flex items-center gap-1"><Clock size={11} /> {article.readTime}m</span>
             )}
-            
+            {(article.views ?? 0) > 0 && (
+              <span className="flex items-center gap-1"><Eye size={11} /> {(article.views ?? 0).toLocaleString()}</span>
+            )}
           </div>
         </div>
       </div>

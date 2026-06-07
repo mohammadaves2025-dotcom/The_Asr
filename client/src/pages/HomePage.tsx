@@ -8,21 +8,17 @@ import { formatDate, resolveAuthorName } from '../utils/helpers';
 import type { Article } from '../types';
 
 // ── Breaking Ticker (inline homepage version) ──────────────────────────────────
-// NOTE: the standalone BreakingTicker component (components/home/BreakingTicker.tsx)
-// is used in Layout. This inline version is only used if layout doesn't include it.
 function BreakingTicker({ articles }: { articles: Article[] }) {
   if (!articles.length) return null;
   const text = articles.map((a) => a.title).join('   ·   ');
   return (
     <div className="bg-brand-navy flex items-stretch overflow-hidden border-b border-white/10">
-      {/* Label pill — red background, yellow text */}
       <div className="flex-shrink-0 bg-brand-red px-4 flex items-center gap-2 min-w-[90px]">
         <Zap size={11} className="text-brand-yellow" fill="currentColor" />
-        <span className="text-[9px] font-black tracking-[3px] uppercase text-brand-yellow whitespace-nowrap">
+        <span className="text-[11px] font-black tracking-[3px] uppercase text-brand-yellow whitespace-nowrap">
           Breaking
         </span>
       </div>
-      {/* Ticker body — navy with yellow text and fade edges */}
       <div className="flex-1 overflow-hidden py-2.5 relative">
         <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10" />
         <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10" />
@@ -54,7 +50,7 @@ function SectionHead({
       <div>
         {label && (
           <p
-            className="text-[9px] font-black uppercase tracking-[3px] mb-1 font-sans"
+            className="text-[12px] font-black uppercase tracking-[3px] mb-1 font-sans"
             style={{ color: accent }}
           >
             {label}
@@ -64,22 +60,20 @@ function SectionHead({
       </div>
       <Link
         to={href}
-        className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0 mb-1"
+        className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0 mb-1"
       >
-        More <ArrowRight size={11} />
+        More <ArrowRight size={12} />
       </Link>
     </div>
   );
 }
 
 // ── The Lead (Most Read) ───────────────────────────────────────────────────────
-// Renamed from "Most Read" → "The Lead" per client instructions
 function TheLead({ articles }: { articles: Article[] }) {
   return (
     <div className="border border-gray-200 p-5 rounded-xl">
       <div className="flex items-center gap-2 mb-5 pb-3 border-b-2 border-ink">
         <TrendingUp size={14} className="text-ink" />
-        {/* Renamed from "Most Read" to "The Lead" */}
         <h2 className="text-sm font-serif font-bold text-ink">The Lead</h2>
       </div>
       <ol>
@@ -88,7 +82,6 @@ function TheLead({ articles }: { articles: Article[] }) {
             key={art._id}
             className="group border-b border-gray-100 last:border-0 py-4 flex items-start gap-3"
           >
-            {/* Thumbnail */}
             <Link
               to={`/article/${art.slug}`}
               className="flex-shrink-0 block w-16 h-16 rounded-lg overflow-hidden bg-gray-100"
@@ -103,15 +96,14 @@ function TheLead({ articles }: { articles: Article[] }) {
                 <div className="w-full h-full bg-gradient-to-br from-brand-navy/20 to-brand-navy/5" />
               )}
             </Link>
-            {/* Title + meta */}
             <div className="flex-1 min-w-0">
               <Link
                 to={`/article/${art.slug}`}
-                className="text-[13px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
+                className="text-[15px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug"
               >
                 {art.title}
               </Link>
-              <p className="text-[10px] text-ink-muted mt-1.5 font-sans">{art.readTime}m read</p>
+              <p className="text-[12px] text-ink-muted mt-1.5 font-sans">{art.readTime}m read</p>
             </div>
           </li>
         ))}
@@ -123,29 +115,38 @@ function TheLead({ articles }: { articles: Article[] }) {
 // ── Donate Card ───────────────────────────────────────────────────────────────
 function DonateCard() {
   return (
-    <div className="border-2 border-brand-navy p-5 rounded-xl">
-      <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-2 font-sans">
-        Support Independent Journalism
-      </p>
-      <p className="font-serif font-bold text-[15px] text-ink mb-4 leading-snug">
-        Fearless reporting needs your support.
-      </p>
-      <div className="grid grid-cols-2 gap-1.5 mb-3">
-        {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
-          <button
-            key={a}
-            className="border border-gray-200 rounded-lg text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
-          >
-            {a}
-          </button>
-        ))}
+    <div className="rounded-xl overflow-hidden">
+      {/* Header band — yellow */}
+      <div className="bg-brand-yellow px-5 pt-5 pb-4">
+        <p className="text-[11px] font-black uppercase tracking-[3px] text-brand-navy/60 mb-1.5 font-sans">
+          Support Independent Journalism
+        </p>
+        <p className="font-serif font-bold text-[17px] text-brand-navy leading-snug">
+          Fearless reporting needs your support.
+        </p>
       </div>
-      <Link
-        to="/support"
-        className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-brand-navy-dark transition-colors font-sans"
-      >
-        Donate Now →
-      </Link>
+      {/* Body — navy */}
+      <div className="bg-brand-navy px-5 pt-4 pb-5">
+        <p className="text-[13px] text-white/50 font-sans mb-4 leading-relaxed">
+          Your contribution keeps our newsroom independent and our journalism free for everyone.
+        </p>
+        <div className="grid grid-cols-2 gap-1.5 mb-4">
+          {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
+            <button
+              key={a}
+              className="border border-white/20 rounded-lg text-white/70 text-[12px] font-bold py-2 hover:bg-brand-yellow hover:text-brand-navy hover:border-brand-yellow transition-all font-sans"
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+        <Link
+          to="/support"
+          className="block text-center bg-brand-yellow text-brand-navy font-black text-[11px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-yellow-300 transition-colors font-sans"
+        >
+          Donate Now →
+        </Link>
+      </div>
     </div>
   );
 }
@@ -159,7 +160,7 @@ function OpinionCard({ article }: { article: Article }) {
   return (
     <div className="group py-5 border-b border-gray-100 last:border-0 flex gap-4">
       <div className="flex-1 min-w-0">
-        <span className="inline-block text-[9px] font-black uppercase tracking-[1.5px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 mb-2 rounded-full">
+        <span className="inline-block text-[11px] font-black uppercase tracking-[1.5px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 mb-2 rounded-full">
           Opinion
         </span>
         <Link
@@ -177,14 +178,14 @@ function OpinionCard({ article }: { article: Article }) {
             />
           ) : (
             <div className="w-6 h-6 rounded-full bg-ink flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-[9px]">{authorName[0]}</span>
+              <span className="text-white font-bold text-[11px]">{authorName[0]}</span>
             </div>
           )}
-          <span className="text-[11px] text-ink-secondary font-sans font-medium flex items-center gap-1">
+          <span className="text-[13px] text-ink-secondary font-sans font-medium flex items-center gap-1">
             {authorName}
             {authorName === 'The Orbis Journal Desk' && (
               <span title="Verified" className="inline-flex items-center justify-center w-3 h-3 rounded-full bg-blue-500 flex-shrink-0">
-                <svg viewBox="0 0 24 24" width="7" height="7" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" /></svg>
+                <svg viewBox="0 0 24 24" width="7" height="7" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
               </span>
             )}
           </span>
@@ -205,40 +206,37 @@ function OpinionCard({ article }: { article: Article }) {
   );
 }
 
-// ── The Orbis Original (was "Stories That Mattered" / "Impact Journalism") ─────
-// Renamed per client: label "The Orbis Original", section title kept descriptive
+// ── The Orbis Original ────────────────────────────────────────────────────────
 function TheOrbisOriginal({ articles }: { articles: Article[] }) {
   if (!articles.length) return null;
 
   const ACCENTS = [
-    { bg: 'bg-brand-navy', text: 'text-brand-yellow', border: 'border-brand-navy' },
-    { bg: 'bg-brand-red', text: 'text-white', border: 'border-brand-red' },
-    { bg: 'bg-amber-700', text: 'text-white', border: 'border-amber-700' },
-    { bg: 'bg-emerald-800', text: 'text-white', border: 'border-emerald-800' },
+    { bg: 'bg-brand-navy',  text: 'text-brand-yellow', border: 'border-brand-navy'  },
+    { bg: 'bg-brand-red',   text: 'text-white',         border: 'border-brand-red'   },
+    { bg: 'bg-amber-700',   text: 'text-white',         border: 'border-amber-700'   },
+    { bg: 'bg-emerald-800', text: 'text-white',         border: 'border-emerald-800' },
   ];
 
   return (
     <section className="my-14">
       <div className="border-y-2 border-ink py-5 mb-8 flex flex-col sm:flex-row sm:items-end gap-3 sm:justify-between">
         <div>
-          {/* Renamed label from "Impact Journalism" to "The Orbis Original" */}
-          <p className="text-[9px] font-black uppercase tracking-[4px] text-brand-red mb-1.5 font-sans">
+          <p className="text-[12px] font-black uppercase tracking-[4px] text-brand-red mb-1.5 font-sans">
             The Orbis Original
           </p>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-ink leading-tight">
             Stories That Mattered
           </h2>
-          {/* Updated description per client "The Orbis Special" copy */}
-          <p className="text-[12px] text-ink-muted font-sans mt-1.5 max-w-md leading-relaxed">
+          <p className="text-[14px] text-ink-muted font-sans mt-1.5 max-w-md leading-relaxed">
             We bring powerful stories from across India, highlighting the lives and struggles of
             individuals whose experiences expose injustice, inspire reflection, and demand attention.
           </p>
         </div>
         <Link
-          to="/category/investigation"
-          className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[2px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0"
+          to="/search"
+          className="flex items-center gap-1.5 text-[12px] font-black uppercase tracking-[2px] text-ink-muted hover:text-brand-navy transition-colors font-sans flex-shrink-0"
         >
-          All Stories <ArrowRight size={11} />
+          All Stories <ArrowRight size={12} />
         </Link>
       </div>
 
@@ -258,7 +256,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               <div
                 className={`absolute top-0 left-0 w-8 h-8 ${accent.bg} flex items-center justify-center z-10`}
               >
-                <span className={`text-[11px] font-black font-sans ${accent.text}`}>
+                <span className={`text-[12px] font-black font-sans ${accent.text}`}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
               </div>
@@ -281,27 +279,27 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
               <div className="flex flex-col flex-1 p-4 pt-3">
                 <div className="mb-2 mt-1">
                   <span
-                    className={`inline-block text-[8px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text}`}
+                    className={`inline-block text-[11px] font-black uppercase tracking-[2px] px-2 py-0.5 border ${accent.border} ${accent.bg} ${accent.text}`}
                   >
                     {art.contentType === 'investigation'
                       ? 'Investigation'
                       : art.contentType === 'ground-report'
-                        ? 'Ground Report'
-                        : art.contentType === 'verified-report'
-                          ? '✓ Verified'
-                          : 'Must Read'}
+                      ? 'Ground Report'
+                      : art.contentType === 'verified-report'
+                      ? '✓ Verified'
+                      : 'Must Read'}
                   </span>
                 </div>
 
                 <Link
                   to={`/article/${art.slug}`}
-                  className="font-serif font-bold text-[14px] text-ink leading-snug line-clamp-3 group-hover:text-brand-navy transition-colors mb-2 block"
+                  className="font-serif font-bold text-[16px] text-ink leading-snug line-clamp-3 group-hover:text-brand-navy transition-colors mb-2 block"
                 >
                   {art.title}
                 </Link>
 
                 {(art.subtitle || art.excerpt) && (
-                  <p className="text-[11px] text-ink-muted font-sans leading-relaxed line-clamp-2 mb-3 flex-1">
+                  <p className="text-[13px] text-ink-muted font-sans leading-relaxed line-clamp-2 mb-3 flex-1">
                     {(art.subtitle || art.excerpt).slice(0, 90)}
                     {(art.subtitle || art.excerpt).length > 90 ? '…' : ''}
                   </p>
@@ -317,13 +315,13 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
                       />
                     ) : (
                       <div className="w-5 h-5 rounded-full bg-ink/20 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[8px] font-bold text-ink">{authorName[0]}</span>
+                        <span className="text-[10px] font-bold text-ink">{authorName[0]}</span>
                       </div>
                     )}
-                    <span className="text-[10px] text-ink-muted font-sans truncate">{authorName}</span>
+                    <span className="text-[12px] text-ink-muted font-sans truncate">{authorName}</span>
                   </div>
                   {art.publishedAt && (
-                    <span className="text-[9px] text-ink-muted font-sans flex-shrink-0 ml-2">
+                    <span className="text-[12px] text-ink-muted font-sans flex-shrink-0 ml-2">
                       {formatDate(art.publishedAt)}
                     </span>
                   )}
@@ -333,8 +331,6 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
           );
         })}
       </div>
-
-
     </section>
   );
 }
@@ -387,30 +383,28 @@ export default function HomePage() {
     staleTime: 10 * 60 * 1000,
   });
 
-  const articles: Article[] = articlesData?.data?.data?.articles ?? [];
-  const categories = categoriesData?.data?.data?.categories ?? [];
+  const articles: Article[]  = articlesData?.data?.data?.articles ?? [];
+  const categories           = categoriesData?.data?.data?.categories ?? [];
 
-  // ── SEO ─────────────────────────────────────────────────────────────────────
   useSeoMeta({
-    title: 'The Orbis Journal — Independent Human Rights Journalism',
+    title:       'The Orbis Journal — Independent Human Rights Journalism',
     description:
       'Independent, reader-funded journalism on human rights, minorities, and social justice in India and beyond.',
-    url: SITE_URL,
+    url:  SITE_URL,
     type: 'website',
   });
 
   if (isLoading) return <HomePageSkeleton />;
 
-  const breaking = articles.filter((a) => a.isBreaking);
-  const hero = articles.find((a) => a.isFeatured) ?? articles[0];
-  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
-  const usedIds = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
-  const latestGrid = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
-  const usedIds2 = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
-  const investigations = articles.filter((a) => a.contentType === 'investigation').slice(0, 4);
-  const opinions = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
-  const moreGrid = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
-  const mostRead = [...articles]
+  const breaking           = articles.filter((a) => a.isBreaking);
+  const hero               = articles.find((a) => a.isFeatured) ?? articles[0];
+  const sideStories        = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
+  const usedIds            = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
+  const latestGrid         = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
+  const usedIds2           = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
+  const opinions           = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
+  const moreGrid           = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
+  const mostRead           = [...articles]
     .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
     .slice(0, 5);
 
@@ -419,25 +413,24 @@ export default function HomePage() {
     mustReads.length >= 2
       ? mustReads.slice(0, 4)
       : [
-        ...mustReads,
-        ...articles
-          .filter(
-            (a) =>
-              !mustReads.find((m) => m._id === a._id) &&
-              (a.contentType === 'investigation' ||
-                a.contentType === 'ground-report' ||
-                a.contentType === 'verified-report')
-          )
-          .slice(0, 4 - mustReads.length),
-      ].slice(0, 4);
+          ...mustReads,
+          ...articles
+            .filter(
+              (a) =>
+                !mustReads.find((m) => m._id === a._id) &&
+                (a.contentType === 'investigation' ||
+                  a.contentType === 'ground-report' ||
+                  a.contentType === 'verified-report')
+            )
+            .slice(0, 4 - mustReads.length),
+        ].slice(0, 4);
 
   return (
     <div className="bg-paper min-h-screen">
+      {/* Breaking ticker — hidden on mobile */}
       <div className="hidden md:block">
         {breaking.length > 0 && <BreakingTicker articles={breaking} />}
       </div>
-
-
 
       <div className="container-site py-7 md:py-10">
 
@@ -449,8 +442,7 @@ export default function HomePage() {
                 <ArticleCard article={hero} variant="hero" />
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
-                {/* Renamed "Editor's Picks" to "Features" per client */}
-                <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-4">
+                <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-4">
                   Features
                 </p>
                 {sideStories.map((art) => (
@@ -466,33 +458,12 @@ export default function HomePage() {
 
           <main className="lg:col-span-8 space-y-12">
 
-            {/* Just In (was "Latest") */}
+            {/* Just In */}
             {latestGrid.length > 0 && (
               <section>
-                {/* Renamed: label "Top Stories", title "Just In" (was "Latest") */}
                 <SectionHead label="Top Stories" title="Just In" href="/search" accent="#c8392b" />
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {latestGrid.map((art) => (
-                    <ArticleCard key={art._id} article={art} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Investigations */}
-            {investigations.length > 0 && (
-              <section>
-                <SectionHead
-                  label="Deep Dive"
-                  title="Investigations"
-                  href="/category/investigation"
-                  accent="#6d28d9"
-                />
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div className="md:col-span-2">
-                    <ArticleCard article={investigations[0]} variant="featured-side" />
-                  </div>
-                  {investigations.slice(1, 3).map((art) => (
                     <ArticleCard key={art._id} article={art} />
                   ))}
                 </div>
@@ -516,19 +487,19 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* The Orbis Original (was "Stories That Mattered" with "Impact Journalism" label) */}
+            {/* The Orbis Original */}
             <TheOrbisOriginal articles={storiesThatMattered} />
 
-            {/* ── Must Read — prominent standalone section ── */}
+            {/* Must Read */}
             {mustReads.length > 0 && (
               <section>
                 <div className="flex items-end justify-between mb-6 pb-3 border-b-2 border-brand-red">
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-1 font-sans">Essential Reading</p>
+                    <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-1 font-sans">Essential Reading</p>
                     <h2 className="text-2xl font-serif font-bold text-ink">Must Read</h2>
                   </div>
-                  <Link to="/search" className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
-                    More <ArrowRight size={11} />
+                  <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
+                    More <ArrowRight size={12} />
                   </Link>
                 </div>
                 <div className="grid md:grid-cols-2 gap-5">
@@ -539,7 +510,7 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* ── In Their Words ── */}
+            {/* In Their Words */}
             {articles.filter((a) => a.category?.slug === 'in-their-words').length > 0 && (
               <section>
                 <SectionHead label="Voices" title="In Their Words" href="/in-their-words" accent="#0d1e29" />
@@ -551,20 +522,20 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* ── Double Lens ── */}
+            {/* Double Lens */}
             {articles.length >= 2 && (
               <section>
                 <div className="mb-6 pb-3 border-b-2 border-brand-navy">
-                  <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Perspective</p>
+                  <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Perspective</p>
                   <h2 className="text-2xl font-serif font-bold text-ink mb-1">Double Lens</h2>
-                  <p className="text-[12px] text-ink-muted font-sans max-w-lg leading-relaxed">
+                  <p className="text-[14px] text-ink-muted font-sans max-w-lg leading-relaxed">
                     We bring together stories that appear similar on the surface but lead to very different outcomes, revealing deeper social and political realities.
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-0 border border-gray-200 rounded-xl overflow-hidden">
                   {articles.filter((a) => a.contentType === 'ground-report').slice(0, 2).map((art, i) => (
                     <div key={art._id} className={`p-5 ${i === 0 ? 'border-b md:border-b-0 md:border-r border-gray-200' : ''}`}>
-                      <span className="text-[9px] font-black uppercase tracking-[2px] px-2 py-0.5 bg-brand-navy text-brand-yellow rounded-full font-sans">
+                      <span className="text-[11px] font-black uppercase tracking-[2px] px-2 py-0.5 bg-brand-navy text-brand-yellow rounded-full font-sans">
                         {i === 0 ? 'Lens A' : 'Lens B'}
                       </span>
                       <Link to={`/article/${art.slug}`} className="block mt-3 no-underline">
@@ -576,7 +547,7 @@ export default function HomePage() {
                         </h3>
                       </Link>
                       {art.excerpt && (
-                        <p className="text-[12px] text-ink-muted font-sans mt-2 line-clamp-2 leading-relaxed">{art.excerpt}</p>
+                        <p className="text-[14px] text-ink-muted font-sans mt-2 line-clamp-2 leading-relaxed">{art.excerpt}</p>
                       )}
                     </div>
                   ))}
@@ -584,7 +555,7 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* ── Through the Lens (Photo Essays) ── */}
+            {/* Through the Lens */}
             {articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo'))).length > 0 && (
               <section>
                 <SectionHead label="Visual Journalism" title="Through the Lens" href="/search" accent="#6d28d9" />
@@ -605,24 +576,24 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* ── Google News CTA ── */}
+            {/* Google News CTA */}
             <section>
               <div className="flex flex-col sm:flex-row items-center gap-4 bg-surface-secondary border border-gray-200 rounded-xl p-5">
                 <div className="flex items-center gap-3 flex-1">
                   <svg viewBox="0 0 24 24" width="32" height="32" aria-label="Google News">
-                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z" />
-                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z" />
+                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z"/>
+                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z"/>
                   </svg>
                   <div>
-                    <p className="text-[13px] font-serif font-bold text-ink">Follow us on Google News</p>
-                    <p className="text-[11px] text-ink-muted font-sans">Add The Orbis Journal as your preferred news source</p>
+                    <p className="text-[14px] font-serif font-bold text-ink">Follow us on Google News</p>
+                    <p className="text-[12px] text-ink-muted font-sans">Add The Orbis Journal as your preferred news source</p>
                   </div>
                 </div>
                 <a
                   href="https://news.google.com/publications/CAAqBwgKMLnO7QswyvjrAw"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-brand-navy text-white text-[11px] font-black uppercase tracking-[1.5px] px-5 py-2.5 rounded-lg hover:bg-brand-navy/90 transition-colors font-sans flex-shrink-0"
+                  className="flex items-center gap-2 bg-brand-navy text-white text-[12px] font-black uppercase tracking-[1.5px] px-5 py-2.5 rounded-lg hover:bg-brand-navy/90 transition-colors font-sans flex-shrink-0"
                 >
                   Follow Now <ArrowRight size={12} />
                 </a>
@@ -671,33 +642,30 @@ export default function HomePage() {
 
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-5">
-            {/* The Lead (was "Most Read") */}
             {mostRead.length > 0 && <TheLead articles={mostRead} />}
-
-            {/* Newsletter removed from sidebar per client instructions */}
 
             <DonateCard />
 
-            {/* Follow Us — Telegram removed, LinkedIn added */}
+            {/* Follow Us */}
             <div className="border border-gray-200 p-5 rounded-xl">
-              <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-4 font-sans">
+              <p className="text-[12px] font-black uppercase tracking-[3px] text-ink-muted mb-4 font-sans">
                 Follow Us
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { name: 'Twitter / X', href: '#' },
-                  { name: 'Instagram', href: '#' },
-                  { name: 'YouTube', href: '#' },
-                  { name: 'Facebook', href: '#' },
-                  { name: 'LinkedIn', href: '#' },
-                  { name: 'WhatsApp', href: '#' },
+                  { name: 'Instagram',   href: '#' },
+                  { name: 'YouTube',     href: '#' },
+                  { name: 'Facebook',    href: '#' },
+                  { name: 'LinkedIn',    href: '#' },
+                  { name: 'WhatsApp',    href: '#' },
                 ].map((s) => (
                   <a
                     key={s.name}
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-center border border-gray-200 py-2.5 text-[10px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-all font-sans rounded-lg"
+                    className="text-center border border-gray-200 py-2.5 text-[12px] font-bold text-ink-muted hover:text-ink hover:border-gray-400 transition-all font-sans rounded-lg"
                   >
                     {s.name}
                   </a>

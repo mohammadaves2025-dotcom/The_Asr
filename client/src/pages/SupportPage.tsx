@@ -60,7 +60,7 @@ export default function SupportPage() {
             The Orbis Journal is reader-funded.<br />Entirely.
           </h1>
           <p className="text-white/60 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
-            No ads. No corporate funding. No government grants. Every story we publish is made possible by readers like you who believe accountability journalism matters.
+             Every story we publish is made possible by readers like you who believe accountability journalism matters.
           </p>
         </div>
       </div>

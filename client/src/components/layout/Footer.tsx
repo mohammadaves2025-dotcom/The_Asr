@@ -54,7 +54,7 @@ const NAV_SECTIONS = [
       { label: 'Opinion',         href: '/category/opinion' },
       { label: 'In Their Words',  href: '/in-their-words' },
       { label: 'Explainers',      href: '/category/explainers' },
-      { label: 'Videos',          href: '/category/videos' },
+      
     ],
   },
   {
@@ -86,7 +86,7 @@ export default function Footer() {
         <div className="container-site py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="font-serif font-bold text-white text-base">
-              The Orbis Journal is 100% reader-funded.
+              The Orbis Journal is 100% dependent on reader support.
             </p>
             <p className="text-white/40 text-[11px] font-sans mt-0.5">
               No Political Influence · No Corporate Backing · Just Fearless Journalism

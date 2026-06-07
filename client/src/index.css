@@ -1,4 +1,21 @@
+/* ── FONT IMPORT ──────────────────────────────────────────────────────────────
+   CURRENT: Playfair Display (serif) + DM Sans (sans)
+   
+   TO SWITCH to Observer Post style fonts, comment out the line below and
+   uncomment the ALTERNATIVE block. Then update tailwind.config.js font names.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* CURRENT FONTS */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ALTERNATIVE — Observer Post style (uncomment to activate):
+   Merriweather: strong editorial serif, similar weight/contrast to what Observer Post uses
+   Inter: clean neutral sans used widely in modern news sites
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+   Then in tailwind.config.js change:
+     serif: ['"Merriweather"', 'Georgia', 'serif'],
+     sans:  ['"Inter"', 'system-ui', 'sans-serif'],
+*/
 
 @tailwind base;
 @tailwind components;
@@ -32,12 +49,14 @@
     @apply inline-flex items-center justify-center gap-1 bg-transparent text-ink-muted px-3 py-1.5 text-xs font-sans transition-colors duration-200 hover:text-brand-navy;
   }
 
+  /* ── Global section label — bumped from text-[10px] → text-[12px] ── */
   .section-label {
-    @apply text-[10px] font-bold font-sans uppercase tracking-[3px] text-brand-red;
+    @apply text-[12px] font-bold font-sans uppercase tracking-[3px] text-brand-red;
   }
 
+  /* ── Global section heading — bumped from text-xl → text-2xl ── */
   .section-heading {
-    @apply text-xl font-serif font-bold text-ink;
+    @apply text-2xl font-serif font-bold text-ink;
   }
 
   .divider-bold {
@@ -77,9 +96,9 @@
     @apply bg-white border border-gray-200 transition-all duration-300 hover:shadow-card-hover;
   }
 
-  /* Badge styles */
+  /* Badge styles — bumped from text-[11px] → text-[12px] */
   .badge-minimal {
-    @apply inline-flex items-center gap-1.5 text-[11px] font-sans text-ink-muted;
+    @apply inline-flex items-center gap-1.5 text-[12px] font-sans text-ink-muted;
   }
 
   /* Ticker animation */
