@@ -315,9 +315,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
             {(article.readTime ?? 0) > 0 && (
               <span className="flex items-center gap-1"><Clock size={10} /> {article.readTime}m</span>
             )}
-            {(article.views ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Eye size={10} /> {(article.views ?? 0).toLocaleString()}</span>
-            )}
+            
           </div>
         </div>
       </div>

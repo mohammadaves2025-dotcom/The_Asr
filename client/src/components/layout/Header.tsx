@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, User, LogOut, ChevronRight, ChevronDown , ArrowRight } from 'lucide-react';
+import { Search, Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { categoriesService } from '../../services/articles';
@@ -15,8 +15,33 @@ const MORE_ITEMS = [
   { label: 'Entertainment',        href: '/category/entertainment' },
 ];
 
+// ── MASTHEAD THEME TOGGLE ──────────────────────────────────────────────────────
+// Option A — Yellow background, Navy text (Palesun Yellow #FBFC09 / Uniform Blue #122837)
+// Option B — Navy background, Yellow text (Uniform Blue #122837 / Palesun Yellow #FBFC09)
+//
+// To switch themes, change MASTHEAD_THEME below:
+//   'yellow-on-navy'  →  Option B (default)
+//   'navy-on-yellow'  →  Option A
+// ──────────────────────────────────────────────────────────────────────────────
+const MASTHEAD_THEME: 'yellow-on-navy' | 'navy-on-yellow' = 'navy-on-yellow';
+
+const MASTHEAD_STYLES = {
+  'yellow-on-navy': {
+    wrapper:  'bg-brand-navy',
+    wordmark: 'text-brand-yellow group-hover:opacity-80',
+    tagline:  'text-brand-yellow/50',
+  },
+  'navy-on-yellow': {
+    wrapper:  'bg-brand-yellow',
+    wordmark: 'text-brand-navy group-hover:opacity-70',
+    tagline:  'text-brand-navy/50',
+  },
+} as const;
+
+const theme = MASTHEAD_STYLES[MASTHEAD_THEME];
+
 export default function Header() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [searchOpen, setSearchOpen]   = useState(false);
@@ -90,116 +115,102 @@ export default function Header() {
     ...categories.slice(0, 8).map((c: any) => ({ label: c.name, href: `/category/${c.slug}` })),
   ];
 
+  // ── Shared category nav link classes ─────────────────────────────────────────
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex-shrink-0 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
+      isActive
+        ? 'text-brand-yellow border-brand-yellow'
+        : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
+    }`;
+
   return (
     <>
-      {/* ── Utility Bar ───────────────────────────────────────────────────────
-      <div className="bg-brand-navy text-white">
-        <div className="container-site flex items-center justify-between h-9">
-          <span className="text-white/40 text-[10px] font-sans tracking-[2px] uppercase hidden sm:block">
-            Human Rights · Minorities · Justice
-          </span>
-          <div className="flex items-center gap-5 ml-auto">
-            {isAuthenticated && user ? (
-              <>
-                <Link
-                  to="/profile"
-                  className="text-white/60 hover:text-white transition-colors text-[11px] flex items-center gap-1 font-sans"
-                >
-                  <User size={10} /> {user.name.split(' ')[0]}
-                </Link>
-                <button
-                  onClick={() => logout()}
-                  className="text-white/60 hover:text-accent-red transition-colors text-[11px] flex items-center gap-1 font-sans"
-                >
-                  <LogOut size={10} /> Logout
-                </button>
-              </>
-            ) : (
-              // Only Sign In — Register removed per client instructions
-              <Link
-                to="/login"
-                className="text-white/50 hover:text-white transition-colors text-[11px] font-sans"
-              >
-                Sign In
-              </Link>
-            )}
-            <Link
-              to="/support"
-              className="bg-brand-yellow text-brand-navy px-3 py-1 text-[10px] font-black uppercase tracking-[2px] rounded-md hover:bg-yellow-400 transition-colors"
-            >
-              Support Us
-            </Link>
-          </div>
-        </div>
-      </div> */}
-
       {/* ── Main Header ─────────────────────────────────────────────────────── */}
       <header
-        className={`sticky top-0 z-40 bg-white transition-all duration-300 ${
-          scrolled ? 'shadow-nav' : 'border-b border-gray-200'
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          scrolled ? 'shadow-nav' : ''
         }`}
       >
-        {/* Masthead */}
-        <div className="container-site py-3 flex items-center gap-6">
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0 group">
-            <div className="flex items-baseline gap-0">
-              <span className="text-[26px] md:text-[30px] font-serif font-black text-brand-navy group-hover:text-brand-red transition-colors leading-none">
-                The Orbis Journal
+        {/* ── Masthead ──────────────────────────────────────────────────────── */}
+        <div className={`${theme.wrapper} transition-colors`}>
+          <div className="container-site py-3 flex items-center gap-4">
+
+            {/* Logo */}
+            <Link to="/" className="flex-shrink-0 group">
+              <div className="flex items-baseline gap-0">
+                <span className={`text-[26px] md:text-[30px] font-serif font-black leading-none transition-opacity ${theme.wordmark}`}>
+                  The Orbis Journal
+                </span>
+              </div>
+              <span className={`text-[7.5px] font-bold font-sans uppercase tracking-[4px] hidden sm:block mt-0.5 ${theme.tagline}`}>
+                Human Rights · Minorities · Justice
               </span>
-            </div>
-            <span className="text-[7.5px] font-bold font-sans uppercase tracking-[4px] text-ink-faint hidden sm:block mt-0.5">
-              Human Rights · Minorities · Justice
-            </span>
-          </Link>
-
-          {/* Spacer */}
-          <div className="flex-1" />
-
-          {/* Right actions */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="p-2.5 text-ink-muted hover:text-brand-navy hover:bg-surface-secondary transition-all rounded-lg"
-              aria-label="Search"
-            >
-              <Search size={17} strokeWidth={2} />
-            </button>
-            <Link to="/support" className="hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg">
-              Support Us
             </Link>
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2.5 text-ink hover:text-brand-navy"
-              aria-label="Open menu"
-            >
-              <Menu size={21} />
-            </button>
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Right actions */}
+            <div className="flex items-center gap-1.5">
+
+              {/* Search button — icon colour adapts to theme */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className={`p-2.5 transition-all rounded-lg ${
+                  MASTHEAD_THEME === 'yellow-on-navy'
+                    ? 'text-white/60 hover:text-white hover:bg-white/10'
+                    : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
+                }`}
+                aria-label="Search"
+              >
+                <Search size={17} strokeWidth={2} />
+              </button>
+
+              {/* Support Us — desktop only */}
+              <Link
+                to="/support"
+                className={`hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg ${
+                  MASTHEAD_THEME === 'yellow-on-navy'
+                    ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
+                    : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
+                }`}
+              >
+                Support Us
+              </Link>
+
+              {/* Hamburger — mobile only, colour adapts */}
+              <button
+                onClick={() => setMobileOpen(true)}
+                className={`md:hidden p-2.5 transition-colors ${
+                  MASTHEAD_THEME === 'yellow-on-navy'
+                    ? 'text-white hover:text-brand-yellow'
+                    : 'text-brand-navy hover:text-brand-navy/70'
+                }`}
+                aria-label="Open menu"
+              >
+                <Menu size={21} />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* ── Category Nav ─────────────────────────────────────────────────── */}
-        <nav className="hidden md:block bg-brand-navy border-t border-white/5">
+        {/* ── Category Nav — desktop + mobile (scrollable) ─────────────────── */}
+        {/* Visible on ALL screen sizes; horizontal scroll on mobile */}
+        <nav className={`bg-brand-navy border-t border-white/5 ${scrolled ? '' : 'border-b border-white/5'}`}>
           <div className="container-site flex items-center overflow-x-auto scrollbar-hide">
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
                 to={item.href}
                 end={item.href === '/'}
-                className={({ isActive }) =>
-                  `flex-shrink-0 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
-                    isActive
-                      ? 'text-brand-yellow border-brand-yellow'
-                      : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
-                  }`
-                }
+                className={navLinkClass}
               >
                 {item.label}
               </NavLink>
             ))}
 
-            {/* ── More dropdown ─────────────────────────────────────────── */}
-            <div className="flex-shrink-0 relative ml-auto" ref={moreRef}>
+            {/* ── More dropdown — desktop only ──────────────────────────── */}
+            <div className="flex-shrink-0 relative ml-auto hidden md:block" ref={moreRef}>
               <button
                 onClick={() => setMoreOpen(v => !v)}
                 className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
@@ -247,7 +258,6 @@ export default function Header() {
           onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}
         >
           <div className="w-full max-w-2xl animate-fade-up">
-            {/* Search card */}
             <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
               <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
                 <Search size={18} className="text-ink-muted flex-shrink-0" />
@@ -288,8 +298,8 @@ export default function Header() {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-brand-navy flex flex-col">
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-            <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-baseline gap-0">
-              <span className="text-xl font-serif font-black text-white">The Orbis Journal</span>
+            <Link to="/" onClick={() => setMobileOpen(false)}>
+              <span className="text-xl font-serif font-black text-brand-yellow">The Orbis Journal</span>
             </Link>
             <button onClick={() => setMobileOpen(false)} className="text-white/50 hover:text-white p-1">
               <X size={22} />
@@ -338,10 +348,10 @@ export default function Header() {
               <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">More</p>
             </div>
             {[
-              { label: 'About Us',    href: '/about' },
-              { label: 'Support Us',  href: '/support' },
+              { label: 'About Us',     href: '/about' },
+              { label: 'Support Us',   href: '/support' },
               { label: 'Write For Us', href: '/submissions' },
-              { label: 'Contact',     href: '/contact' },
+              { label: 'Contact',      href: '/contact' },
             ].map((item) => (
               <NavLink
                 key={item.href}

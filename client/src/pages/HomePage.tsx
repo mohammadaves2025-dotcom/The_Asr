@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, TrendingUp, Star } from 'lucide-react';
+import { ArrowRight, Zap, TrendingUp } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import { useSeoMeta } from '../hooks/useSeoMeta';
