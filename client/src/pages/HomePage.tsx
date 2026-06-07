@@ -184,7 +184,7 @@ function OpinionCard({ article }: { article: Article }) {
             {authorName}
             {authorName === 'The Orbis Journal Desk' && (
               <span title="Verified" className="inline-flex items-center justify-center w-3 h-3 rounded-full bg-blue-500 flex-shrink-0">
-                <svg viewBox="0 0 24 24" width="7" height="7" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                <svg viewBox="0 0 24 24" width="7" height="7" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" /></svg>
               </span>
             )}
           </span>
@@ -211,10 +211,10 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
   if (!articles.length) return null;
 
   const ACCENTS = [
-    { bg: 'bg-brand-navy',  text: 'text-brand-yellow', border: 'border-brand-navy'  },
-    { bg: 'bg-brand-red',   text: 'text-white',         border: 'border-brand-red'   },
-    { bg: 'bg-amber-700',   text: 'text-white',         border: 'border-amber-700'   },
-    { bg: 'bg-emerald-800', text: 'text-white',         border: 'border-emerald-800' },
+    { bg: 'bg-brand-navy', text: 'text-brand-yellow', border: 'border-brand-navy' },
+    { bg: 'bg-brand-red', text: 'text-white', border: 'border-brand-red' },
+    { bg: 'bg-amber-700', text: 'text-white', border: 'border-amber-700' },
+    { bg: 'bg-emerald-800', text: 'text-white', border: 'border-emerald-800' },
   ];
 
   return (
@@ -286,10 +286,10 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
                     {art.contentType === 'investigation'
                       ? 'Investigation'
                       : art.contentType === 'ground-report'
-                      ? 'Ground Report'
-                      : art.contentType === 'verified-report'
-                      ? '✓ Verified'
-                      : 'Must Read'}
+                        ? 'Ground Report'
+                        : art.contentType === 'verified-report'
+                          ? '✓ Verified'
+                          : 'Must Read'}
                   </span>
                 </div>
 
@@ -334,7 +334,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
         })}
       </div>
 
-    
+
     </section>
   );
 }
@@ -387,30 +387,30 @@ export default function HomePage() {
     staleTime: 10 * 60 * 1000,
   });
 
-  const articles: Article[]  = articlesData?.data?.data?.articles ?? [];
-  const categories           = categoriesData?.data?.data?.categories ?? [];
+  const articles: Article[] = articlesData?.data?.data?.articles ?? [];
+  const categories = categoriesData?.data?.data?.categories ?? [];
 
   // ── SEO ─────────────────────────────────────────────────────────────────────
   useSeoMeta({
-    title:       'The Orbis Journal — Independent Human Rights Journalism',
+    title: 'The Orbis Journal — Independent Human Rights Journalism',
     description:
       'Independent, reader-funded journalism on human rights, minorities, and social justice in India and beyond.',
-    url:  SITE_URL,
+    url: SITE_URL,
     type: 'website',
   });
 
   if (isLoading) return <HomePageSkeleton />;
 
-  const breaking     = articles.filter((a) => a.isBreaking);
-  const hero         = articles.find((a) => a.isFeatured) ?? articles[0];
-  const sideStories  = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
-  const usedIds      = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
-  const latestGrid   = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
-  const usedIds2     = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
+  const breaking = articles.filter((a) => a.isBreaking);
+  const hero = articles.find((a) => a.isFeatured) ?? articles[0];
+  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
+  const usedIds = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
+  const latestGrid = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
+  const usedIds2 = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
   const investigations = articles.filter((a) => a.contentType === 'investigation').slice(0, 4);
-  const opinions     = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
-  const moreGrid     = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
-  const mostRead     = [...articles]
+  const opinions = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
+  const moreGrid = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
+  const mostRead = [...articles]
     .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
     .slice(0, 5);
 
@@ -419,21 +419,23 @@ export default function HomePage() {
     mustReads.length >= 2
       ? mustReads.slice(0, 4)
       : [
-          ...mustReads,
-          ...articles
-            .filter(
-              (a) =>
-                !mustReads.find((m) => m._id === a._id) &&
-                (a.contentType === 'investigation' ||
-                  a.contentType === 'ground-report' ||
-                  a.contentType === 'verified-report')
-            )
-            .slice(0, 4 - mustReads.length),
-        ].slice(0, 4);
+        ...mustReads,
+        ...articles
+          .filter(
+            (a) =>
+              !mustReads.find((m) => m._id === a._id) &&
+              (a.contentType === 'investigation' ||
+                a.contentType === 'ground-report' ||
+                a.contentType === 'verified-report')
+          )
+          .slice(0, 4 - mustReads.length),
+      ].slice(0, 4);
 
   return (
     <div className="bg-paper min-h-screen">
-      {breaking.length > 0 && <BreakingTicker articles={breaking} />}
+      <div className="hidden md:block">
+        {breaking.length > 0 && <BreakingTicker articles={breaking} />}
+      </div>
 
 
 
@@ -608,8 +610,8 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-center gap-4 bg-surface-secondary border border-gray-200 rounded-xl p-5">
                 <div className="flex items-center gap-3 flex-1">
                   <svg viewBox="0 0 24 24" width="32" height="32" aria-label="Google News">
-                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z"/>
-                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z"/>
+                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z" />
+                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z" />
                   </svg>
                   <div>
                     <p className="text-[13px] font-serif font-bold text-ink">Follow us on Google News</p>
@@ -684,11 +686,11 @@ export default function HomePage() {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { name: 'Twitter / X', href: '#' },
-                  { name: 'Instagram',   href: '#' },
-                  { name: 'YouTube',     href: '#' },
-                  { name: 'Facebook',    href: '#' },
-                  { name: 'LinkedIn',    href: '#' },
-                  { name: 'WhatsApp',    href: '#' },
+                  { name: 'Instagram', href: '#' },
+                  { name: 'YouTube', href: '#' },
+                  { name: 'Facebook', href: '#' },
+                  { name: 'LinkedIn', href: '#' },
+                  { name: 'WhatsApp', href: '#' },
                 ].map((s) => (
                   <a
                     key={s.name}
