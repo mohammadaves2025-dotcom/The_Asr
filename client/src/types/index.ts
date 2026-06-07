@@ -88,6 +88,7 @@ export interface Article {
   }[];
   createdAt:    string;
   updatedAt:    string;
+  relatedArticles?: Article[];
 }
 
 export interface Comment {
