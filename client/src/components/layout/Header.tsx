@@ -16,13 +16,6 @@ const MORE_ITEMS = [
 ];
 
 // ── MASTHEAD THEME TOGGLE ──────────────────────────────────────────────────────
-// Option A — Yellow background, Navy text (Palesun Yellow #FBFC09 / Uniform Blue #122837)
-// Option B — Navy background, Yellow text (Uniform Blue #122837 / Palesun Yellow #FBFC09)
-//
-// To switch themes, change MASTHEAD_THEME below:
-//   'yellow-on-navy'  →  Option B (default)
-//   'navy-on-yellow'  →  Option A
-// ──────────────────────────────────────────────────────────────────────────────
 const MASTHEAD_THEME: 'yellow-on-navy' | 'navy-on-yellow' = 'navy-on-yellow';
 
 const MASTHEAD_STYLES = {
@@ -109,10 +102,14 @@ export default function Header() {
     }
   };
 
-  // Dynamic nav items from backend categories (max 8 to keep bar clean)
+  // Primary nav: Home + first 5 categories
+  const primaryCategories = categories.slice(0, 5);
+  // Overflow categories: 6th onward go into More dropdown
+  const overflowCategories = categories.slice(5, 8);
+
   const navItems = [
     { label: 'Home', href: '/' },
-    ...categories.slice(0, 8).map((c: any) => ({ label: c.name, href: `/category/${c.slug}` })),
+    ...primaryCategories.map((c: any) => ({ label: c.name, href: `/category/${c.slug}` })),
   ];
 
   // ── Shared category nav link classes ─────────────────────────────────────────
@@ -153,7 +150,7 @@ export default function Header() {
             {/* Right actions */}
             <div className="flex items-center gap-1.5">
 
-              {/* Search button — icon colour adapts to theme */}
+              {/* Search button */}
               <button
                 onClick={() => setSearchOpen(true)}
                 className={`p-2.5 transition-all rounded-lg ${
@@ -178,7 +175,7 @@ export default function Header() {
                 Support Us
               </Link>
 
-              {/* Hamburger — mobile only, colour adapts */}
+              {/* Hamburger — mobile only */}
               <button
                 onClick={() => setMobileOpen(true)}
                 className={`md:hidden p-2.5 transition-colors ${
@@ -194,8 +191,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ── Category Nav — desktop + mobile (scrollable) ─────────────────── */}
-        {/* Visible on ALL screen sizes; horizontal scroll on mobile */}
+        {/* ── Category Nav ─────────────────────────────────────────────────── */}
         <nav className={`bg-brand-navy border-t border-white/5 ${scrolled ? '' : 'border-b border-white/5'}`}>
           <div className="container-site flex items-center overflow-x-auto scrollbar-hide">
             {navItems.map((item) => (
@@ -227,7 +223,30 @@ export default function Header() {
               </button>
 
               {moreOpen && (
-                <div className="absolute right-0 top-full mt-0 w-52 bg-white shadow-overlay border border-gray-200 rounded-xl z-50 py-1">
+                <div className="absolute right-0 top-full mt-0 w-56 bg-white shadow-overlay border border-gray-200 rounded-xl z-50 py-1">
+                  {/* Overflow categories from backend */}
+                  {overflowCategories.length > 0 && (
+                    <>
+                      {overflowCategories.map((cat: any) => (
+                        <NavLink
+                          key={cat._id}
+                          to={`/category/${cat.slug}`}
+                          onClick={() => setMoreOpen(false)}
+                          className={({ isActive }) =>
+                            `block px-4 py-2.5 text-[12px] font-sans transition-colors ${
+                              isActive
+                                ? 'text-brand-navy font-bold bg-surface-secondary'
+                                : 'text-ink-secondary hover:text-brand-navy hover:bg-surface-secondary'
+                            }`
+                          }
+                        >
+                          {cat.name}
+                        </NavLink>
+                      ))}
+                      <div className="my-1 border-t border-gray-100" />
+                    </>
+                  )}
+                  {/* Static secondary sections */}
                   {MORE_ITEMS.map((item) => (
                     <NavLink
                       key={item.href}
@@ -307,6 +326,12 @@ export default function Header() {
           </div>
 
           <nav className="flex-1 overflow-y-auto divide-y divide-white/5">
+            {/* Sections group header */}
+            <div className="px-5 pt-5 pb-2">
+              <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">Sections</p>
+            </div>
+
+            {/* Primary nav items */}
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
@@ -324,17 +349,17 @@ export default function Header() {
               </NavLink>
             ))}
 
-            {/* More items in mobile */}
-            <div className="px-5 pt-5 pb-2">
-              <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">More Sections</p>
-            </div>
-            {MORE_ITEMS.map((item) => (
+            {/* Overflow + static more sections */}
+            {[
+              ...overflowCategories.map((c: any) => ({ label: c.name, href: `/category/${c.slug}` })),
+              ...MORE_ITEMS,
+            ].map((item) => (
               <NavLink
                 key={item.href}
                 to={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-5 py-3 text-[12px] font-sans transition-colors border-t border-white/5 ${
+                  `flex items-center justify-between px-5 py-3 text-[12px] font-sans transition-colors ${
                     isActive ? 'text-brand-yellow' : 'text-white/40 hover:text-white'
                   }`
                 }
@@ -344,8 +369,9 @@ export default function Header() {
               </NavLink>
             ))}
 
+            {/* About group */}
             <div className="px-5 pt-5 pb-2">
-              <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">More</p>
+              <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">About</p>
             </div>
             {[
               { label: 'About Us',     href: '/about' },

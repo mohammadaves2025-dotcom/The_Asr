@@ -58,7 +58,7 @@ function VerifiedBadge() {
   );
 }
 
-// ── Author name + verified badge (reusable, avoids duplication) ───────────────
+// ── Author name + verified badge ───────────────────────────────────────────────
 function AuthorName({
   authorName,
   authorId,
@@ -172,13 +172,21 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         >
           {article.title}
         </Link>
-        <p className="text-[12px] text-ink-muted mt-1.5 font-sans flex items-center gap-1">
+        <p className="text-[12px] text-ink-muted mt-1.5 font-sans flex items-center gap-2">
           <AuthorName
             authorName={authorName}
             authorId={authorId}
             isGuest={isGuest}
             authorRole={authorRole}
-          /> · {formatDate(publishDate)}
+          />
+          <span className="text-ink-muted/40">·</span>
+          {formatDate(publishDate)}
+          {(article.readTime ?? 0) > 0 && (
+            <>
+              <span className="text-ink-muted/40">·</span>
+              <span className="flex items-center gap-1"><Clock size={10} /> {article.readTime}m</span>
+            </>
+          )}
         </p>
       </div>
     );

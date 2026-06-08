@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, TrendingUp } from 'lucide-react';
+import { ArrowRight, Zap, TrendingUp, Star } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import { useSeoMeta } from '../hooks/useSeoMeta';
@@ -68,13 +68,13 @@ function SectionHead({
   );
 }
 
-// ── The Lead ───────────────────────────────────────────────────────────────────
-function TheLead({ articles }: { articles: Article[] }) {
+// ── Most Read (sidebar) ────────────────────────────────────────────────────────
+function MostRead({ articles }: { articles: Article[] }) {
   return (
     <div className="border border-gray-200 p-5 rounded-xl">
       <div className="flex items-center gap-2 mb-5 pb-3 border-b-2 border-ink">
         <TrendingUp size={14} className="text-ink" />
-        <h2 className="text-sm font-serif font-bold text-ink">The Lead</h2>
+        <h2 className="text-sm font-serif font-bold text-ink">Most Read</h2>
       </div>
       <ol>
         {articles.slice(0, 5).map((art) => (
@@ -95,6 +95,42 @@ function TheLead({ articles }: { articles: Article[] }) {
           </li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+// ── Popular Stories (sidebar) ─────────────────────────────────────────────────
+function PopularStories({ articles }: { articles: Article[] }) {
+  if (!articles.length) return null;
+  return (
+    <div className="border border-gray-200 p-5 rounded-xl">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-brand-red">
+        <h2 className="text-sm font-serif font-bold text-ink">Popular Stories</h2>
+        <span className="text-[9px] font-black uppercase tracking-[2px] text-brand-red font-sans">This Week</span>
+      </div>
+      <ul className="space-y-4">
+        {articles.map((art) => (
+          <li key={art._id} className="group flex gap-3 items-start">
+            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-14 h-14 rounded-lg overflow-hidden bg-gray-100">
+              {art.featuredImage?.url ? (
+                <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-brand-navy/20 to-brand-navy/5" />
+              )}
+            </Link>
+            <div className="flex-1 min-w-0">
+              <Link to={`/article/${art.slug}`} className="text-[14px] font-serif font-semibold text-ink line-clamp-2 group-hover:text-brand-navy transition-colors block leading-snug">
+                {art.title}
+              </Link>
+              {(art.views ?? 0) > 0 && (
+                <p className="text-[11px] text-ink-muted mt-1 font-sans">
+                  {(art.views ?? 0).toLocaleString()} views
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -124,6 +160,8 @@ function DonateCard() {
 }
 
 // ── Opinion Card ──────────────────────────────────────────────────────────────
+// Note: no "Opinion" chip here — ContentLabel in ArticleCard handles labelling.
+// This component is used inside an Opinion section that already has a section header.
 function OpinionCard({ article }: { article: Article }) {
   const authorName =
     article.isGuestAuthor && article.guestAuthorName
@@ -132,9 +170,6 @@ function OpinionCard({ article }: { article: Article }) {
   return (
     <div className="group py-5 border-b border-gray-100 last:border-0 flex gap-4">
       <div className="flex-1 min-w-0">
-        <span className="inline-block text-[11px] font-black uppercase tracking-[1.5px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 mb-2 rounded-full">
-          Opinion
-        </span>
         <Link to={`/article/${article.slug}`} className="block font-serif font-bold text-[17px] text-ink line-clamp-2 leading-snug group-hover:text-brand-navy transition-colors mb-2">
           {article.title}
         </Link>
@@ -301,6 +336,13 @@ export default function HomePage() {
     refetchInterval: 2.5 * 60 * 1000,
   });
 
+  // Dedicated Most Read query — sorted by views descending
+  const { data: mostReadData } = useQuery({
+    queryKey: ['articles', 'most-read'],
+    queryFn: () => articlesService.getAll({ limit: 8, status: 'published', sort: '-views' }),
+    staleTime: 10 * 60 * 1000,
+  });
+
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
     queryFn: () => categoriesService.getAll(),
@@ -308,6 +350,8 @@ export default function HomePage() {
   });
 
   const articles: Article[]  = articlesData?.data?.data?.articles ?? [];
+  const mostReadArticles: Article[] = mostReadData?.data?.data?.articles ?? [];
+  const popularArticles: Article[]  = mostReadArticles.slice(5, 8);
   const categories           = categoriesData?.data?.data?.categories ?? [];
 
   useSeoMeta({
@@ -326,8 +370,8 @@ export default function HomePage() {
   const latestGrid  = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2    = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
   const opinions    = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
+  const editorsPick = articles.filter((a) => a.isEditorsPick).slice(0, 3);
   const moreGrid    = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
-  const mostRead    = [...articles].sort((a, b) => (b.views ?? 0) - (a.views ?? 0)).slice(0, 5);
 
   const mustReads = articles.filter((a) => a.isMustRead);
   const storiesThatMattered =
@@ -346,7 +390,7 @@ export default function HomePage() {
             .slice(0, 4 - mustReads.length),
         ].slice(0, 4);
 
-  // Through the Lens — only show genuine photo-essays, no fallback to regular articles
+  // Through the Lens — photo-essays only, no fallback
   const photoEssays  = articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo')));
   const lensArticles = photoEssays.slice(0, 3);
 
@@ -384,6 +428,27 @@ export default function HomePage() {
                 <SectionHead label="Top Stories" title="Just In" href="/search" accent="#c8392b" />
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {latestGrid.map((art) => (<ArticleCard key={art._id} article={art} />))}
+                </div>
+              </section>
+            )}
+
+            {/* Editor's Pick */}
+            {editorsPick.length > 0 && (
+              <section className="mb-16">
+                <div className="flex items-end justify-between mb-5 pb-3 border-b-2 border-brand-navy">
+                  <div>
+                    <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Curated</p>
+                    <h2 className="text-3xl font-serif font-bold text-ink italic flex items-center gap-2">
+                      Editor's Pick
+                      <Star size={20} className="text-brand-yellow fill-brand-yellow" />
+                    </h2>
+                  </div>
+                  <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
+                    More <ArrowRight size={12} />
+                  </Link>
+                </div>
+                <div className="grid md:grid-cols-3 gap-5">
+                  {editorsPick.map((art) => (<ArticleCard key={art._id} article={art} />))}
                 </div>
               </section>
             )}
@@ -464,7 +529,7 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* Through the Lens — always visible with fallback */}
+            {/* Through the Lens */}
             {lensArticles.length > 0 && (
               <section className="my-16">
                 <SectionHead label="Visual Journalism" title="Through the Lens" href="/search" accent="#c8392b" />
@@ -488,30 +553,6 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* Google News CTA */}
-            <section>
-              <div className="flex flex-col sm:flex-row items-center gap-4 bg-surface-secondary border border-gray-200 rounded-xl p-5">
-                <div className="flex items-center gap-3 flex-1">
-                  <svg viewBox="0 0 24 24" width="32" height="32" aria-label="Google News">
-                    <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z"/>
-                    <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z"/>
-                  </svg>
-                  <div>
-                    <p className="text-[14px] font-serif font-bold text-ink">Follow us on Google News</p>
-                    <p className="text-[12px] text-ink-muted font-sans">Add The Orbis Journal as your preferred news source</p>
-                  </div>
-                </div>
-                <a
-                  href="https://news.google.com/publications/CAAqBwgKMLnO7QswyvjrAw"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-brand-navy text-white text-[12px] font-black uppercase tracking-[1.5px] px-5 py-2.5 rounded-lg hover:bg-brand-navy/90 transition-colors font-sans flex-shrink-0"
-                >
-                  Follow Now <ArrowRight size={12} />
-                </a>
-              </div>
-            </section>
-
             {/* More stories */}
             {moreGrid.length > 0 && (
               <section className="mb-16">
@@ -526,6 +567,28 @@ export default function HomePage() {
                 </div>
               </section>
             )}
+
+            {/* Google News CTA — slim bar */}
+            <section className="mb-4">
+              <div className="flex items-center gap-4 bg-surface-secondary border border-gray-200 rounded-xl px-5 py-3.5">
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-label="Google News" className="flex-shrink-0">
+                  <path fill="#4285F4" d="M12 24A12 12 0 1 0 12 0a12 12 0 0 0 0 24z"/>
+                  <path fill="white" d="M12 5.5l-1.5 3h3L12 5.5zM7 10h10v1.5H7V10zm0 3h10v1.5H7V13zm0 3h6v1.5H7V16z"/>
+                </svg>
+                <p className="text-[13px] font-sans text-ink flex-1">
+                  <span className="font-bold">Follow us on Google News</span>
+                  <span className="text-ink-muted hidden sm:inline"> — stay updated with every story we publish</span>
+                </p>
+                <a
+                  href="https://news.google.com/publications/CAAqBwgKMLnO7QswyvjrAw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 bg-brand-navy text-white text-[11px] font-black uppercase tracking-[1.5px] px-4 py-2 rounded-lg hover:bg-brand-navy/90 transition-colors font-sans flex-shrink-0"
+                >
+                  Follow <ArrowRight size={11} />
+                </a>
+              </div>
+            </section>
 
             {/* Category strips */}
             {categories.slice(0, 3).map((cat: any) => {
@@ -544,11 +607,11 @@ export default function HomePage() {
 
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-5">
-            {mostRead.length > 0 && <TheLead articles={mostRead} />}
+            {mostReadArticles.length > 0 && <MostRead articles={mostReadArticles} />}
 
             <DonateCard />
 
-            {/* Follow Us — Social Media Icons */}
+            {popularArticles.length > 0 && <PopularStories articles={popularArticles} />}
             <div className="border border-gray-200 p-5 rounded-xl">
               <p className="text-[12px] font-black uppercase tracking-[3px] text-ink-muted mb-4 font-sans">Follow Us</p>
               <div className="grid grid-cols-3 gap-3">
