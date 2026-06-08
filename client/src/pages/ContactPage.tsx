@@ -11,7 +11,7 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus('loading'); setError('');
     try {
-      await api.post('/submissions', { ...form, type: 'contact' });
+      await api.post('/submissions', { name: form.name, email: form.email, subject: form.subject, body: form.message, type: 'contact' });
       setStatus('success');
     } catch {
       setError('Failed to send message. Please email us directly.');

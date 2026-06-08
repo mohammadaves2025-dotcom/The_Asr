@@ -4,7 +4,7 @@ const submissionSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['tip', 'community-voice', 'letter-to-editor', 'youth-writer', 'correction'],
+      enum: ['tip', 'community-voice', 'letter-to-editor', 'youth-writer', 'correction', 'contact'],
       required: true,
     },
     // ── Submitter ─────────────────────────────────────────────────────────
