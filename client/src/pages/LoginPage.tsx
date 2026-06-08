@@ -132,7 +132,7 @@ export default function LoginPage() {
 
           <div className="mt-4 text-center">
             <p className="text-sm text-ink-muted font-sans">
-              New to Maktoob?{' '}
+              New to The Orbis Journal?{' '}
               <Link to="/register" className="text-brand-navy font-semibold hover:underline">
                 Create an account
               </Link>

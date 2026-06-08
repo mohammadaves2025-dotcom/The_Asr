@@ -23,8 +23,8 @@ const CATEGORIES = [
 ];
 
 const ADMIN_USER = {
-  name: 'Maktoob Admin',
-  email: 'admin@maktoob.com',
+  name: 'The Orbis Journal Admin',
+  email: 'admin@theorbisjournal.com',
   password: 'Admin@12345',
   role: 'superadmin',
   isVerified: true,

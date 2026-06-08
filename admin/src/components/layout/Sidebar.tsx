@@ -69,7 +69,7 @@ export default function Sidebar({ collapsed }: Props) {
         ) : (
           <div className="flex items-center justify-between w-full">
             <Link to="/" className="flex items-center gap-1 no-underline">
-              <span className="text-lg font-serif font-bold text-white">Maktoob</span>
+              <span className="text-lg font-serif font-bold text-white">The Orbis Journal</span>
               <span className="text-lg font-serif font-bold text-brand-yellow">.</span>
             </Link>
             <span className="text-[9px] font-bold font-sans uppercase tracking-widest text-white/30 ml-1">CMS</span>

@@ -44,7 +44,12 @@ function VerifiedBadge({ className = '' }: { className?: string }) {
 }
 
 // ── Create User Modal ───────────────────────────────────────────────────────
-function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+function CreateUserModal({ currentUserRole, onClose, onCreated }: { currentUserRole: string; onClose: () => void; onCreated: () => void }) {
+  // Admins can create contributor/editor; superadmin can also create admin
+  const availableRoles: typeof CREATE_ROLES[number][] =
+    currentUserRole === 'superadmin'
+      ? ['contributor', 'editor', 'admin']
+      : ['contributor', 'editor'];
   const [form, setForm] = useState({
     name:        '',
     email:       '',
@@ -154,7 +159,7 @@ function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 onChange={set('role')}
                 className="admin-select w-full text-sm"
               >
-                {CREATE_ROLES.map((r) => (
+                {availableRoles.map((r) => (
                   <option key={r} value={r}>{r}</option>
                 ))}
               </select>
@@ -217,9 +222,10 @@ function CreateUserModal({ onClose, onCreated }: { onClose: () => void; onCreate
 }
 
 // ── Edit Profile Panel ──────────────────────────────────────────────────────
-function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onClose: () => void; onSaved: () => void }) {
+function EditProfilePanel({ user, currentUserRole, onClose, onSaved }: { user: AuthorProfile; currentUserRole: string; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState({
     name:        user.name        ?? '',
+    role:        user.role        ?? 'contributor',
     designation: user.designation ?? '',
     bio:         user.bio         ?? '',
     avatar:      user.avatar      ?? '',
@@ -238,6 +244,7 @@ function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onC
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Update profile fields
       await api.patch(`/users/admin/${user._id}/profile`, {
         name:        form.name,
         designation: form.designation,
@@ -252,6 +259,10 @@ function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onC
           youtube:   form.youtube   || undefined,
         },
       });
+      // Separately update role if changed and requester is superadmin
+      if (currentUserRole === 'superadmin' && form.role !== user.role) {
+        await api.patch(`/users/admin/${user._id}/role`, { role: form.role });
+      }
       toast.success('Profile updated');
       onSaved();
       onClose();
@@ -289,6 +300,23 @@ function EditProfilePanel({ user, onClose, onSaved }: { user: AuthorProfile; onC
               <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Full Name *</span>
               <input value={form.name} onChange={setVal('name')} className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy" />
             </label>
+
+            {/* Role — superadmin only, can't demote themselves */}
+            {currentUserRole === 'superadmin' && user.role !== 'superadmin' && (
+              <label className="block mb-3">
+                <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Role</span>
+                <select
+                  value={form.role}
+                  onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
+                  className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy bg-white"
+                >
+                  {['subscriber', 'contributor', 'editor', 'admin'].map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+
             <label className="block mb-3">
               <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Designation</span>
               <input value={form.designation} onChange={setVal('designation')} placeholder="e.g. Senior Correspondent, Guest Contributor" className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy" />
@@ -394,7 +422,7 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="text-xs font-sans text-ink-muted">{meta?.total || 0} total users</p></div>
-        {currentUser?.role === 'superadmin' && (
+        {['admin', 'superadmin'].includes(currentUser?.role ?? '') && (
           <button onClick={() => setCreateOpen(true)} className="admin-btn-primary gap-2 text-xs flex items-center">
             <Plus size={14} /> Create User
           </button>
@@ -521,9 +549,11 @@ export default function UsersPage() {
           </table>
         </div>
 
-        {meta && meta.totalPages > 1 && (
+        {meta && (meta.totalPages ?? 1) > 1 && (
           <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-200">
-            <p className="text-xs text-ink-muted font-sans">Page {meta.page} of {meta.totalPages}</p>
+            <p className="text-xs text-ink-muted font-sans">
+              Page {meta.page} of {meta.totalPages} &nbsp;·&nbsp; {meta.total} users
+            </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={!meta.hasPrevPage} className="admin-btn-secondary py-1.5 text-xs">Previous</button>
               <button onClick={() => setPage((p) => p + 1)} disabled={!meta.hasNextPage} className="admin-btn-secondary py-1.5 text-xs">Next</button>
@@ -545,9 +575,9 @@ export default function UsersPage() {
         onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget._id)} onCancel={() => setDeleteTarget(null)}
       />
 
-      {createOpen && <CreateUserModal onClose={() => setCreateOpen(false)} onCreated={() => qc.invalidateQueries({ queryKey: ['admin', 'users'] })} />}
+      {createOpen && <CreateUserModal currentUserRole={currentUser?.role ?? 'admin'} onClose={() => setCreateOpen(false)} onCreated={() => qc.invalidateQueries({ queryKey: ['admin', 'users'] })} />}
 
-      {editTarget && <EditProfilePanel user={editTarget} onClose={() => setEditTarget(null)} onSaved={() => qc.invalidateQueries({ queryKey: ['admin', 'users'] })} />}
+      {editTarget && <EditProfilePanel user={editTarget} currentUserRole={currentUser?.role ?? 'admin'} onClose={() => setEditTarget(null)} onSaved={() => qc.invalidateQueries({ queryKey: ['admin', 'users'] })} />}
     </div>
   );
 }

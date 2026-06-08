@@ -115,13 +115,6 @@ function DonateCard() {
         <p className="text-[13px] text-white/50 font-sans mb-4 leading-relaxed">
           Your contribution keeps our newsroom independent and our journalism free for everyone.
         </p>
-        <div className="grid grid-cols-2 gap-1.5 mb-4">
-          {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
-            <button key={a} className="border border-white/20 rounded-lg text-white/70 text-[12px] font-bold py-2 hover:bg-brand-yellow hover:text-brand-navy hover:border-brand-yellow transition-all font-sans">
-              {a}
-            </button>
-          ))}
-        </div>
         <Link to="/support" className="block text-center bg-brand-yellow text-brand-navy font-black text-[11px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-yellow-300 transition-colors font-sans">
           Donate Now →
         </Link>
@@ -353,10 +346,9 @@ export default function HomePage() {
             .slice(0, 4 - mustReads.length),
         ].slice(0, 4);
 
-  // Through the Lens articles — photo essays with image fallback
-  const photoEssays    = articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo')));
-  const fallbackPhotos = articles.filter((a) => a.featuredImage?.url && !photoEssays.find((p) => p._id === a._id));
-  const lensArticles   = photoEssays.length > 0 ? photoEssays.slice(0, 3) : fallbackPhotos.slice(0, 3);
+  // Through the Lens — only show genuine photo-essays, no fallback to regular articles
+  const photoEssays  = articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo')));
+  const lensArticles = photoEssays.slice(0, 3);
 
   return (
     <div className="bg-paper min-h-screen">

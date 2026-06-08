@@ -21,6 +21,7 @@ const aiRoutes = require('./routes/ai');
 const {
   categoryRouter, commentRouter, adminCommentRouter,
   newsletterRouter, submissionRouter, userRouter,
+  statsRouter,
 } = require('./routes/index');
 
 const app = express();
@@ -104,6 +105,7 @@ app.use(`${API}/categories`,                    categoryRouter);
 app.use(`${API}/newsletter`,                    newsletterRouter);
 app.use(`${API}/submissions`,                   submissionRouter);
 app.use(`${API}/users`,                         userRouter);
+app.use(`${API}/admin/stats`,                   statsRouter);
 
 app.use(notFound);
 app.use(errorHandler);

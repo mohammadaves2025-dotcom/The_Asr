@@ -30,7 +30,7 @@ function ProtectedRoutes() {
     return (
       <div className="min-h-screen bg-sidebar-bg flex items-center justify-center">
         <div className="text-center">
-          <div className="text-3xl font-serif font-bold text-white mb-2">Maktoob<span className="text-brand-yellow">.</span></div>
+          <div className="text-3xl font-serif font-bold text-white mb-2">The Orbis Journal<span className="text-brand-yellow">.</span></div>
           <p className="text-xs font-sans text-white/30 uppercase tracking-widest">Loading CMS...</p>
         </div>
       </div>

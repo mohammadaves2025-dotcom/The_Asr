@@ -4,6 +4,10 @@
 import api from './api';
 import type { Article, User, Submission, ApiResponse } from '../types';
 
+export const statsAdmin = {
+  get: () => api.get('/admin/stats'),
+};
+
 export const articlesAdmin = {
   getAll: (params: Record<string, any> = {}) =>
     api.get<ApiResponse<{ articles: Article[] }>>('/articles/admin/all', { params }),

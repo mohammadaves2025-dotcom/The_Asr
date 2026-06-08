@@ -365,16 +365,29 @@ const userController = {
         User.find(filter).sort('-createdAt').skip(skip).limit(Number(limit)).select('-refreshTokens').populate('articlesCount'),
         User.countDocuments(filter),
       ]);
-      return sendSuccess(res, { data: { users }, meta: { total, page: Number(page) } });
+      const { buildPaginationMeta } = require('../utils/apiResponse');
+      return sendSuccess(res, { data: { users }, meta: buildPaginationMeta(page, limit, total) });
     } catch (err) { next(err); }
   },
 
   adminCreate: async (req, res, next) => {
     try {
-      const { name, email, password, role, designation, bio, socialLinks } = req.body;
+      const { name, email, password, role, designation, bio, avatar, socialLinks } = req.body;
 
       if (!name || !email || !password) {
         return sendError(res, { statusCode: 400, message: 'Name, email and password are required' });
+      }
+
+      if (password.length < 8) {
+        return sendError(res, { statusCode: 400, message: 'Password must be at least 8 characters' });
+      }
+
+      // Admins can only create contributors and editors — superadmin required for admin/superadmin
+      const requestingRole = req.user.role;
+      const targetRole = role || 'contributor';
+      const ELEVATED_ROLES = ['admin', 'superadmin'];
+      if (ELEVATED_ROLES.includes(targetRole) && requestingRole !== 'superadmin') {
+        return sendError(res, { statusCode: 403, message: 'Only superadmin can create admin or superadmin accounts' });
       }
 
       const existing = await User.findOne({ email });
@@ -384,18 +397,20 @@ const userController = {
         name,
         email,
         password,
-        role: role || 'contributor',
+        role: targetRole,
         designation: designation || undefined,
         bio: bio || undefined,
+        avatar: avatar || undefined,
         socialLinks: socialLinks || undefined,
         provider: 'local',
         isVerified: true,
+        isActive: true,
       });
 
       return sendSuccess(res, {
         statusCode: 201,
         message: 'User created successfully',
-        data: { user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar } },
+        data: { user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, designation: user.designation } },
       });
     } catch (err) { next(err); }
   },

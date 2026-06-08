@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-1 mb-3">
-            <span className="text-3xl font-serif font-bold text-white">Maktoob</span>
+            <span className="text-3xl font-serif font-bold text-white">The Orbis Journal</span>
             <span className="text-3xl font-serif font-bold text-brand-yellow">.</span>
           </div>
           <p className="text-xs font-bold font-sans uppercase tracking-widest text-white/30">Content Management System</p>
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="admin-input"
-                placeholder="admin@maktoob.com"
+                placeholder="admin@theorbisjournal.com"
                 required
                 autoComplete="email"
               />

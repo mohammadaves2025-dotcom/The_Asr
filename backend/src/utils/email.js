@@ -32,7 +32,7 @@ const baseTemplate = (content) => `
 </head>
 <body>
   <div class="wrap">
-    <div class="header"><div class="logo">Maktoob<span>.</span></div></div>
+    <div class="header"><div class="logo">The Orbis Journal<span>.</span></div></div>
     <div class="body">${content}</div>
     <div class="footer">© ${new Date().getFullYear()} The Orbis Journal · Independent. Rights. Accountability.</div>
   </div>

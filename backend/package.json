@@ -1,5 +1,5 @@
 {
-  "name": "maktoob-backend",
+  "name": "theorbisjournal-backend",
   "version": "1.0.0",
   "description": "The Orbis Journal Media — robust Express/MongoDB API",
   "main": "src/server.js",

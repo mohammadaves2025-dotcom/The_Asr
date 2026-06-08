@@ -1,11 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { FileText, Users, Eye, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
-import { articlesAdmin, usersAdmin, submissionsAdmin } from '../services/admin';
+import { articlesAdmin, usersAdmin, submissionsAdmin, statsAdmin } from '../services/admin';
 import { formatDate, formatRelative } from '../utils/helpers';
 
 export default function DashboardPage() {
+  const { data: statsData } = useQuery({
+    queryKey: ['admin', 'stats'],
+    queryFn:  () => statsAdmin.get(),
+    staleTime: 60_000,
+  });
+
   const { data: articlesData } = useQuery({
     queryKey: ['admin', 'articles', 'dashboard'],
     queryFn: () => articlesAdmin.getAll({ limit: 5, sort: '-updatedAt' }),
@@ -21,20 +28,24 @@ export default function DashboardPage() {
     queryFn: () => submissionsAdmin.getAll({ limit: 5, status: 'new' }),
   });
 
-  const articles = articlesData?.data?.data?.articles || [];
-  const users = usersData?.data?.data?.users || [];
+  const articles    = articlesData?.data?.data?.articles   || [];
+  const users       = usersData?.data?.data?.users         || [];
   const submissions = submissionsData?.data?.data?.submissions || [];
 
-  const totalViews = articles.reduce((s: number, a: any) => s + (a.views || 0), 0);
+  const stats = statsData?.data?.data;
+  const totalArticles    = stats?.articles?.total    ?? articlesData?.data?.meta?.total    ?? 0;
+  const totalUsers       = stats?.users?.total       ?? usersData?.data?.meta?.total       ?? 0;
+  const newSubmissions   = stats?.submissions?.new   ?? submissionsData?.data?.meta?.total ?? 0;
+  const totalViews       = stats?.views?.total       ?? 0;
 
   return (
     <div className="p-6 space-y-7 animate-fade-in">
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Articles" value={articlesData?.data?.meta?.total || 0} icon={FileText} color="#122837" />
-        <StatCard label="Total Users" value={usersData?.data?.meta?.total || 0} icon={Users} color="#0e7490" />
-        <StatCard label="New Submissions" value={submissionsData?.data?.meta?.total || 0} icon={Send} color="#b45309" />
-        <StatCard label="Total Views" value={totalViews} icon={Eye} color="#16a34a" />
+        <StatCard label="Total Articles"   value={totalArticles}  icon={FileText} color="#122837" />
+        <StatCard label="Total Users"      value={totalUsers}     icon={Users}    color="#0e7490" />
+        <StatCard label="New Submissions"  value={newSubmissions} icon={Send}     color="#b45309" />
+        <StatCard label="Total Views"      value={totalViews}     icon={Eye}      color="#16a34a" />
       </div>
 
       {/* Recent Articles */}
@@ -42,7 +53,7 @@ export default function DashboardPage() {
         <div className="admin-card">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
             <h2 className="text-sm font-semibold font-sans text-ink">Recent Articles</h2>
-            <a href="/articles" className="text-xs font-sans text-brand-navy hover:underline">View all</a>
+            <Link to="/articles" className="text-xs font-sans text-brand-navy hover:underline">View all</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {articles.length === 0 ? (
@@ -68,7 +79,7 @@ export default function DashboardPage() {
         <div className="admin-card">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
             <h2 className="text-sm font-semibold font-sans text-ink">New Submissions</h2>
-            <a href="/submissions" className="text-xs font-sans text-brand-navy hover:underline">View all</a>
+            <Link to="/submissions" className="text-xs font-sans text-brand-navy hover:underline">View all</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {submissions.length === 0 ? (
@@ -95,7 +106,7 @@ export default function DashboardPage() {
       <div className="admin-card">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
           <h2 className="text-sm font-semibold font-sans text-ink">Recent Registrations</h2>
-          <a href="/users" className="text-xs font-sans text-brand-navy hover:underline">View all</a>
+          <Link to="/users" className="text-xs font-sans text-brand-navy hover:underline">View all</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
