@@ -122,40 +122,42 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   // ── Text-only (sidebar list) ───────────────────────────────────────────────
   if (variant === 'text-only') {
     return (
-      <div className="py-3.5 border-b border-gray-100 last:border-0 group flex gap-3 items-start">
-        <Link to={`/article/${article.slug}`} className="flex-shrink-0 mt-0.5">
-          {article.featuredImage?.url ? (
-            <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
-              <img
-                src={article.featuredImage.url}
-                alt={article.featuredImage.alt || article.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ) : (
-            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center flex-shrink-0">
-              <span className="text-brand-yellow font-serif font-black text-xl">
-                {article.title?.[0] ?? '?'}
-              </span>
-            </div>
-          )}
-        </Link>
-        <div className="flex-1 min-w-0">
-          <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
-          <Link
-            to={`/article/${article.slug}`}
-            className="block mt-1.5 font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3"
-          >
-            {article.title}
+      <div className="py-3.5 border-b border-gray-100 last:border-0 group">
+        <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
+        <div className="flex gap-3 items-start mt-1.5">
+          <div className="flex-1 min-w-0">
+            <Link
+              to={`/article/${article.slug}`}
+              className="block font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3"
+            >
+              {article.title}
+            </Link>
+            <p className="text-[11px] text-ink-muted mt-1.5 font-sans">
+              <AuthorName
+                authorName={authorName}
+                authorId={authorId}
+                isGuest={isGuest}
+                authorRole={authorRole}
+              /> · {formatDate(publishDate)}
+            </p>
+          </div>
+          <Link to={`/article/${article.slug}`} className="flex-shrink-0">
+            {article.featuredImage?.url ? (
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+                <img
+                  src={article.featuredImage.url}
+                  alt={article.featuredImage.alt || article.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
+                <span className="text-brand-yellow font-serif font-black text-xl">
+                  {article.title?.[0] ?? '?'}
+                </span>
+              </div>
+            )}
           </Link>
-          <p className="text-[11px] text-ink-muted mt-1.5 font-sans">
-            <AuthorName
-              authorName={authorName}
-              authorId={authorId}
-              isGuest={isGuest}
-              authorRole={authorRole}
-            /> · {formatDate(publishDate)}
-          </p>
         </div>
       </div>
     );
