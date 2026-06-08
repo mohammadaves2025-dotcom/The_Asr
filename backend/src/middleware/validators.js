@@ -89,7 +89,7 @@ const createCommentValidator = [
 // ── Submission Validators ─────────────────────────────────────────────────────
 const submissionValidator = [
   body('type')
-    .isIn(['tip', 'community-voice', 'letter-to-editor', 'youth-writer', 'correction'])
+    .isIn(['tip', 'community-voice', 'letter-to-editor', 'youth-writer', 'correction', 'contact'])
     .withMessage('Invalid submission type'),
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email required').normalizeEmail(),

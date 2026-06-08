@@ -122,11 +122,6 @@ function PopularStories({ articles }: { articles: Article[] }) {
               <Link to={`/article/${art.slug}`} className="text-[14px] font-serif font-semibold text-ink line-clamp-2 group-hover:text-brand-navy transition-colors block leading-snug">
                 {art.title}
               </Link>
-              {(art.views ?? 0) > 0 && (
-                <p className="text-[11px] text-ink-muted mt-1 font-sans">
-                  {(art.views ?? 0).toLocaleString()} views
-                </p>
-              )}
             </div>
           </li>
         ))}
@@ -408,7 +403,7 @@ export default function HomePage() {
                 <ArticleCard article={hero} variant="hero" />
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
-                <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-4">Features</p>
+                <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-4">Editor's Pick</p>
                 {sideStories.map((art) => (
                   <ArticleCard key={art._id} article={art} variant="text-only" />
                 ))}

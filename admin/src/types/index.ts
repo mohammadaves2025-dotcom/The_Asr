@@ -78,7 +78,7 @@ export interface Comment {
 
 export interface Submission {
   _id: string;
-  type: 'tip' | 'community-voice' | 'letter-to-editor' | 'youth-writer' | 'correction';
+  type: 'tip' | 'community-voice' | 'letter-to-editor' | 'youth-writer' | 'correction' | 'contact';
   name: string;
   email: string;
   subject: string;

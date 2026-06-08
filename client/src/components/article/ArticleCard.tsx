@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Eye, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { formatDate, resolveAuthorName } from '../../utils/helpers';
 import type { Article } from '../../types';
 
@@ -122,10 +122,10 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   // ── Text-only (sidebar list) ───────────────────────────────────────────────
   if (variant === 'text-only') {
     return (
-      <div className="py-4 border-b border-gray-100 last:border-0 group flex gap-3 items-start">
-        <Link to={`/article/${article.slug}`} className="flex-shrink-0">
+      <div className="py-3.5 border-b border-gray-100 last:border-0 group flex gap-3 items-start">
+        <Link to={`/article/${article.slug}`} className="flex-shrink-0 mt-0.5">
           {article.featuredImage?.url ? (
-            <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-100">
+            <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
               <img
                 src={article.featuredImage.url}
                 alt={article.featuredImage.alt || article.title}
@@ -133,7 +133,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center flex-shrink-0">
+            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center flex-shrink-0">
               <span className="text-brand-yellow font-serif font-black text-xl">
                 {article.title?.[0] ?? '?'}
               </span>
@@ -301,7 +301,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   // ── Hero (full-bleed homepage lead) ─────────────────────────────────────────
   if (variant === 'hero') {
     return (
-      <div className="group relative overflow-hidden bg-gray-900" style={{ minHeight: '480px' }}>
+      <div className="group relative overflow-hidden rounded-xl bg-gray-900" style={{ minHeight: '480px' }}>
         {imageUrl && (
           <img
             src={imageUrl} alt={imageAlt}
@@ -421,9 +421,6 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           <div className="flex items-center gap-3 text-ink-muted text-[10px] font-sans">
             {(article.readTime ?? 0) > 0 && (
               <span className="flex items-center gap-1"><Clock size={10} /> {article.readTime}m</span>
-            )}
-            {(article.views ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Eye size={10} /> {(article.views ?? 0).toLocaleString()}</span>
             )}
           </div>
         </div>
