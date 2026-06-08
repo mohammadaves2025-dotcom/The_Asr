@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Inbox, Eye, CheckCircle, XCircle, BookOpen, Clock,
+  Inbox, CheckCircle, XCircle, BookOpen, Clock,
   ChevronDown, ChevronUp, Mail, RefreshCw, Filter,
 } from 'lucide-react';
 import { submissionsAdmin } from '../services/admin';
