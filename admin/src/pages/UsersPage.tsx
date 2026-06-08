@@ -307,7 +307,7 @@ function EditProfilePanel({ user, currentUserRole, onClose, onSaved }: { user: A
                 <span className="text-xs font-semibold text-ink-muted uppercase tracking-wide block mb-1">Role</span>
                 <select
                   value={form.role}
-                  onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
+                  onChange={(e) => setForm((p) => ({ ...p, role: e.target.value as 'subscriber' | 'contributor' | 'editor' | 'admin' | 'superadmin' }))}
                   className="w-full border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-navy bg-white"
                 >
                   {['subscriber', 'contributor', 'editor', 'admin'].map((r) => (
