@@ -123,8 +123,9 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   if (variant === 'text-only') {
     return (
       <div className="py-3.5 border-b border-gray-100 last:border-0 group">
-        <div className="flex gap-3 items-start">
-          {/* Thumbnail — LEFT side */}
+        <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
+        <div className="flex gap-3 items-start mt-1.5">
+          {/* Thumbnail — LEFT, aligned with title */}
           <Link to={`/article/${article.slug}`} className="flex-shrink-0">
             {article.featuredImage?.url ? (
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
@@ -142,12 +143,11 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               </div>
             )}
           </Link>
-          {/* Text — RIGHT side */}
+          {/* Title + byline — RIGHT */}
           <div className="flex-1 min-w-0">
-            <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
             <Link
               to={`/article/${article.slug}`}
-              className="block font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3 mt-0.5"
+              className="block font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3"
             >
               {article.title}
             </Link>

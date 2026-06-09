@@ -403,7 +403,7 @@ export default function HomePage() {
                 <ArticleCard article={hero} variant="hero" />
               </div>
               <div className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-ink lg:pl-6 pt-6 lg:pt-0">
-                <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-4">Features</p>
+                <p className="text-[15px] font-black uppercase tracking-[3px] text-brand-red mb-4">Features</p>
                 {sideStories.map((art) => (
                   <ArticleCard key={art._id} article={art} variant="text-only" />
                 ))}

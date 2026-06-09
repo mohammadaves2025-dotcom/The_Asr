@@ -129,10 +129,10 @@
 
 /* Theme A — Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #122837; }
-::-webkit-scrollbar-thumb { background: #FBFC09; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #e6d600; }
-* { scrollbar-color: #FBFC09 #122837; scrollbar-width: thin; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+* { scrollbar-color: #d1d5db transparent; scrollbar-width: thin; }
 
 /* Theme A — Selection */
 ::selection { background: #FBFC09; color: #122837; }
