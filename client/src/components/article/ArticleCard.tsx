@@ -5,20 +5,20 @@ import type { Article } from '../../types';
 
 // ── Content type label map ─ matches backend CONTENT_TYPES enum exactly ──────
 const CONTENT_TYPE_MAP: Record<string, { label: string; color: string }> = {
-  'news':             { label: 'News',            color: 'bg-red-50 text-brand-red' },
-  'investigation':    { label: 'Investigation',   color: 'bg-purple-50 text-purple-700' },
-  'opinion':          { label: 'Opinion',         color: 'bg-blue-50 text-blue-800' },
-  'analysis':         { label: 'Analysis',        color: 'bg-indigo-50 text-indigo-700' },
-  'ground-report':    { label: 'Ground Report',   color: 'bg-amber-50 text-amber-700' },
-  'explainer':        { label: 'Explainer',       color: 'bg-teal-50 text-teal-700' },
-  'interview':        { label: 'Interview',       color: 'bg-green-50 text-green-700' },
-  'photo-essay':      { label: 'Photo Essay',     color: 'bg-orange-50 text-orange-700' },
-  'video-report':     { label: 'Video',           color: 'bg-red-50 text-red-700' },
-  'book-excerpt':     { label: 'Book Excerpt',    color: 'bg-yellow-50 text-yellow-700' },
-  'special-series':   { label: 'Special Series',  color: 'bg-pink-50 text-pink-700' },
-  'community-voice':  { label: 'Community Voice', color: 'bg-emerald-50 text-emerald-700' },
-  'verified-report':  { label: '✓ Verified',      color: 'bg-green-50 text-green-800' },
-  'in-their-words':   { label: 'In Their Words',  color: 'bg-cyan-50 text-cyan-700' },
+  'news':             { label: 'News',            color: 'bg-brand-navy text-brand-yellow' },
+  'investigation':    { label: 'Investigation',   color: 'bg-brand-navy text-brand-yellow' },
+  'opinion':          { label: 'Opinion',         color: 'bg-brand-yellow text-brand-navy' },
+  'analysis':         { label: 'Analysis',        color: 'bg-brand-navy text-brand-yellow' },
+  'ground-report':    { label: 'Ground Report',   color: 'bg-brand-yellow text-brand-navy' },
+  'explainer':        { label: 'Explainer',       color: 'bg-brand-navy text-brand-yellow' },
+  'interview':        { label: 'Interview',       color: 'bg-brand-yellow text-brand-navy' },
+  'photo-essay':      { label: 'Photo Essay',     color: 'bg-brand-navy text-brand-yellow' },
+  'video-report':     { label: 'Video',           color: 'bg-brand-red text-white' },
+  'book-excerpt':     { label: 'Book Excerpt',    color: 'bg-brand-yellow text-brand-navy' },
+  'special-series':   { label: 'Special Series',  color: 'bg-brand-navy text-brand-yellow' },
+  'community-voice':  { label: 'Community Voice', color: 'bg-brand-yellow text-brand-navy' },
+  'verified-report':  { label: '✓ Verified',      color: 'bg-brand-navy text-brand-yellow' },
+  'in-their-words':   { label: 'In Their Words',  color: 'bg-brand-yellow text-brand-navy' },
 };
 
 function ContentLabel({ type }: { type?: string }) {
@@ -123,24 +123,8 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
   if (variant === 'text-only') {
     return (
       <div className="py-3.5 border-b border-gray-100 last:border-0 group">
-        <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
-        <div className="flex gap-3 items-start mt-1.5">
-          <div className="flex-1 min-w-0">
-            <Link
-              to={`/article/${article.slug}`}
-              className="block font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3"
-            >
-              {article.title}
-            </Link>
-            <p className="text-[11px] text-ink-muted mt-1.5 font-sans">
-              <AuthorName
-                authorName={authorName}
-                authorId={authorId}
-                isGuest={isGuest}
-                authorRole={authorRole}
-              /> · {formatDate(publishDate)}
-            </p>
-          </div>
+        <div className="flex gap-3 items-start">
+          {/* Thumbnail — LEFT side */}
           <Link to={`/article/${article.slug}`} className="flex-shrink-0">
             {article.featuredImage?.url ? (
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
@@ -158,6 +142,24 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
               </div>
             )}
           </Link>
+          {/* Text — RIGHT side */}
+          <div className="flex-1 min-w-0">
+            <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
+            <Link
+              to={`/article/${article.slug}`}
+              className="block font-serif font-semibold text-[15px] leading-snug text-ink group-hover:text-brand-navy transition-colors line-clamp-3 mt-0.5"
+            >
+              {article.title}
+            </Link>
+            <p className="text-[11px] text-ink-muted mt-1.5 font-sans">
+              <AuthorName
+                authorName={authorName}
+                authorId={authorId}
+                isGuest={isGuest}
+                authorRole={authorRole}
+              /> · {formatDate(publishDate)}
+            </p>
+          </div>
         </div>
       </div>
     );

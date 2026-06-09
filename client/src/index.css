@@ -1,25 +1,50 @@
-/* ── FONT IMPORT ──────────────────────────────────────────────────────────────
-   CURRENT: Playfair Display (serif) + DM Sans (sans)
-   
-   TO SWITCH to Observer Post style fonts, comment out the line below and
-   uncomment the ALTERNATIVE block. Then update tailwind.config.js font names.
-   ──────────────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME SWITCHER — THE ORBIS JOURNAL
+   ───────────────────────────────────────────────────────────────────────────
+   TWO COMPLETE THEMES ARE DEFINED BELOW.
+   Only ONE font @import and ONE theme block should be active at a time.
 
-/* CURRENT FONTS */
+   ┌─ THEME A (CURRENT — DEFAULT) ─────────────────────────────────────────┐
+   │  Fonts  : Playfair Display (serif headlines) + DM Sans (body)          │
+   │  Palette: Navy #122837 · Yellow #FBFC09 · Red #c8392b · Paper #fafaf8  │
+   │  Style  : Editorial broadsheet — serif headlines, bold accent colours   │
+   │  Active : YES — @import A is uncommented, THEME A block is uncommented  │
+   └────────────────────────────────────────────────────────────────────────┘
+
+   ┌─ THEME B (OBSERVER POST STYLE) ───────────────────────────────────────┐
+   │  Fonts  : Inter (all weights — pure sans throughout, no serif)          │
+   │  Palette: Navy #122837 · Yellow #FBFC09 · Ink #111118 · Gray #f4f4f5    │
+   │  Style  : Dense digital news — bold sans headlines, purple pill         │
+   │           section labels, dashed "Also Read" boxes, clean white bg      │
+   │  Active : NO — @import B is commented, THEME B block is commented       │
+   │                                                                          │
+   │  TO ACTIVATE THEME B:                                                    │
+   │   1. Comment out @import A (line ~20)                                    │
+   │   2. Uncomment @import B (line ~30)                                      │
+   │   3. Comment out   "THEME A — active styles" block (~line 60–240)        │
+   │   4. Uncomment     "THEME B — active styles" block (~line 250–450)       │
+   │   5. In tailwind.config.js swap font tokens (instructions in that file)  │
+   └────────────────────────────────────────────────────────────────────────┘
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── FONT IMPORT A — Orbis Journal (CURRENT — keep uncommented for Theme A) ── */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-/* ALTERNATIVE — Observer Post style (uncomment to activate):
-   Merriweather: strong editorial serif, similar weight/contrast to what Observer Post uses
-   Inter: clean neutral sans used widely in modern news sites
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
-   Then in tailwind.config.js change:
-     serif: ['"Merriweather"', 'Georgia', 'serif'],
-     sans:  ['"Inter"', 'system-ui', 'sans-serif'],
+/* ── FONT IMPORT B — Observer Post style (comment out A above, then uncomment this)
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400;1,14..32,700&display=swap');
 */
+
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║  THEME A — ORBIS JOURNAL  (ACTIVE)                                       ║
+   ║  Comment this entire block out when switching to Theme B                  ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝ */
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
@@ -49,12 +74,10 @@
     @apply inline-flex items-center justify-center gap-1 bg-transparent text-ink-muted px-3 py-1.5 text-xs font-sans transition-colors duration-200 hover:text-brand-navy;
   }
 
-  /* ── Global section label — bumped from text-[10px] → text-[12px] ── */
   .section-label {
     @apply text-[12px] font-bold font-sans uppercase tracking-[3px] text-brand-red;
   }
 
-  /* ── Global section heading — bumped from text-xl → text-2xl ── */
   .section-heading {
     @apply text-2xl font-serif font-bold text-ink;
   }
@@ -91,38 +114,340 @@
   .prose-article em { @apply italic; }
   .prose-article hr { @apply my-12 border-gray-200; }
 
-  /* Card styles */
   .card-base {
     @apply bg-white border border-gray-200 transition-all duration-300 hover:shadow-card-hover;
   }
 
-  /* Badge styles — bumped from text-[11px] → text-[12px] */
   .badge-minimal {
     @apply inline-flex items-center gap-1.5 text-[12px] font-sans text-ink-muted;
   }
 
-  /* Ticker animation */
   .ticker-animate {
     animation: ticker 35s linear infinite;
   }
 }
 
-/* Custom scrollbar */
+/* Theme A — Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+::-webkit-scrollbar-track { background: #122837; }
+::-webkit-scrollbar-thumb { background: #FBFC09; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #e6d600; }
+* { scrollbar-color: #FBFC09 #122837; scrollbar-width: thin; }
 
-/* Selection */
-::selection { background: #FBFC09; color: #0d1e29; }
+/* Theme A — Selection */
+::selection { background: #FBFC09; color: #122837; }
 
-/* Ticker keyframe */
+/* Theme A — Reading progress bar */
+#reading-progress {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  height: 3px; background: #c8392b;
+  transition: width 0.1s linear; pointer-events: none;
+}
+
+/* ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║  END THEME A                                                              ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝ */
+
+
+/* ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║  THEME B — OBSERVER POST STYLE  (INACTIVE — uncomment to activate)       ║
+   ║                                                                            ║
+   ║  Also update tailwind.config.js — swap instructions are at the top of     ║
+   ║  that file. Key changes needed there:                                      ║
+   ║    brand.navy   → #122837  (navy — same as Theme A, kept consistent)       ║
+   ║    brand.yellow → #ffffff  (white — replaces yellow)                       ║
+   ║    brand.red    → #7c3aed  (violet — replaces red)                         ║
+   ║    paper        → #ffffff  (pure white background)                         ║
+   ║    font serif   → ['"Inter"', 'system-ui', 'sans-serif']  (no serif)       ║
+   ║    font sans    → ['"Inter"', 'system-ui', 'sans-serif']                   ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #ffffff;
+    color: #111118;
+    margin: 0; padding: 0;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #111118;
+  }
+}
+
+@layer components {
+  .container-site {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  @media (min-width: 640px)  { .container-site { padding: 0 1.5rem; } }
+  @media (min-width: 1024px) { .container-site { padding: 0 2rem; } }
+
+  -- Buttons: Observer Post uses a rounded deep-purple pill for CTAs --
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background: #122837;
+    color: #FBFC09;
+    padding: 0.5rem 1.25rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover  { background: #0b1e2b; }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background: transparent;
+    color: #122837;
+    padding: 0.45rem 1.25rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    border: 2px solid #122837;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { background: #122837; color: #ffffff; }
+
+  -- "See More →" pill — Observer Post layout, Orbis navy+yellow colours --
+  .btn-yellow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background: #122837;
+    color: #FBFC09;
+    padding: 0.45rem 1.1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-yellow:hover { background: #0b1e2b; }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    color: #767680;
+    padding: 0.375rem 0.75rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: #122837; }
+
+  -- Section labels: all-caps bold black with optional left icon (matches Observer Post "LATEST NEWS", "POLITICS") --
+  .section-label {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #111118;
+  }
+
+  -- Section heading: heavy Inter, no italic --
+  .section-heading {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111118;
+  }
+
+  -- Observer Post uses a thin rule rather than a thick bold divider --
+  .divider-bold {
+    border-top: 1.5px solid #e4e4e7;
+  }
+
+  .input-field {
+    width: 100%;
+    border: 1.5px solid #d4d4d8;
+    background: #ffffff;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #111118;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field::placeholder { color: #a1a1aa; }
+  .input-field:focus { border-color: #122837; }
+
+  .form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #111118;
+    margin-bottom: 0.5rem;
+  }
+
+  -- Article prose: Observer Post uses pure sans, ~16px, generous spacing --
+  .prose-article {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: #111118;
+  }
+  .prose-article h2 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: #111118;
+  }
+  .prose-article h3 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #111118;
+  }
+  .prose-article p { margin-bottom: 1.25rem; line-height: 1.85; }
+  .prose-article blockquote {
+    border-left: 3px solid #FBFC09;
+    background: #f0f4f8;
+    padding: 1.25rem 1.5rem;
+    margin: 2.5rem 0;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #111118;
+    font-style: normal;
+    font-weight: 600;
+  }
+  -- Observer Post "Also Read" dashed box --
+  .prose-article .also-read {
+    border: 1.5px dashed #d4d4d8;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .prose-article .also-read-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #c8392b;
+    margin-bottom: 0.5rem;
+  }
+  .prose-article a  { color: #122837; text-decoration: underline; text-underline-offset: 2px; }
+  .prose-article a:hover { color: #0b1e2b; }
+  .prose-article ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+  .prose-article ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+  .prose-article img { width: 100%; margin: 2rem 0; }
+  .prose-article figure { margin: 2rem 0; }
+  .prose-article figcaption { font-size: 0.75rem; color: #71717a; margin-top: 0.5rem; }
+  .prose-article strong { font-weight: 700; color: #111118; }
+  .prose-article em { font-style: italic; }
+  .prose-article hr { margin: 2.5rem 0; border-color: #e4e4e7; }
+
+  .card-base {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    transition: box-shadow 0.2s;
+  }
+  .card-base:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+  -- Observer Post sidebar section header: navy pill with yellow text --
+  .op-sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #122837;
+    color: #FBFC09;
+    padding: 0.6rem 1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .badge-minimal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.75rem;
+    color: #71717a;
+  }
+
+  .ticker-animate {
+    animation: ticker 35s linear infinite;
+  }
+}
+
+-- Theme B — Scrollbar: navy track, yellow thumb (matches Orbis theme) --
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #122837; }
+::-webkit-scrollbar-thumb { background: #FBFC09; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #e6d600; }
+* { scrollbar-color: #FBFC09 #122837; scrollbar-width: thin; }
+
+-- Theme B — Selection --
+::selection { background: #FBFC09; color: #122837; }
+
+-- Theme B — Reading progress bar --
+#reading-progress {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  height: 3px; background: #FBFC09;
+  transition: width 0.1s linear; pointer-events: none;
+}
+
+END OF THEME B BLOCK */
+
+
+/* ── Shared keyframes (used by both themes) ─────────────────────────────── */
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-/* Fade in animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -131,18 +456,7 @@
   animation: fadeUp 0.5s ease forwards;
 }
 
-/* Progress bar for article reading */
-#reading-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  height: 2px;
-  background: #c8392b;
-  transition: width 0.1s linear;
-  pointer-events: none;
-}
-
+/* ── Shared utilities ────────────────────────────────────────────────────── */
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

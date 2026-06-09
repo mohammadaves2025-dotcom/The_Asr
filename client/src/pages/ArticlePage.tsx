@@ -110,54 +110,67 @@ function AuthorCard({ article }: { article: Article }) {
     : article.author?.bio;
 
   return (
-    <div className="border-t-2 border-ink pt-8 mt-10">
-      <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-5 font-sans">
-        About the Author
-      </p>
-      <div className="flex items-start gap-4">
+    <div className="mt-12 bg-brand-navy rounded-none overflow-hidden">
+      {/* Header bar */}
+      <div className="bg-brand-yellow px-6 py-2.5">
+        <p className="text-[10px] font-black uppercase tracking-[3px] text-brand-navy font-sans">
+          About the Author
+        </p>
+      </div>
+
+      {/* Body */}
+      <div className="px-6 py-6 flex items-start gap-5">
+        {/* Avatar */}
         {article.author?.avatar ? (
           <img
             src={article.author.avatar}
             alt={authorName}
-            className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+            className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-2 ring-brand-yellow"
           />
         ) : (
-          <div className="w-14 h-14 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
-            <span className="text-brand-yellow font-black text-lg">{authorName[0]}</span>
+          <div className="w-20 h-20 rounded-full bg-brand-yellow flex items-center justify-center flex-shrink-0 ring-2 ring-brand-yellow/60">
+            <span className="text-brand-navy font-black text-3xl font-serif">{authorName[0]}</span>
           </div>
         )}
-        <div className="flex-1">
-          {!article.isGuestAuthor ? (
-            <Link
-              to={`/author/${article.author?._id}`}
-              className="font-serif font-bold text-lg text-ink hover:text-brand-navy transition-colors"
-            >
-              {authorName}
-            </Link>
-          ) : (
-            <p className="font-serif font-bold text-lg text-ink flex items-center gap-2">
-              {authorName}
-              {authorName === 'The Orbis Journal Desk' && (
-                <span title="Verified" className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 flex-shrink-0">
-                  <svg viewBox="0 0 24 24" width="11" height="11" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-                </span>
-              )}
-            </p>
-          )}
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            {!article.isGuestAuthor ? (
+              <Link
+                to={`/author/${article.author?._id}`}
+                className="font-serif font-bold text-xl text-white hover:text-brand-yellow transition-colors"
+              >
+                {authorName}
+              </Link>
+            ) : (
+              <span className="font-serif font-bold text-xl text-white flex items-center gap-2">
+                {authorName}
+                {authorName === 'The Orbis Journal Desk' && (
+                  <span title="Verified" className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 flex-shrink-0">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
+
           {article.author?.designation && (
-            <p className="text-[11px] text-ink-muted font-sans mt-0.5">
+            <p className="text-[11px] text-brand-yellow/70 font-sans mt-1 uppercase tracking-[1.5px] font-semibold">
               {article.author.designation}
             </p>
           )}
+
           {authorBio && (
-            <p className="text-[13px] text-ink-secondary mt-2 leading-relaxed font-sans">
+            <p className="text-[13px] text-white/80 mt-3 leading-relaxed font-sans border-t border-white/10 pt-3">
               {authorBio}
             </p>
           )}
+
           {!article.isGuestAuthor && article.author?._id && (
             <Link
               to={`/author/${article.author._id}`}
-              className="text-[10px] font-black uppercase tracking-[2px] text-brand-red hover:underline font-sans mt-3 inline-block"
+              className="inline-flex items-center gap-1.5 mt-4 text-[10px] font-black uppercase tracking-[2px] text-brand-yellow hover:text-white transition-colors font-sans"
             >
               More by {authorName} →
             </Link>
@@ -643,7 +656,7 @@ export default function ArticlePage() {
                     <Link
                       key={tag}
                       to={`/tag/${encodeURIComponent(tag)}`}
-                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 border border-gray-200 rounded-lg text-ink-muted hover:bg-ink hover:text-white hover:border-ink transition-all font-sans"
+                      className="text-[10px] font-bold uppercase tracking-[1.5px] px-3 py-1.5 bg-brand-navy text-brand-yellow hover:bg-brand-yellow hover:text-brand-navy transition-all font-sans"
                     >
                       #{tag}
                     </Link>
