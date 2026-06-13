@@ -142,8 +142,8 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 className={`p-2.5 transition-all rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
-                  ? 'text-white/60 hover:text-white hover:bg-white/10'
-                  : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
+                    ? 'text-white/60 hover:text-white hover:bg-white/10'
+                    : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
                   }`}
                 aria-label="Search"
               >
@@ -154,8 +154,8 @@ export default function Header() {
               <Link
                 to="/support"
                 className={`hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
-                  ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
-                  : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
+                    ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
+                    : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
                   }`}
               >
                 Support Us
@@ -165,8 +165,8 @@ export default function Header() {
               <button
                 onClick={() => setMobileOpen(true)}
                 className={`md:hidden p-2.5 transition-colors ${MASTHEAD_THEME === 'yellow-on-navy'
-                  ? 'text-white hover:text-brand-yellow'
-                  : 'text-brand-navy hover:text-brand-navy/70'
+                    ? 'text-white hover:text-brand-yellow'
+                    : 'text-brand-navy hover:text-brand-navy/70'
                   }`}
                 aria-label="Open menu"
               >
@@ -178,22 +178,31 @@ export default function Header() {
 
         {/* ── Category Nav ─────────────────────────────────────────────────── */}
         <nav className={`bg-brand-navy border-t border-white/5 ${scrolled ? '' : 'border-b border-white/5'}`}>
-          <div className="container-site flex items-center min-w-0 scrollbar-hide" style={{ overflowX: 'auto', overflowY: 'visible' }}>
+          {/*
+            KEY FIX: Two-layer approach.
+            - Outer div: relative + no overflow clipping → lets dropdown escape
+            - Inner div: overflow-x-auto → scrolls nav items on mobile
+            - More button: sits OUTSIDE the scroll container so it never gets clipped
+          */}
+          <div className="container-site relative flex items-center">
 
-            {navItems.map((item) => (
-              <NavLink
-                key={item.href}
-                to={item.href}
-                end={item.href === '/'}
-                className={navLinkClass}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {/* Scrollable nav items */}
+            <div className="flex items-center overflow-x-auto scrollbar-hide flex-1 min-w-0">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  end={item.href === '/'}
+                  className={navLinkClass}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
 
-            {/* ── More dropdown — desktop only ──────────────────────────── */}
+            {/* ── More dropdown — outside scroll container so it never gets clipped ── */}
             {moreCategories.length > 0 && (
-              <div className="flex-shrink-0 relative ml-auto hidden md:block" ref={moreRef}>
+              <div className="hidden md:block flex-shrink-0 relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen(v => !v)}
                   onMouseEnter={() => setMoreOpen(true)}
@@ -211,16 +220,13 @@ export default function Header() {
 
                 {moreOpen && (
                   <div
-                    className="absolute right-0 top-full w-60 z-50"
+                    className="absolute right-0 top-full w-60 z-[100]"
                     onMouseLeave={() => setMoreOpen(false)}
                   >
-                    <div className="bg-white shadow-overlay border border-gray-100 rounded-xl overflow-hidden mt-1">
-                      {/* Section label */}
+                    <div className="bg-white border border-gray-100 rounded-xl mt-1" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.25)' }}>
                       <div className="px-4 pt-3 pb-1.5">
                         <p className="text-[9px] font-black uppercase tracking-[2.5px] text-ink-muted/60">More Sections</p>
                       </div>
-
-                      {/* Backend-driven more categories */}
                       {moreCategories.map((cat: any) => (
                         <NavLink
                           key={cat._id}
