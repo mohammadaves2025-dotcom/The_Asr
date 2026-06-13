@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, TrendingUp, Star } from 'lucide-react';
+import { ArrowRight, TrendingUp } from 'lucide-react';
 import BreakingTicker from '../components/home/BreakingTicker';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
