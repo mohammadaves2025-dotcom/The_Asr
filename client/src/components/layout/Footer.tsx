@@ -39,10 +39,10 @@ const icons: Record<string, ReactElement> = {
 };
 
 const SOCIAL = [
-  { label: 'X',         key: 'X',        href: '#' },
-  { label: 'Instagram', key: 'Instagram', href: '#' },
+  { label: 'X',         key: 'X',        href: 'https://x.com/TheOrbisJournal' },
+  { label: 'Instagram', key: 'Instagram', href: 'https://www.instagram.com/theorbisjournal?igsh=cHBlbWJqMjhzcjY0' },
+  { label: 'Facebook',  key: 'Facebook',  href: 'https://www.facebook.com/share/1DxGLWEwoN/' },
   { label: 'YouTube',   key: 'YouTube',   href: '#' },
-  { label: 'Facebook',  key: 'Facebook',  href: '#' },
   { label: 'LinkedIn',  key: 'LinkedIn',  href: '#' },
   { label: 'WhatsApp',  key: 'WhatsApp',  href: '#' },
 ];

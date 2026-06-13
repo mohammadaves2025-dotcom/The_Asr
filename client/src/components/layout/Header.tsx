@@ -237,11 +237,11 @@ export default function Header() {
                         </NavLink>
                       ))}
                     </div>
-                    </div>
-                )}
                   </div>
                 )}
               </div>
+            )}
+          </div>
         </nav>
       </header>
 
