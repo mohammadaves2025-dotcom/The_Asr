@@ -42,7 +42,7 @@ function NotificationPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl animate-fade-up p-5">
+    <div className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:w-80 z-50 bg-white border border-gray-200 rounded-2xl shadow-2xl animate-fade-up p-5">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-brand-navy flex items-center justify-center flex-shrink-0">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

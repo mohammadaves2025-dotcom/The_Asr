@@ -220,7 +220,7 @@ function GoogleSignInPrompt({
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm bg-brand-navy text-white shadow-overlay border border-white/10 rounded-2xl animate-fade-up">
+    <div className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:w-[calc(100%-3rem)] sm:max-w-sm z-50 bg-brand-navy text-white shadow-2xl border border-white/10 rounded-2xl animate-fade-up">
       <div className="p-5">
         <button
           onClick={onDismiss}
