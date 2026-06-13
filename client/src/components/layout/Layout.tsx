@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
+
 // ── Browser Notification Permission Popup ─────────────────────────────────────
 function NotificationPrompt() {
   const [show, setShow] = useState(false);

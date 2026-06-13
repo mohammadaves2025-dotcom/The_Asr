@@ -1,34 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, TrendingUp, Star } from 'lucide-react';
+import { ArrowRight, TrendingUp, Star } from 'lucide-react';
+import BreakingTicker from '../components/home/BreakingTicker';
 import ArticleCard from '../components/article/ArticleCard';
 import { articlesService, categoriesService } from '../services/articles';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { formatDate, resolveAuthorName } from '../utils/helpers';
 import type { Article } from '../types';
-
-// ── Breaking Ticker ────────────────────────────────────────────────────────────
-function BreakingTicker({ articles }: { articles: Article[] }) {
-  if (!articles.length) return null;
-  const text = articles.map((a) => a.title).join('   ·   ');
-  return (
-    <div className="bg-brand-navy flex items-stretch overflow-hidden border-b border-white/10">
-      <div className="flex-shrink-0 bg-brand-red px-4 flex items-center gap-2 min-w-[90px]">
-        <Zap size={11} className="text-brand-yellow" fill="currentColor" />
-        <span className="text-[11px] font-black tracking-[3px] uppercase text-brand-yellow whitespace-nowrap">
-          Breaking
-        </span>
-      </div>
-      <div className="flex-1 overflow-hidden py-2.5 relative">
-        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-navy to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-navy to-transparent z-10" />
-        <div className="whitespace-nowrap inline-flex items-center ticker-animate text-[13px] font-sans font-medium text-brand-yellow">
-          {text}&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;{text}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ── Section Header ─────────────────────────────────────────────────────────────
 function SectionHead({
@@ -391,7 +369,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-paper min-h-screen">
-      {breaking.length > 0 && <BreakingTicker articles={breaking} />}
+      {breaking.length > 0 && <BreakingTicker items={breaking} />}
 
       <div className="container-site py-7 md:py-10">
 

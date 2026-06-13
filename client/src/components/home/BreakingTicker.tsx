@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import type { Category } from '../../types';
 
+
 interface BreakingItem {
   _id: string;
   title: string;
