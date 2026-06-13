@@ -10,14 +10,14 @@ const MASTHEAD_THEME: 'yellow-on-navy' | 'navy-on-yellow' = 'navy-on-yellow';
 
 const MASTHEAD_STYLES = {
   'yellow-on-navy': {
-    wrapper:  'bg-brand-navy',
+    wrapper: 'bg-brand-navy',
     wordmark: 'text-brand-yellow group-hover:opacity-80',
-    tagline:  'text-brand-yellow/50',
+    tagline: 'text-brand-yellow/50',
   },
   'navy-on-yellow': {
-    wrapper:  'bg-brand-yellow',
+    wrapper: 'bg-brand-yellow',
     wordmark: 'text-brand-navy group-hover:opacity-70',
-    tagline:  'text-brand-navy/50',
+    tagline: 'text-brand-navy/50',
   },
 } as const;
 
@@ -26,13 +26,13 @@ const theme = MASTHEAD_STYLES[MASTHEAD_THEME];
 export default function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const [mobileOpen, setMobileOpen]   = useState(false);
-  const [searchOpen, setSearchOpen]   = useState(false);
-  const [moreOpen, setMoreOpen]       = useState(false);
-  const [searchQ, setSearchQ]         = useState('');
-  const [scrolled, setScrolled]       = useState(false);
-  const searchRef  = useRef<HTMLInputElement>(null);
-  const moreRef    = useRef<HTMLDivElement>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [searchQ, setSearchQ] = useState('');
+  const [scrolled, setScrolled] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   const { data } = useQuery({
     queryKey: ['categories'],
@@ -94,8 +94,8 @@ export default function Header() {
 
   // isFeatured=true   → primary navbar
   // showInMore=true    → More dropdown
-  const primaryCategories  = categories.filter((c: any) => c.isFeatured && c.isActive);
-  const moreCategories     = categories.filter((c: any) => c.showInMore && c.isActive);
+  const primaryCategories = categories.filter((c: any) => c.isFeatured && c.isActive);
+  const moreCategories = categories.filter((c: any) => c.showInMore && c.isActive);
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -104,19 +104,17 @@ export default function Header() {
 
   // ── Shared category nav link classes ─────────────────────────────────────────
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex-shrink-0 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
-      isActive
-        ? 'text-brand-yellow border-brand-yellow'
-        : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
+    `flex-shrink-0 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${isActive
+      ? 'text-brand-yellow border-brand-yellow'
+      : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
     }`;
 
   return (
     <>
       {/* ── Main Header ─────────────────────────────────────────────────────── */}
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
-          scrolled ? 'shadow-nav' : ''
-        }`}
+        className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? 'shadow-nav' : ''
+          }`}
       >
         {/* ── Masthead ──────────────────────────────────────────────────────── */}
         <div className={`${theme.wrapper} transition-colors`}>
@@ -143,11 +141,10 @@ export default function Header() {
               {/* Search button */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className={`p-2.5 transition-all rounded-lg ${
-                  MASTHEAD_THEME === 'yellow-on-navy'
+                className={`p-2.5 transition-all rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
                     ? 'text-white/60 hover:text-white hover:bg-white/10'
                     : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
-                }`}
+                  }`}
                 aria-label="Search"
               >
                 <Search size={17} strokeWidth={2} />
@@ -156,11 +153,10 @@ export default function Header() {
               {/* Support Us — desktop only */}
               <Link
                 to="/support"
-                className={`hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg ${
-                  MASTHEAD_THEME === 'yellow-on-navy'
+                className={`hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
                     ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
                     : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
-                }`}
+                  }`}
               >
                 Support Us
               </Link>
@@ -168,11 +164,10 @@ export default function Header() {
               {/* Hamburger — mobile only */}
               <button
                 onClick={() => setMobileOpen(true)}
-                className={`md:hidden p-2.5 transition-colors ${
-                  MASTHEAD_THEME === 'yellow-on-navy'
+                className={`md:hidden p-2.5 transition-colors ${MASTHEAD_THEME === 'yellow-on-navy'
                     ? 'text-white hover:text-brand-yellow'
                     : 'text-brand-navy hover:text-brand-navy/70'
-                }`}
+                  }`}
                 aria-label="Open menu"
               >
                 <Menu size={21} />
@@ -201,11 +196,10 @@ export default function Header() {
                 <button
                   onClick={() => setMoreOpen(v => !v)}
                   onMouseEnter={() => setMoreOpen(true)}
-                  className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
-                    moreOpen
+                  className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${moreOpen
                       ? 'text-brand-yellow border-brand-yellow'
                       : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
-                  }`}
+                    }`}
                 >
                   More
                   <ChevronDown
@@ -216,37 +210,38 @@ export default function Header() {
 
                 {moreOpen && (
                   <div
-                    className="absolute right-0 top-full mt-0 w-60 bg-white shadow-overlay border border-gray-100 rounded-xl z-50 overflow-hidden"
+                    className="absolute right-0 top-full w-60 z-50"
                     onMouseLeave={() => setMoreOpen(false)}
                   >
-                    {/* Section label */}
-                    <div className="px-4 pt-3 pb-1.5">
-                      <p className="text-[9px] font-black uppercase tracking-[2.5px] text-ink-muted/60">More Sections</p>
-                    </div>
+                    <div className="bg-white shadow-overlay border border-gray-100 rounded-xl overflow-hidden mt-1">
+                      {/* Section label */}
+                      <div className="px-4 pt-3 pb-1.5">
+                        <p className="text-[9px] font-black uppercase tracking-[2.5px] text-ink-muted/60">More Sections</p>
+                      </div>
 
-                    {/* Backend-driven more categories */}
-                    {moreCategories.map((cat: any) => (
-                      <NavLink
-                        key={cat._id}
-                        to={`/category/${cat.slug}`}
-                        onClick={() => setMoreOpen(false)}
-                        className={({ isActive }) =>
-                          `flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold font-sans transition-colors group ${
-                            isActive
+                      {/* Backend-driven more categories */}
+                      {moreCategories.map((cat: any) => (
+                        <NavLink
+                          key={cat._id}
+                          to={`/category/${cat.slug}`}
+                          onClick={() => setMoreOpen(false)}
+                          className={({ isActive }) =>
+                            `flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold font-sans transition-colors group ${isActive
                               ? 'text-brand-navy bg-brand-yellow/10'
                               : 'text-ink hover:text-brand-navy hover:bg-gray-50'
-                          }`
-                        }
-                      >
-                        <span>{cat.name}</span>
-                        <ChevronRight size={13} className="opacity-0 group-hover:opacity-40 transition-opacity" />
-                      </NavLink>
-                    ))}
+                            }`
+                          }
+                        >
+                          <span>{cat.name}</span>
+                          <ChevronRight size={13} className="opacity-0 group-hover:opacity-40 transition-opacity" />
+                        </NavLink>
+                      ))}
+                    </div>
+                    </div>
+                )}
                   </div>
                 )}
               </div>
-            )}
-          </div>
         </nav>
       </header>
 
@@ -299,7 +294,7 @@ export default function Header() {
 
           {/* Mobile header bar — FLIPPED: yellow bg, navy text */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-brand-navy/20"
-               style={{ background: '#f5c518' }}>
+            style={{ background: '#f5c518' }}>
             <Link to="/" onClick={() => setMobileOpen(false)}>
               <span className="text-xl font-serif font-black text-brand-navy">The Orbis Journal</span>
             </Link>
@@ -322,8 +317,7 @@ export default function Header() {
                 end={item.href === '/'}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-5 py-3.5 text-[13px] font-bold uppercase tracking-[1.5px] font-sans transition-colors ${
-                    isActive ? 'text-brand-yellow' : 'text-white/60 hover:text-white'
+                  `flex items-center justify-between px-5 py-3.5 text-[13px] font-bold uppercase tracking-[1.5px] font-sans transition-colors ${isActive ? 'text-brand-yellow' : 'text-white/60 hover:text-white'
                   }`
                 }
               >
@@ -339,8 +333,7 @@ export default function Header() {
                 to={`/category/${cat.slug}`}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-5 py-3.5 text-[13px] font-bold uppercase tracking-[1.5px] font-sans transition-colors ${
-                    isActive ? 'text-brand-yellow' : 'text-white/60 hover:text-white'
+                  `flex items-center justify-between px-5 py-3.5 text-[13px] font-bold uppercase tracking-[1.5px] font-sans transition-colors ${isActive ? 'text-brand-yellow' : 'text-white/60 hover:text-white'
                   }`
                 }
               >
@@ -354,10 +347,10 @@ export default function Header() {
               <p className="text-[9px] font-bold uppercase tracking-[3px] text-white/20">About</p>
             </div>
             {[
-              { label: 'About Us',     href: '/about' },
-              { label: 'Support Us',   href: '/support' },
+              { label: 'About Us', href: '/about' },
+              { label: 'Support Us', href: '/support' },
               { label: 'Write For Us', href: '/submissions' },
-              { label: 'Contact',      href: '/contact' },
+              { label: 'Contact', href: '/contact' },
             ].map((item) => (
               <NavLink
                 key={item.href}

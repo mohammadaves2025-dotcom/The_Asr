@@ -1,4 +1,4 @@
-// client/src/components/layout/BreakingTicker.tsx
+// client/src/components/home/BreakingTicker.tsx
 import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import type { Category } from '../../types';
