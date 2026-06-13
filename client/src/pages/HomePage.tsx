@@ -375,7 +375,7 @@ export default function HomePage() {
 
         {/* Hero */}
         {hero && (
-          <section className="mb-16 border-b-2 border-ink pb-12">
+          <section className="mb-16  pb-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
               <div className="lg:col-span-8">
                 <ArticleCard article={hero} variant="hero" />

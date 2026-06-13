@@ -26,7 +26,7 @@ export default function BreakingTicker({ items }: Props) {
         {/* Yellow BREAKING pill */}
         <div
           className="flex-shrink-0 flex items-center gap-2 px-5"
-          style={{ background: '#f5c518', minHeight: '52px' }}
+          style={{ background: '#fbfc09', minHeight: '52px' }}
         >
           <Zap size={18} className="text-brand-navy fill-current" />
           <span
@@ -41,7 +41,7 @@ export default function BreakingTicker({ items }: Props) {
         <div className="flex-1 overflow-hidden relative" style={{ height: '52px' }}>
           <div
             className="flex items-center h-full"
-            style={{ animation: 'ticker 40s linear infinite' }}
+            style={{ animation: 'ticker 18s linear infinite' }}
           >
             {doubled.map((item, i) => (
               <Link

@@ -294,9 +294,9 @@ export default function Header() {
 
           {/* Mobile header bar — FLIPPED: yellow bg, navy text */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-brand-navy/20"
-            style={{ background: '#f5c518' }}>
+            style={{ background: '#fbfc09' }}>
             <Link to="/" onClick={() => setMobileOpen(false)}>
-              <span className="text-xl font-serif font-black text-brand-navy">The Orbis Journal</span>
+              <span className="text-2xl font-serif font-bold text-brand-navy">The Orbis Journal</span>
             </Link>
             <button onClick={() => setMobileOpen(false)} className="text-brand-navy/60 hover:text-brand-navy p-1">
               <X size={22} />
