@@ -52,14 +52,16 @@ export default function SupportPage() {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="bg-brand-yellow py-16 md:py-24">
+      {/* Hero — FLIPPED: navy bg instead of yellow */}
+      <div className="bg-brand-navy py-16 md:py-24">
         <div className="container-site max-w-4xl text-center">
+          {/* "Support Independent Journalism" → white */}
           <p className="text-[10px] font-black uppercase tracking-[4px] text-white mb-4">Support Independent Journalism</p>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-brand-navy mb-6 leading-tight">
+          {/* h1 split into two lines, yellow */}
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-brand-yellow mb-6 leading-tight">
             The Orbis Journal is<br />reader-funded entirely.
           </h1>
-          <p className="text-brand-navy/70 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/70 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
              Every story we publish is made possible by readers like you who believe accountability journalism matters.
           </p>
         </div>
@@ -188,7 +190,7 @@ export default function SupportPage() {
           </div>
         </div>
 
-        {/* Other ways */}
+        {/* Other ways — buttons now use <a> tags with proper hrefs */}
         <div className="mt-14 pt-10 border-t border-gray-200">
           <h2 className="text-2xl font-serif font-bold text-ink mb-6">Other ways to support</h2>
           <div className="grid sm:grid-cols-3 gap-4">
@@ -200,7 +202,7 @@ export default function SupportPage() {
               <div key={item.title} className="border-2 border-gray-200 p-5 rounded-xl hover:border-brand-navy transition-colors group">
                 <h3 className="font-serif font-bold text-base text-ink mb-2 group-hover:text-brand-navy">{item.title}</h3>
                 <p className="text-sm text-ink-muted font-sans mb-4 leading-relaxed">{item.desc}</p>
-                <Link to={item.href} className="text-xs font-bold uppercase tracking-widest text-brand-navy hover:underline">{item.cta} →</Link>
+                <Link to={item.href} className="inline-block text-xs font-bold uppercase tracking-widest text-brand-navy hover:underline cursor-pointer">{item.cta} →</Link>
               </div>
             ))}
           </div>

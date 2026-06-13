@@ -5,16 +5,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { categoriesService } from '../../services/articles';
 
-// ── "More" dropdown items — static secondary sections ─────────────────────────
-const MORE_ITEMS = [
-  { label: 'Explainers',           href: '/category/explainers' },
-  { label: 'In Their Words',       href: '/in-their-words' },
-  { label: 'Science & Technology', href: '/category/science-technology' },
-  { label: 'Education & Culture',  href: '/category/education-culture' },
-  { label: 'Sports',               href: '/category/sports' },
-  { label: 'Entertainment',        href: '/category/entertainment' },
-];
-
 // ── MASTHEAD THEME TOGGLE ──────────────────────────────────────────────────────
 const MASTHEAD_THEME: 'yellow-on-navy' | 'navy-on-yellow' = 'navy-on-yellow';
 
@@ -102,10 +92,10 @@ export default function Header() {
     }
   };
 
-  // Primary nav: Home + first 5 categories
-  const primaryCategories = categories.slice(0, 5);
-  // Overflow categories: 6th onward go into More dropdown
-  const overflowCategories = categories.slice(5, 8);
+  // isFeatured=true   → primary navbar
+  // showInMore=true    → More dropdown
+  const primaryCategories  = categories.filter((c: any) => c.isFeatured && c.isActive);
+  const moreCategories     = categories.filter((c: any) => c.showInMore && c.isActive);
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -206,66 +196,56 @@ export default function Header() {
             ))}
 
             {/* ── More dropdown — desktop only ──────────────────────────── */}
-            <div className="flex-shrink-0 relative ml-auto hidden md:block" ref={moreRef}>
-              <button
-                onClick={() => setMoreOpen(v => !v)}
-                className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
-                  moreOpen
-                    ? 'text-brand-yellow border-brand-yellow'
-                    : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
-                }`}
-              >
-                More
-                <ChevronDown
-                  size={12}
-                  className={`transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
+            {moreCategories.length > 0 && (
+              <div className="flex-shrink-0 relative ml-auto hidden md:block" ref={moreRef}>
+                <button
+                  onClick={() => setMoreOpen(v => !v)}
+                  onMouseEnter={() => setMoreOpen(true)}
+                  className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${
+                    moreOpen
+                      ? 'text-brand-yellow border-brand-yellow'
+                      : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  More
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
 
-              {moreOpen && (
-                <div className="absolute right-0 top-full mt-0 w-56 bg-white shadow-overlay border border-gray-200 rounded-xl z-50 py-1">
-                  {/* Overflow categories from backend */}
-                  {overflowCategories.length > 0 && (
-                    <>
-                      {overflowCategories.map((cat: any) => (
-                        <NavLink
-                          key={cat._id}
-                          to={`/category/${cat.slug}`}
-                          onClick={() => setMoreOpen(false)}
-                          className={({ isActive }) =>
-                            `block px-4 py-2.5 text-[12px] font-sans transition-colors ${
-                              isActive
-                                ? 'text-brand-navy font-bold bg-surface-secondary'
-                                : 'text-ink-secondary hover:text-brand-navy hover:bg-surface-secondary'
-                            }`
-                          }
-                        >
-                          {cat.name}
-                        </NavLink>
-                      ))}
-                      <div className="my-1 border-t border-gray-100" />
-                    </>
-                  )}
-                  {/* Static secondary sections */}
-                  {MORE_ITEMS.map((item) => (
-                    <NavLink
-                      key={item.href}
-                      to={item.href}
-                      onClick={() => setMoreOpen(false)}
-                      className={({ isActive }) =>
-                        `block px-4 py-2.5 text-[12px] font-sans transition-colors ${
-                          isActive
-                            ? 'text-brand-navy font-bold bg-surface-secondary'
-                            : 'text-ink-secondary hover:text-brand-navy hover:bg-surface-secondary'
-                        }`
-                      }
-                    >
-                      {item.label}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
+                {moreOpen && (
+                  <div
+                    className="absolute right-0 top-full mt-0 w-60 bg-white shadow-overlay border border-gray-100 rounded-xl z-50 overflow-hidden"
+                    onMouseLeave={() => setMoreOpen(false)}
+                  >
+                    {/* Section label */}
+                    <div className="px-4 pt-3 pb-1.5">
+                      <p className="text-[9px] font-black uppercase tracking-[2.5px] text-ink-muted/60">More Sections</p>
+                    </div>
+
+                    {/* Backend-driven more categories */}
+                    {moreCategories.map((cat: any) => (
+                      <NavLink
+                        key={cat._id}
+                        to={`/category/${cat.slug}`}
+                        onClick={() => setMoreOpen(false)}
+                        className={({ isActive }) =>
+                          `flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold font-sans transition-colors group ${
+                            isActive
+                              ? 'text-brand-navy bg-brand-yellow/10'
+                              : 'text-ink hover:text-brand-navy hover:bg-gray-50'
+                          }`
+                        }
+                      >
+                        <span>{cat.name}</span>
+                        <ChevronRight size={13} className="opacity-0 group-hover:opacity-40 transition-opacity" />
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </nav>
       </header>
@@ -316,11 +296,14 @@ export default function Header() {
       {/* ── Mobile Menu ──────────────────────────────────────────────────────── */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-brand-navy flex flex-col">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+
+          {/* Mobile header bar — FLIPPED: yellow bg, navy text */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-brand-navy/20"
+               style={{ background: '#f5c518' }}>
             <Link to="/" onClick={() => setMobileOpen(false)}>
-              <span className="text-xl font-serif font-black text-brand-yellow">The Orbis Journal</span>
+              <span className="text-xl font-serif font-black text-brand-navy">The Orbis Journal</span>
             </Link>
-            <button onClick={() => setMobileOpen(false)} className="text-white/50 hover:text-white p-1">
+            <button onClick={() => setMobileOpen(false)} className="text-brand-navy/60 hover:text-brand-navy p-1">
               <X size={22} />
             </button>
           </div>
@@ -349,23 +332,20 @@ export default function Header() {
               </NavLink>
             ))}
 
-            {/* Overflow + static more sections */}
-            {[
-              ...overflowCategories.map((c: any) => ({ label: c.name, href: `/category/${c.slug}` })),
-              ...MORE_ITEMS,
-            ].map((item) => (
+            {/* More categories — same font size as primary */}
+            {moreCategories.map((cat: any) => (
               <NavLink
-                key={item.href}
-                to={item.href}
+                key={cat._id}
+                to={`/category/${cat.slug}`}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-5 py-3 text-[12px] font-sans transition-colors ${
-                    isActive ? 'text-brand-yellow' : 'text-white/40 hover:text-white'
+                  `flex items-center justify-between px-5 py-3.5 text-[13px] font-bold uppercase tracking-[1.5px] font-sans transition-colors ${
+                    isActive ? 'text-brand-yellow' : 'text-white/60 hover:text-white'
                   }`
                 }
               >
-                {item.label}
-                <ChevronRight size={13} className="opacity-20" />
+                {cat.name}
+                <ChevronRight size={14} className="opacity-30" />
               </NavLink>
             ))}
 

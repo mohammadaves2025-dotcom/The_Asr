@@ -20,18 +20,24 @@ export default function BreakingTicker({ items }: Props) {
   const doubled = [...items, ...items];
 
   return (
-    <div className="bg-brand-navy border-b-2 border-brand-navy">
-      <div className="flex items-center">
-        {/* Label pill — red background, yellow text */}
-        <div className="flex-shrink-0 bg-brand-red px-5 py-2.5 flex items-center gap-2">
-          <Zap size={17} className="text-brand-yellow fill-current" />
-          <span className="text-[15px] font-black font-sans uppercase tracking-widest text-brand-yellow whitespace-nowrap">
+    <div className="border-b-2 border-brand-navy" style={{ background: '#c0392b' }}>
+      <div className="flex items-center" style={{ minHeight: '52px' }}>
+        {/* Label pill — yellow background, dark text */}
+        <div
+          className="flex-shrink-0 flex items-center gap-2 px-5"
+          style={{ background: '#f5c518', minHeight: '52px' }}
+        >
+          <Zap size={20} className="text-brand-navy fill-current" />
+          <span
+            className="font-black font-sans uppercase tracking-widest text-brand-navy whitespace-nowrap"
+            style={{ fontSize: '17px', letterSpacing: '0.12em' }}
+          >
             Breaking
           </span>
         </div>
 
-        {/* Ticker — navy body, yellow links */}
-        <div className="flex-1 overflow-hidden relative" style={{ height: '46px' }}>
+        {/* Ticker — crimson body, white links */}
+        <div className="flex-1 overflow-hidden relative" style={{ height: '52px' }}>
           <div
             className="flex items-center h-full"
             style={{ animation: 'ticker 40s linear infinite' }}
@@ -40,10 +46,11 @@ export default function BreakingTicker({ items }: Props) {
               <Link
                 key={`${item._id}-${i}`}
                 to={`/article/${item.slug}`}
-                className="flex-shrink-0 px-8 text-[15px] font-sans font-semibold text-brand-yellow hover:text-white transition-colors whitespace-nowrap no-underline"
+                className="flex-shrink-0 px-8 font-sans font-bold text-white hover:text-yellow-200 transition-colors whitespace-nowrap no-underline"
+                style={{ fontSize: '17px' }}
               >
                 {item.title}
-                <span className="mx-6 text-brand-yellow/40">|</span>
+                <span className="mx-6 opacity-50">·</span>
               </Link>
             ))}
           </div>

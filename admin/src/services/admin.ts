@@ -96,6 +96,9 @@ export const submissionsAdmin = {
 export const categoriesAdmin = {
   getAll: () => api.get('/categories'),
 
+  // Admin-only: returns ALL categories including inactive ones
+  adminGetAll: () => api.get('/categories/admin/all'),
+
   create: (data: Partial<import('../types').Category>) =>
     api.post('/categories', data),
 

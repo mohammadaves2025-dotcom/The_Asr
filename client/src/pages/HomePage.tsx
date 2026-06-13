@@ -531,7 +531,7 @@ export default function HomePage() {
                 <div className="grid md:grid-cols-3 gap-4">
                   {lensArticles.map((art) => (
                     <Link key={art._id} to={`/article/${art.slug}`} className="group block no-underline relative overflow-hidden rounded-xl bg-gray-100">
-                      <div className="aspect-square overflow-hidden">
+                      <div className="overflow-hidden" style={{ aspectRatio: '1080 / 1350' }}>
                         {art.featuredImage?.url ? (
                           <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (

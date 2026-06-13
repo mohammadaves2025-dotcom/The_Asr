@@ -8,6 +8,7 @@ const { uploadAvatar } = require('../config/cloudinary');
 // ─── Categories Router ────────────────────────────────────────────────────────
 const categoryRouter = express.Router();
 categoryRouter.get('/', categoryController.getAll);
+categoryRouter.get('/admin/all', protect, authorize('admin', 'superadmin'), categoryController.adminGetAll);
 categoryRouter.get('/:slug', categoryController.getOne);
 categoryRouter.post('/', protect, authorize('admin', 'superadmin'), categoryController.create);
 categoryRouter.patch('/:id', protect, authorize('admin', 'superadmin'), categoryController.update);

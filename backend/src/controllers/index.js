@@ -8,9 +8,20 @@ const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { uploadToCloudinary } = require('../config/cloudinary'); // ← ADD THIS LINE
 
 const categoryController = {
+  // Public: only active categories, sorted by order
   getAll: async (req, res, next) => {
     try {
       const categories = await Category.find({ isActive: true })
+        .sort('order')
+        .populate('articleCount');
+      return sendSuccess(res, { data: { categories } });
+    } catch (err) { next(err); }
+  },
+
+  // Admin: ALL categories regardless of isActive, for full management
+  adminGetAll: async (req, res, next) => {
+    try {
+      const categories = await Category.find({})
         .sort('order')
         .populate('articleCount');
       return sendSuccess(res, { data: { categories } });
@@ -27,6 +38,10 @@ const categoryController = {
 
   create: async (req, res, next) => {
     try {
+      // Mutual exclusivity: navbar and More are separate placements
+      if (req.body.isFeatured && req.body.showInMore) {
+        req.body.showInMore = false;
+      }
       const cat = await Category.create(req.body);
       return sendSuccess(res, { statusCode: 201, data: { category: cat } });
     } catch (err) { next(err); }
@@ -34,6 +49,10 @@ const categoryController = {
 
   update: async (req, res, next) => {
     try {
+      // Mutual exclusivity guard
+      if (req.body.isFeatured && req.body.showInMore) {
+        req.body.showInMore = false;
+      }
       const cat = await Category.findByIdAndUpdate(req.params.id, req.body, {
         new: true, runValidators: true,
       });

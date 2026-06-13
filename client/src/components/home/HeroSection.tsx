@@ -110,7 +110,7 @@ export default function HeroSection({ hero, featured }: Props) {
           </div>
 
           {/* ── Featured sidebar — with images ── */}
-          <div className="border-t-2 lg:border-t-0 lg:border-l-2 border-gray-100 pt-8 lg:pt-0 lg:pl-10 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+          <div className="lg:border-l-2 border-gray-100 pt-8 lg:pt-0 lg:pl-10 animate-fade-in" style={{ animationDelay: '0.15s' }}>
             <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-6 font-sans">
               Editor's Picks
             </p>

@@ -21,7 +21,8 @@ const categorySchema = new mongoose.Schema(
     icon: { type: String }, // icon class or emoji
     parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     isActive: { type: Boolean, default: true },
-    isFeatured: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false }, // true = show in primary navbar
+    showInMore: { type: Boolean, default: false },  // true = show in More dropdown
     order: { type: Number, default: 0 }, // for nav ordering
     seo: {
       metaTitle: String,

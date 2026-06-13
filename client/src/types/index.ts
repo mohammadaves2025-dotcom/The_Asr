@@ -33,6 +33,7 @@ export interface Category {
   color?:       string;
   order?:       number;
   isActive:     boolean;
+  isFeatured:   boolean;   // true = show in primary navbar; false = show in More dropdown
   articleCount: number;
 }
 

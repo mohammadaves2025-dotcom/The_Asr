@@ -41,7 +41,7 @@ export default function AboutPage() {
             Journalism that centres<br />those at the margins.
           </h1>
           <p className="text-white/60 text-lg font-sans leading-relaxed max-w-2xl">
-            The Orbis Journal (In Greek, it translates to "around the world" or "worldly", implying a global or universal nature.) was founded on the belief that independent journalism is a public good — and that stories about minority communities, human rights violations, and social justice deserve the same rigour and prominence as mainstream political news.
+            The Orbis Journal is an independent media platform dedicated to human rights, social justice, and the stories of marginalized communities.
           </p>
         </div>
       </div>

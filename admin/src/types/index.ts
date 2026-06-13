@@ -20,8 +20,9 @@ export interface Category {
   slug: string;
   description?: string;
   color: string;
-  isFeatured: boolean;
-  isActive: boolean;
+  isFeatured: boolean;   // true = show in primary navbar
+  showInMore: boolean;   // true = show in More dropdown
+  isActive: boolean;     // false = hidden from public entirely
   order: number;
   articleCount?: number;
 }
