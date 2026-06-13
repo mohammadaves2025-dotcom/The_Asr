@@ -412,8 +412,8 @@ export default function HomePage() {
                   <div>
                     <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Curated</p>
                     <h2 className="text-3xl font-serif font-bold text-ink italic flex items-center gap-2">
-                      Editor's Pick
-                      <Star size={20} className="text-brand-yellow fill-brand-yellow" />
+                      Features
+                      
                     </h2>
                   </div>
                   <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">

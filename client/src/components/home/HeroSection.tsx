@@ -63,7 +63,7 @@ export default function HeroSection({ hero, featured }: Props) {
                   )}
                   {hero.isEditorsPick && (
                     <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-white/20 text-white backdrop-blur-sm rounded-full">
-                      Editor's Pick
+                      Features
                     </span>
                   )}
                 </div>
