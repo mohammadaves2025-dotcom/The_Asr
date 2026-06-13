@@ -24,7 +24,7 @@ async function callAnthropic(messages, maxTokens = 800) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model:      'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: maxTokens,
       messages,
     }),
@@ -58,7 +58,7 @@ router.post(
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model:      model || 'claude-sonnet-4-20250514',
+          model:      model || 'claude-sonnet-4-5',
           max_tokens: max_tokens || 1000,
           messages,
         }),

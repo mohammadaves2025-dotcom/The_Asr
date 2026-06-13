@@ -142,8 +142,8 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 className={`p-2.5 transition-all rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
-                    ? 'text-white/60 hover:text-white hover:bg-white/10'
-                    : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
+                  ? 'text-white/60 hover:text-white hover:bg-white/10'
+                  : 'text-brand-navy/60 hover:text-brand-navy hover:bg-brand-navy/10'
                   }`}
                 aria-label="Search"
               >
@@ -154,8 +154,8 @@ export default function Header() {
               <Link
                 to="/support"
                 className={`hidden md:flex btn-primary py-2 px-4 text-[10px] rounded-lg ${MASTHEAD_THEME === 'yellow-on-navy'
-                    ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
-                    : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
+                  ? 'bg-brand-yellow text-brand-navy hover:bg-yellow-300'
+                  : 'bg-brand-navy text-brand-yellow hover:bg-brand-navy/80'
                   }`}
               >
                 Support Us
@@ -165,8 +165,8 @@ export default function Header() {
               <button
                 onClick={() => setMobileOpen(true)}
                 className={`md:hidden p-2.5 transition-colors ${MASTHEAD_THEME === 'yellow-on-navy'
-                    ? 'text-white hover:text-brand-yellow'
-                    : 'text-brand-navy hover:text-brand-navy/70'
+                  ? 'text-white hover:text-brand-yellow'
+                  : 'text-brand-navy hover:text-brand-navy/70'
                   }`}
                 aria-label="Open menu"
               >
@@ -178,7 +178,8 @@ export default function Header() {
 
         {/* ── Category Nav ─────────────────────────────────────────────────── */}
         <nav className={`bg-brand-navy border-t border-white/5 ${scrolled ? '' : 'border-b border-white/5'}`}>
-          <div className="container-site flex items-center overflow-x-auto scrollbar-hide">
+          <div className="container-site flex items-center min-w-0 scrollbar-hide" style={{ overflowX: 'auto', overflowY: 'visible' }}>
+
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
@@ -197,8 +198,8 @@ export default function Header() {
                   onClick={() => setMoreOpen(v => !v)}
                   onMouseEnter={() => setMoreOpen(true)}
                   className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-bold font-sans uppercase tracking-[1.5px] whitespace-nowrap transition-colors border-b-2 ${moreOpen
-                      ? 'text-brand-yellow border-brand-yellow'
-                      : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
+                    ? 'text-brand-yellow border-brand-yellow'
+                    : 'text-white/65 border-transparent hover:text-white hover:border-white/30'
                     }`}
                 >
                   More

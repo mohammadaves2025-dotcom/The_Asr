@@ -32,7 +32,7 @@ export const articlesAdmin = {
   },
 
   aiAssist: (messages: { role: string; content: string }[]) =>
-    api.post('/ai/assist', { model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages }),
+    api.post('/ai/assist', { model: 'claude-sonnet-4-5', max_tokens: 1000, messages }),
 };
 
 export const usersAdmin = {
