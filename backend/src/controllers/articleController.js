@@ -53,16 +53,16 @@ exports.getArticles = async (req, res, next) => {
 exports.getArticle = async (req, res, next) => {
   try {
     const { slug } = req.params;
- 
+
     const article = await Article.findOne({ slug, status: 'published' })
-      .populate('author',       'name avatar bio designation socialLinks')
-      .populate('coAuthors',    'name avatar')
-      .populate('category',     'name slug color')
+      .populate('author', 'name avatar bio designation socialLinks')
+      .populate('coAuthors', 'name avatar')
+      .populate('category', 'name slug color')
       .populate('lastEditedBy', 'name')
       .populate('relatedArticles', 'title slug excerpt featuredImage publishedAt readTime author category');
- 
+
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
- 
+
     // ── Improved related articles (tag-count weighted) ────────────────────────
     //
     // Strategy:
@@ -72,12 +72,12 @@ exports.getArticle = async (req, res, next) => {
     //
     // This is a pure-JS approach that works without any schema changes or
     // full-text search infrastructure.
- 
+
     let related = [];
- 
+
     if (article.tags && article.tags.length > 0) {
       const candidates = await Article.find({
-        _id:    { $ne: article._id },
+        _id: { $ne: article._id },
         status: 'published',
         $or: [
           { category: article.category._id },
@@ -86,35 +86,35 @@ exports.getArticle = async (req, res, next) => {
       })
         .limit(20)
         .sort('-publishedAt')
-        .populate('author',   'name avatar')
+        .populate('author', 'name avatar')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category tags');
- 
+
       // Score by shared tag count
       const tagSet = new Set(article.tags.map((t) => t.toLowerCase()));
- 
+
       const scored = candidates
         .map((c) => {
           const sharedTags = (c.tags ?? []).filter((t) => tagSet.has(t.toLowerCase())).length;
           return { article: c, score: sharedTags };
         })
         .sort((a, b) => b.score - a.score || 0); // sort by score desc (publishedAt already sorted)
- 
+
       related = scored.slice(0, 5).map((s) => s.article);
     } else {
       // No tags — fall back to same category
       related = await Article.find({
-        _id:      { $ne: article._id },
-        status:   'published',
+        _id: { $ne: article._id },
+        status: 'published',
         category: article.category._id,
       })
         .limit(5)
         .sort('-publishedAt')
-        .populate('author',   'name avatar')
+        .populate('author', 'name avatar')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category');
     }
- 
+
     return sendSuccess(res, { data: { article, related } });
   } catch (err) {
     next(err);
@@ -220,7 +220,6 @@ exports.createArticle = async (req, res, next) => {
 };
 
 
-// ── Update Article ────────────────────────────────────────────────────────────
 exports.updateArticle = async (req, res, next) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -233,6 +232,11 @@ exports.updateArticle = async (req, res, next) => {
     // Strip fields that must never be overwritten via PATCH
     const { author, slug, views, likes, shares, commentsCount,
       editHistory, createdAt, updatedAt, __v, ...safeBody } = req.body;
+
+    // ✅ safeBody is now declared — contributor publish-gate goes HERE
+    if (req.user.role === 'contributor' && safeBody.status === 'published') {
+      return sendError(res, { statusCode: 403, message: 'Contributors cannot publish directly. Submit for review.' });
+    }
 
     article.editHistory.push({ editedBy: req.user._id, note: req.body.editNote });
     article.lastEditedBy = req.user._id;

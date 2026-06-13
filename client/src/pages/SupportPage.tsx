@@ -53,13 +53,13 @@ export default function SupportPage() {
   return (
     <div>
       {/* Hero */}
-      <div className="bg-brand-navy text-white py-16 md:py-24">
+      <div className="bg-brand-yellow py-16 md:py-24">
         <div className="container-site max-w-4xl text-center">
-          <p className="text-[10px] font-black uppercase tracking-[4px] text-brand-yellow mb-4">Support Independent Journalism</p>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
-            The Orbis Journal is reader-funded.<br />Entirely.
+          <p className="text-[10px] font-black uppercase tracking-[4px] text-white mb-4">Support Independent Journalism</p>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-brand-navy mb-6 leading-tight">
+            The Orbis Journal is<br />reader-funded entirely.
           </h1>
-          <p className="text-white/60 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
+          <p className="text-brand-navy/70 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
              Every story we publish is made possible by readers like you who believe accountability journalism matters.
           </p>
         </div>
@@ -193,14 +193,14 @@ export default function SupportPage() {
           <h2 className="text-2xl font-serif font-bold text-ink mb-6">Other ways to support</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { title: 'Fund a Story', desc: 'Crowdfund specific investigations you want us to pursue.', cta: 'Browse stories' },
-              { title: 'Gift a Subscription', desc: "Support us in a friend's name. Great gift for someone who cares.", cta: 'Gift now' },
-              { title: 'Sponsor a Reporter', desc: 'Support a young journalist from a marginalized community.', cta: 'Learn more' },
+              { title: 'Fund a Story', desc: 'Crowdfund specific investigations you want us to pursue.', cta: 'Browse stories', href: '/search' },
+              { title: 'Gift a Subscription', desc: "Support us in a friend's name. Great gift for someone who cares.", cta: 'Gift now', href: '/support' },
+              { title: 'Sponsor a Reporter', desc: 'Support a young journalist from a marginalized community.', cta: 'Learn more', href: '/about' },
             ].map(item => (
               <div key={item.title} className="border-2 border-gray-200 p-5 rounded-xl hover:border-brand-navy transition-colors group">
                 <h3 className="font-serif font-bold text-base text-ink mb-2 group-hover:text-brand-navy">{item.title}</h3>
                 <p className="text-sm text-ink-muted font-sans mb-4 leading-relaxed">{item.desc}</p>
-                <button className="text-xs font-bold uppercase tracking-widest text-brand-navy hover:underline">{item.cta} →</button>
+                <Link to={item.href} className="text-xs font-bold uppercase tracking-widest text-brand-navy hover:underline">{item.cta} →</Link>
               </div>
             ))}
           </div>

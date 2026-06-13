@@ -15,7 +15,8 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const ADMIN_ROLES = ['editor', 'admin', 'superadmin'];
+// AuthContext.tsx line 17
+const ADMIN_ROLES = ['contributor', 'editor', 'admin', 'superadmin'];
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({

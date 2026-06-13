@@ -12,7 +12,7 @@ interface Props {
 
 export default function HeroSection({ hero, featured }: Props) {
   return (
-    <section className="bg-white border-b-2 border-gray-100">
+    <section className="bg-white">
       <div className="container-site py-10 lg:py-14">
         <div className="grid lg:grid-cols-3 gap-0 lg:gap-10">
 
@@ -118,9 +118,9 @@ export default function HeroSection({ hero, featured }: Props) {
               {featured.slice(0, 4).map((article, i) => (
                 <div key={article._id} className="group flex gap-3 pb-5 border-b border-gray-100 last:border-0 last:pb-0">
                   {/* Thumbnail */}
-                  <Link to={`/article/${article.slug}`} className="flex-shrink-0">
+                  <Link to={`/article/${article.slug}`}>
                     {article.featuredImage?.url ? (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
+                      <div className="w-[142px] h-[80px] rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                         <img
                           src={article.featuredImage.url}
                           alt={article.title}
@@ -128,7 +128,7 @@ export default function HeroSection({ hero, featured }: Props) {
                         />
                       </div>
                     ) : (
-                      <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
+                      <div className="w-[142px] h-[80px] rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center flex-shrink-0">
                         <span className="text-2xl font-serif font-black text-brand-yellow">
                           {String(i + 1).padStart(2, '0')}
                         </span>

@@ -5,34 +5,41 @@ import { Search, Plus, Eye, Trash2, Star, Zap, CircleCheck as CheckCircle } from
 import { articlesAdmin, usersAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatRelative, cn } from '../utils/helpers';
+import { useAdminAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import type { Article } from '../types';
 
 const STATUS_OPTIONS = ['', 'draft', 'review', 'published', 'scheduled', 'archived'];
+const CONTRIBUTOR_STATUS_OPTIONS = ['draft', 'review'];
 
 export default function ArticlesPage() {
   const qc = useQueryClient();
+  const { user: currentUser } = useAdminAuth();
+  const isContributor = currentUser?.role === 'contributor';
+
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [author, setAuthor] = useState('');
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
 
-  // Fetch users for the author filter dropdown
+  // Only fetch staff list for editor+ — contributors don't need it
   const { data: staffData } = useQuery({
     queryKey: ['admin', 'users', 'all-staff'],
     queryFn: () => usersAdmin.getAll({ limit: 200 }),
     staleTime: 5 * 60 * 1000,
+    enabled: !isContributor,
   });
 
   const allUsers = staffData?.data?.data?.users ?? [];
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin', 'articles', { search, status, author, page }],
+    queryKey: ['admin', 'articles', { search, status, author, page, isContributor }],
     queryFn: () => articlesAdmin.getAll({
       search: search || undefined,
       status: status || undefined,
-      author: author || undefined,
+      // Contributors always filtered to their own articles
+      author: isContributor ? currentUser._id : (author || undefined),
       page,
       limit: 20,
     }),
@@ -76,7 +83,9 @@ export default function ArticlesPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-sans text-ink-muted">{meta?.total || 0} total articles</p>
+          <p className="text-xs font-sans text-ink-muted">
+            {isContributor ? 'Your articles' : `${meta?.total || 0} total articles`}
+          </p>
         </div>
         <Link to="/articles/new" className="admin-btn-primary gap-2 text-xs">
           <Plus size={14} /> New Article
@@ -100,20 +109,33 @@ export default function ArticlesPage() {
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
           className="admin-select w-auto min-w-[120px] text-sm"
         >
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>{s || 'All Statuses'}</option>
-          ))}
+          {/* Contributors only see draft/review filter options */}
+          {isContributor ? (
+            <>
+              <option value="">All Statuses</option>
+              {CONTRIBUTOR_STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </>
+          ) : (
+            STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>{s || 'All Statuses'}</option>
+            ))
+          )}
         </select>
-        <select
-          value={author}
-          onChange={(e) => { setAuthor(e.target.value); setPage(1); }}
-          className="admin-select w-auto min-w-[160px] text-sm"
-        >
-          <option value="">All Authors</option>
-          {allUsers.map((u) => (
-            <option key={u._id} value={u._id}>{u.name}</option>
-          ))}
-        </select>
+        {/* Author filter — hidden for contributors (they only see their own) */}
+        {!isContributor && (
+          <select
+            value={author}
+            onChange={(e) => { setAuthor(e.target.value); setPage(1); }}
+            className="admin-select w-auto min-w-[160px] text-sm"
+          >
+            <option value="">All Authors</option>
+            {allUsers.map((u) => (
+              <option key={u._id} value={u._id}>{u.name}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Table */}
@@ -123,12 +145,12 @@ export default function ArticlesPage() {
             <thead>
               <tr>
                 <th className="table-th">Article</th>
-                <th className="table-th">Author</th>
+                {!isContributor && <th className="table-th">Author</th>}
                 <th className="table-th">Category</th>
                 <th className="table-th">Status</th>
                 <th className="table-th">Views</th>
                 <th className="table-th">Updated</th>
-                <th className="table-th">Flags</th>
+                {!isContributor && <th className="table-th">Flags</th>}
                 <th className="table-th">Actions</th>
               </tr>
             </thead>
@@ -136,7 +158,7 @@ export default function ArticlesPage() {
               {isLoading ? (
                 Array(8).fill(0).map((_, i) => (
                   <tr key={i} className="table-row">
-                    {Array(8).fill(0).map((_, j) => (
+                    {Array(isContributor ? 6 : 8).fill(0).map((_, j) => (
                       <td key={j} className="table-td">
                         <div className="h-4 bg-gray-100 rounded animate-pulse" />
                       </td>
@@ -144,7 +166,11 @@ export default function ArticlesPage() {
                   </tr>
                 ))
               ) : articles.length === 0 ? (
-                <tr><td colSpan={8} className="table-td text-center text-ink-muted py-8">No articles found</td></tr>
+                <tr>
+                  <td colSpan={isContributor ? 6 : 8} className="table-td text-center text-ink-muted py-8">
+                    {isContributor ? "You haven't written any articles yet." : 'No articles found'}
+                  </td>
+                </tr>
               ) : articles.map((article) => (
                 <tr key={article._id} className="table-row">
                   <td className="table-td max-w-xs">
@@ -158,7 +184,9 @@ export default function ArticlesPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="table-td text-ink-muted whitespace-nowrap">{article.author.name}</td>
+                  {!isContributor && (
+                    <td className="table-td text-ink-muted whitespace-nowrap">{article.author.name}</td>
+                  )}
                   <td className="table-td">
                     {typeof article.category === 'object' && article.category ? (
                       <span
@@ -172,45 +200,60 @@ export default function ArticlesPage() {
                     )}
                   </td>
                   <td className="table-td">
-                    <select
-                      value={article.status}
-                      onChange={(e) => changeStatus(article, e.target.value)}
-                      className="text-xs border border-gray-200 py-1 px-2 outline-none font-sans"
-                    >
-                      {STATUS_OPTIONS.filter(Boolean).map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
+                    {isContributor ? (
+                      // Contributors: simple dropdown, draft/review only
+                      <select
+                        value={article.status}
+                        onChange={(e) => changeStatus(article, e.target.value)}
+                        className="text-xs border border-gray-200 py-1 px-2 outline-none font-sans"
+                      >
+                        {CONTRIBUTOR_STATUS_OPTIONS.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <select
+                        value={article.status}
+                        onChange={(e) => changeStatus(article, e.target.value)}
+                        className="text-xs border border-gray-200 py-1 px-2 outline-none font-sans"
+                      >
+                        {STATUS_OPTIONS.filter(Boolean).map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    )}
                   </td>
                   <td className="table-td text-ink-muted whitespace-nowrap">
                     <span className="flex items-center gap-1"><Eye size={12} /> {article.views.toLocaleString()}</span>
                   </td>
                   <td className="table-td text-ink-muted whitespace-nowrap text-xs">{formatRelative(article.updatedAt)}</td>
-                  <td className="table-td">
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => toggleFlag(article, 'isFeatured')}
-                        title="Featured"
-                        className={cn('p-1 rounded transition-colors', article.isFeatured ? 'text-amber-500' : 'text-gray-300 hover:text-amber-400')}
-                      >
-                        <Star size={13} fill={article.isFeatured ? 'currentColor' : 'none'} />
-                      </button>
-                      <button
-                        onClick={() => toggleFlag(article, 'isBreaking')}
-                        title="Breaking"
-                        className={cn('p-1 rounded transition-colors', article.isBreaking ? 'text-accent-red' : 'text-gray-300 hover:text-red-400')}
-                      >
-                        <Zap size={13} fill={article.isBreaking ? 'currentColor' : 'none'} />
-                      </button>
-                      <button
-                        onClick={() => toggleFlag(article, 'isEditorsPick')}
-                        title="Editor's Pick"
-                        className={cn('p-1 rounded transition-colors', article.isEditorsPick ? 'text-accent-green' : 'text-gray-300 hover:text-green-400')}
-                      >
-                        <CheckCircle size={13} />
-                      </button>
-                    </div>
-                  </td>
+                  {!isContributor && (
+                    <td className="table-td">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => toggleFlag(article, 'isFeatured')}
+                          title="Featured"
+                          className={cn('p-1 rounded transition-colors', article.isFeatured ? 'text-amber-500' : 'text-gray-300 hover:text-amber-400')}
+                        >
+                          <Star size={13} fill={article.isFeatured ? 'currentColor' : 'none'} />
+                        </button>
+                        <button
+                          onClick={() => toggleFlag(article, 'isBreaking')}
+                          title="Breaking"
+                          className={cn('p-1 rounded transition-colors', article.isBreaking ? 'text-accent-red' : 'text-gray-300 hover:text-red-400')}
+                        >
+                          <Zap size={13} fill={article.isBreaking ? 'currentColor' : 'none'} />
+                        </button>
+                        <button
+                          onClick={() => toggleFlag(article, 'isEditorsPick')}
+                          title="Editor's Pick"
+                          className={cn('p-1 rounded transition-colors', article.isEditorsPick ? 'text-accent-green' : 'text-gray-300 hover:text-green-400')}
+                        >
+                          <CheckCircle size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  )}
                   <td className="table-td">
                     <div className="flex items-center gap-1.5">
                       <Link
@@ -232,13 +275,16 @@ export default function ArticlesPage() {
                       >
                         <Eye size={14} />
                       </a>
-                      <button
-                        onClick={() => setDeleteTarget(article)}
-                        className="p-1.5 text-ink-muted hover:text-accent-red transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {/* Delete — hidden for contributors */}
+                      {!isContributor && (
+                        <button
+                          onClick={() => setDeleteTarget(article)}
+                          className="p-1.5 text-ink-muted hover:text-accent-red transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
