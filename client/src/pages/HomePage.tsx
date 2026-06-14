@@ -343,7 +343,6 @@ export default function HomePage() {
   const latestGrid  = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2    = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
   const opinions    = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
-  const editorsPick = articles.filter((a) => a.isEditorsPick).slice(0, 3);
   const moreGrid    = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
 
   const mustReads = articles.filter((a) => a.isMustRead);
