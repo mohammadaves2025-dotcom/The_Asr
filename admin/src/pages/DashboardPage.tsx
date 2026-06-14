@@ -15,6 +15,7 @@ export default function DashboardPage() {
     queryKey: ['admin', 'stats'],
     queryFn:  () => statsAdmin.get(),
     staleTime: 60_000,
+    enabled:  !isContributor,
   });
 
   const { data: articlesData } = useQuery({

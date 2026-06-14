@@ -61,6 +61,18 @@ const refreshLimiter = createLimiter(
   'Too many token refresh attempts, please log in again'
 );
 
+/**
+ * Public AI endpoints (/summary, /translate): 20 per hour per IP.
+ * These proxy to Anthropic — a tighter limit protects API quota from abuse
+ * while still being generous for genuine readers (articles rarely need
+ * re-summarising or re-translating more than a handful of times per hour).
+ */
+const aiPublicLimiter = createLimiter(
+  60 * 60 * 1000,
+  20,
+  'AI request limit reached, please try again in an hour'
+);
+
 module.exports = {
   apiLimiter,
   authLimiter,
@@ -69,4 +81,5 @@ module.exports = {
   uploadLimiter,
   searchLimiter,
   refreshLimiter,
+  aiPublicLimiter,
 };

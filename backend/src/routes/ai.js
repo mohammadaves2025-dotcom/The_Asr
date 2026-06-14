@@ -10,6 +10,7 @@
 const express = require('express');
 const router  = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { aiPublicLimiter } = require('../middleware/rateLimiter');
 
 // ── Shared helper ─────────────────────────────────────────────────────────────
 async function callAnthropic(messages, maxTokens = 800) {
@@ -77,8 +78,8 @@ router.post(
 
 // ── 2. Article summary (public — no auth required) ───────────────────────────
 // Used by AISummary.tsx to generate "Read in 30 seconds" bullet points.
-// Rate-limited by the existing express-rate-limit middleware on the app level.
-router.post('/summary', async (req, res, next) => {
+// aiPublicLimiter: 20 req / hour per IP — tighter than the global 100/15min.
+router.post('/summary', aiPublicLimiter, async (req, res, next) => {
   try {
     const { title, excerpt, bodyText } = req.body;
     if (!title || !bodyText) {
@@ -117,8 +118,8 @@ Body: ${bodyText.slice(0, 2500)}`;
 
 // ── 3. Article translation (public — no auth required) ───────────────────────
 // Used by TranslationToggle.tsx to translate title + excerpt.
-// Translates title and excerpt only — body translation is too expensive for phase 1.
-router.post('/translate', async (req, res, next) => {
+// aiPublicLimiter: 20 req / hour per IP — tighter than the global 100/15min.
+router.post('/translate', aiPublicLimiter, async (req, res, next) => {
   try {
     const { title, excerpt, language, slug } = req.body;
 
