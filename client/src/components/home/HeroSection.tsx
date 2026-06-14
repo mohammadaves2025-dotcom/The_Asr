@@ -16,38 +16,36 @@ export default function HeroSection({ hero, featured }: Props) {
       <div className="container-site py-10 lg:py-14">
         <div className="grid lg:grid-cols-3 gap-0 lg:gap-10">
 
-          {/* ── Main hero — full image with dark overlay + text on top ── */}
+          {/* ── Main hero — full image on top, text content below ── */}
           <div className="lg:col-span-2 animate-fade-in">
             <Link
               to={`/article/${hero.slug}`}
-              className="group block relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500"
-              style={{ minHeight: '480px' }}
+              className="group block rounded-2xl overflow-hidden border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500"
             >
               {/* Image */}
-              {hero.featuredImage?.url ? (
-                <img
-                  src={hero.featuredImage.url}
-                  alt={hero.featuredImage.alt || hero.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="eager"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-navy-dark" />
-              )}
+              <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
+                {hero.featuredImage?.url ? (
+                  <img
+                    src={hero.featuredImage.url}
+                    alt={hero.featuredImage.alt || hero.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="eager"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-navy-dark" />
+                )}
 
-              {/* Strong gradient overlay for readable text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/50 to-black/10" />
+                {/* Breaking badge top-right, sits on the image only */}
+                {hero.isBreaking && (
+                  <div className="absolute top-4 right-4 flex items-center gap-2 bg-brand-red text-white px-4 py-2 rounded-full animate-pulse z-10">
+                    <Flame size={13} fill="currentColor" />
+                    <span className="text-[10px] font-black font-sans uppercase tracking-widest">Breaking</span>
+                  </div>
+                )}
+              </div>
 
-              {/* Breaking badge top-right */}
-              {hero.isBreaking && (
-                <div className="absolute top-4 right-4 flex items-center gap-2 bg-brand-red text-white px-4 py-2 rounded-full animate-pulse z-10">
-                  <Flame size={13} fill="currentColor" />
-                  <span className="text-[10px] font-black font-sans uppercase tracking-widest">Breaking</span>
-                </div>
-              )}
-
-              {/* Text content pinned to bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-7 md:p-10 z-10">
+              {/* Text content below the image, on plain background */}
+              <div className="p-6 md:p-8 bg-white">
                 {/* Badges */}
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   {hero.category?.name && (
@@ -57,25 +55,25 @@ export default function HeroSection({ hero, featured }: Props) {
                   )}
                   <ContentTypeBadge type={hero.contentType} />
                   {hero.isVerified && (
-                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-white/20 text-white backdrop-blur-sm rounded-full flex items-center gap-1">
+                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-brand-navy/10 text-brand-navy rounded-full flex items-center gap-1">
                       <CheckCircle size={11} /> Verified
                     </span>
                   )}
                   {hero.isEditorsPick && (
-                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-white/20 text-white backdrop-blur-sm rounded-full">
+                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-brand-navy/10 text-brand-navy rounded-full">
                       Features
                     </span>
                   )}
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-black text-white leading-tight mb-3 drop-shadow-lg">
+                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-black text-ink leading-tight mb-3">
                   {hero.title}
                 </h1>
 
                 {/* Subtitle */}
                 {(hero.subtitle || hero.excerpt) && (
-                  <p className="text-white/80 text-base md:text-lg font-sans leading-relaxed line-clamp-2 mb-5 font-light max-w-2xl">
+                  <p className="text-ink-secondary text-base md:text-lg font-sans leading-relaxed line-clamp-2 mb-5 font-light max-w-2xl">
                     {hero.subtitle || hero.excerpt}
                   </p>
                 )}
@@ -86,13 +84,13 @@ export default function HeroSection({ hero, featured }: Props) {
                     {hero.author?.avatar ? (
                       <img src={hero.author.avatar} alt={hero.author.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-brand-yellow" />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-brand-yellow flex items-center justify-center font-bold text-brand-navy text-sm ring-2 ring-white/30">
+                      <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center font-bold text-brand-yellow text-sm">
                         {hero.author?.name?.[0] ?? '?'}
                       </div>
                     )}
                     <div>
-                      <p className="text-white text-[13px] font-semibold font-sans leading-none">{hero.author?.name}</p>
-                      <div className="flex items-center gap-2 mt-1 text-white/55 text-[11px] font-sans">
+                      <p className="text-ink text-[13px] font-semibold font-sans leading-none">{hero.author?.name}</p>
+                      <div className="flex items-center gap-2 mt-1 text-ink-muted text-[11px] font-sans">
                         <span>{formatDate(hero.publishedAt || hero.createdAt)}</span>
                         <span>·</span>
                         <Clock size={10} className="inline" />
@@ -101,7 +99,7 @@ export default function HeroSection({ hero, featured }: Props) {
                     </div>
                   </div>
 
-                  <span className="inline-flex items-center gap-2 bg-brand-yellow text-brand-navy font-black text-[11px] uppercase tracking-[2px] px-5 py-2.5 rounded-lg hover:bg-yellow-300 transition-colors">
+                  <span className="inline-flex items-center gap-2 bg-brand-navy text-brand-yellow font-black text-[11px] uppercase tracking-[2px] px-5 py-2.5 rounded-lg hover:bg-brand-navy-dark transition-colors">
                     Read Full <ArrowRight size={13} />
                   </span>
                 </div>

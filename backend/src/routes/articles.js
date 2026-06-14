@@ -50,6 +50,13 @@ router.post('/',
   articleController.createArticle
 );
 
+// ── Set hero article — admin and superadmin only ──────────────────────────────
+router.patch('/admin/:id/set-hero',
+  protect,
+  authorize('admin', 'superadmin'),
+  articleController.setHero
+);
+
 // ── Update article — contributor+ (ownership + role enforced in controller) ───
 router.patch('/:id',
   protect,

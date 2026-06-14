@@ -302,39 +302,53 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
     );
   }
 
-  // ── Hero (full-bleed homepage lead) ─────────────────────────────────────────
+  // ── Hero (homepage lead — image on top, content below) ──────────────────────
   if (variant === 'hero') {
     return (
-      <div className="group relative overflow-hidden rounded-xl bg-gray-900" style={{ minHeight: '480px' }}>
-        {imageUrl && (
-          <img
-            src={imageUrl} alt={imageAlt}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-1000"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/40 to-transparent" />
-        <div className="relative flex flex-col justify-end p-6 md:p-8 h-full" style={{ minHeight: '480px' }}>
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
+      <div className="group overflow-hidden rounded-xl border border-gray-100 bg-white">
+        {/* Image */}
+        <Link to={`/article/${article.slug}`} className="block">
+          <div className="relative w-full overflow-hidden bg-gray-100" style={{ aspectRatio: '16/9' }}>
+            {imageUrl ? (
+              <img
+                src={imageUrl} alt={imageAlt}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-1000"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
+                <span className="text-brand-yellow font-serif font-black text-5xl">{article.title?.[0] ?? '?'}</span>
+              </div>
+            )}
             {article.isBreaking && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
+              <span className="absolute top-3 left-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white">
                 Breaking
               </span>
             )}
+          </div>
+        </Link>
+
+        {/* Content */}
+        <div className="p-5 md:p-7">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             {article.category?.name && (
-              <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-white/15 text-white backdrop-blur-sm">
+              <Link
+                to={`/category/${article.category.slug}`}
+                onClick={e => e.stopPropagation()}
+                className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-yellow text-brand-navy hover:bg-yellow-300 transition-colors"
+              >
                 {article.category.name}
-              </span>
+              </Link>
             )}
             <ContentLabel type={article.contentType} />
           </div>
           <Link
             to={`/article/${article.slug}`}
-            className="block text-3xl md:text-4xl lg:text-[42px] font-serif font-bold text-white leading-tight mb-3 hover:text-brand-yellow transition-colors"
+            className="block text-3xl md:text-4xl lg:text-[42px] font-serif font-bold text-ink leading-tight mb-3 group-hover:text-brand-navy transition-colors"
           >
             {article.title}
           </Link>
           {article.subtitle && (
-            <p className="text-white/65 text-base md:text-lg font-sans leading-relaxed mb-4 line-clamp-2 max-w-2xl">
+            <p className="text-ink-secondary text-base md:text-lg font-sans leading-relaxed mb-4 line-clamp-2 max-w-2xl">
               {article.subtitle}
             </p>
           )}
@@ -342,26 +356,24 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
             {article.author?.avatar ? (
               <img
                 src={article.author.avatar} alt={authorName}
-                className="w-8 h-8 rounded-full object-cover ring-1 ring-white/30"
+                className="w-8 h-8 rounded-full object-cover ring-1 ring-brand-navy/20"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-brand-yellow flex items-center justify-center flex-shrink-0">
-                <span className="text-brand-navy font-black text-[11px]">{authorName[0]}</span>
+              <div className="w-8 h-8 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
+                <span className="text-brand-yellow font-black text-[11px]">{authorName[0]}</span>
               </div>
             )}
-            <span className="text-white/80 text-[12px] font-sans font-medium flex items-center gap-1">
+            <span className="text-ink text-[12px] font-sans font-medium flex items-center gap-1">
               <AuthorName
                 authorName={authorName}
                 authorId={authorId}
                 isGuest={isGuest}
                 authorRole={authorRole}
-                textColor="text-white/80"
-                textColorDark="hover:text-brand-yellow"
               />
             </span>
-            <span className="text-white/45 text-[12px] font-sans">{formatDate(publishDate)}</span>
+            <span className="text-ink-muted text-[12px] font-sans">{formatDate(publishDate)}</span>
             {(article.readTime ?? 0) > 0 && (
-              <span className="text-white/45 text-[12px] font-sans flex items-center gap-1">
+              <span className="text-ink-muted text-[12px] font-sans flex items-center gap-1">
                 <Clock size={11} /> {article.readTime}m read
               </span>
             )}

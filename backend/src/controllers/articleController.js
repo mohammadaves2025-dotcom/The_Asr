@@ -333,6 +333,39 @@ exports.adminGetArticles = async (req, res, next) => {
   }
 };
 
+// ── Set Hero ──────────────────────────────────────────────────────────────────
+// Clears isFeatured on ALL articles, then sets it only on the target one.
+// Pass id = 'none' to clear hero without setting a new one.
+exports.setHero = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Validate: must be 'none' or a valid 24-char hex ObjectId
+    const isValidId = /^[0-9a-fA-F]{24}$/.test(id);
+    if (id !== 'none' && !isValidId) {
+      return res.status(400).json({ success: false, message: 'Invalid article id' });
+    }
+
+    if (id !== 'none') {
+      // Only allow published articles to be set as hero
+      const article = await Article.findOne({ _id: id, status: 'published' });
+      if (!article) {
+        return res.status(404).json({ success: false, message: 'Published article not found' });
+      }
+      await Article.updateMany({ isFeatured: true }, { isFeatured: false });
+      article.isFeatured = true;
+      await article.save();
+    } else {
+      await Article.updateMany({ isFeatured: true }, { isFeatured: false });
+    }
+
+    return res.json({ success: true, message: id === 'none' ? 'Hero cleared' : 'Hero updated' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 // ── Increment Views ───────────────────────────────────────────────────────────
 exports.incrementViews = async (req, res, next) => {
   try {

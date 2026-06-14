@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Plus, Eye, Trash2, Star, Zap, CircleCheck as CheckCircle } from 'lucide-react';
+import { Search, Plus, Eye, Trash2, LayoutTemplate, Zap, CircleCheck as CheckCircle } from 'lucide-react';
 import { articlesAdmin, usersAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatRelative, cn } from '../utils/helpers';
@@ -58,13 +58,29 @@ export default function ArticlesPage() {
     onError: () => toast.error('Failed to delete article'),
   });
 
-  const toggleFlag = async (article: Article, field: 'isFeatured' | 'isBreaking' | 'isEditorsPick') => {
+  const toggleFlag = async (article: Article, field: 'isBreaking' | 'isEditorsPick') => {
     try {
       await articlesAdmin.update(article._id, { [field]: !article[field] });
       toast.success('Updated');
       qc.invalidateQueries({ queryKey: ['admin', 'articles'] });
     } catch {
       toast.error('Failed to update');
+    }
+  };
+
+  const setHero = async (article: Article) => {
+    try {
+      // If already hero, clicking again clears it
+      if (article.isFeatured) {
+        await articlesAdmin.setHero('none');
+        toast.success('Hero cleared');
+      } else {
+        await articlesAdmin.setHero(article._id);
+        toast.success(`"${article.title.slice(0, 40)}…" set as Hero`);
+      }
+      qc.invalidateQueries({ queryKey: ['admin', 'articles'] });
+    } catch {
+      toast.error('Failed to set hero');
     }
   };
 
@@ -231,11 +247,11 @@ export default function ArticlesPage() {
                     <td className="table-td">
                       <div className="flex items-center gap-1.5">
                         <button
-                          onClick={() => toggleFlag(article, 'isFeatured')}
-                          title="Featured"
+                          onClick={() => setHero(article)}
+                          title={article.isFeatured ? 'Currently Hero — click to clear' : 'Set as Hero'}
                           className={cn('p-1 rounded transition-colors', article.isFeatured ? 'text-amber-500' : 'text-gray-300 hover:text-amber-400')}
                         >
-                          <Star size={13} fill={article.isFeatured ? 'currentColor' : 'none'} />
+                          <LayoutTemplate size={13} fill={article.isFeatured ? 'currentColor' : 'none'} />
                         </button>
                         <button
                           onClick={() => toggleFlag(article, 'isBreaking')}

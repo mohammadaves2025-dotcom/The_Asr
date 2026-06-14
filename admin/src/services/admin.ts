@@ -21,6 +21,9 @@ export const articlesAdmin = {
   update: (id: string, data: Partial<Article>) =>
     api.patch(`/articles/${id}`, data),
 
+  setHero: (id: string) =>
+    api.patch(`/articles/admin/${id}/set-hero`),
+
   delete: (id: string) => api.delete(`/articles/${id}`),
 
   uploadImage: (file: File) => {

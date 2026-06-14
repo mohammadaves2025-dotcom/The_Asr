@@ -39,6 +39,88 @@ function ReadingProgress() {
   return <div ref={ref} id="reading-progress" style={{ width: '0%' }} />;
 }
 
+// ── Read Also card — styled image-left card, used for inline body placeholders ──
+function ReadAlsoCard({ slug }: { slug: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['read-also', slug],
+    queryFn: () => articlesService.getBySlug(slug),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const art: Article | undefined = data?.data?.data?.article;
+
+  if (isLoading) {
+    return (
+      <div className="my-8 border-l-4 border-brand-yellow bg-surface-secondary p-4 rounded-r-xl animate-pulse">
+        <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-3 font-sans">Read Also</p>
+        <div className="flex items-start gap-3">
+          <div className="w-24 aspect-video rounded-lg bg-gray-200 flex-shrink-0" />
+          <div className="h-4 bg-gray-200 rounded w-3/4 mt-1" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!art) return null;
+
+  return (
+    <div className="my-8 border-l-4 border-brand-yellow bg-surface-secondary p-4 rounded-r-xl">
+      <p className="text-[9px] font-black uppercase tracking-[3px] text-brand-red mb-3 font-sans">Read Also</p>
+      <Link to={`/article/${art.slug}`} className="flex items-start gap-3 group no-underline">
+        {art.featuredImage?.url && (
+          <img src={art.featuredImage.url} alt={art.title} className="w-24 aspect-video object-cover rounded-lg flex-shrink-0" />
+        )}
+        <p className="text-[14px] font-serif font-semibold text-ink group-hover:text-brand-navy transition-colors leading-snug line-clamp-2">
+          {art.title}
+        </p>
+      </Link>
+    </div>
+  );
+}
+
+// ── Article body renderer — splits HTML around inline "Read Also" placeholders ──
+// The editor inserts <div class="read-also-block" data-slug="..."> at arbitrary
+// points in the body. We split the raw HTML string on those divs, render each
+// HTML chunk via dangerouslySetInnerHTML, and render a ReadAlsoCard in between.
+function ArticleBody({ html }: { html: string }) {
+  const READ_ALSO_RE = /<div[^>]*class="[^"]*read-also-block[^"]*"[^>]*data-slug="([^"]*)"[^>]*>[\s\S]*?<\/div>/gi;
+
+  const segments: { type: 'html' | 'read-also'; content: string }[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = READ_ALSO_RE.exec(html)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: 'html', content: html.slice(lastIndex, match.index) });
+    }
+    segments.push({ type: 'read-also', content: match[1] });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < html.length) {
+    segments.push({ type: 'html', content: html.slice(lastIndex) });
+  }
+
+  // No placeholders found — render as-is
+  if (segments.length <= 1 && segments[0]?.type === 'html') {
+    return <div className="prose-article" dangerouslySetInnerHTML={{ __html: html }} />;
+  }
+
+  return (
+    <>
+      {segments.map((seg, i) =>
+        seg.type === 'html' ? (
+          seg.content.trim() && (
+            <div key={i} className="prose-article" dangerouslySetInnerHTML={{ __html: seg.content }} />
+          )
+        ) : (
+          <ReadAlsoCard key={i} slug={seg.content} />
+        )
+      )}
+    </>
+  );
+}
+
 // ── Share bar — added Telegram, removed Eye/view count ────────────────────────
 function ShareBar({ article }: { article: Article }) {
   const [copied, setCopied] = useState(false);
@@ -616,10 +698,7 @@ export default function ArticlePage() {
 
               {/* Body */}
               {article.body ? (
-                <div
-                  className="prose-article"
-                  dangerouslySetInnerHTML={{ __html: article.body }}
-                />
+                <ArticleBody html={article.body} />
               ) : (
                 <div className="prose-article">
                   <p>{article.excerpt}</p>
