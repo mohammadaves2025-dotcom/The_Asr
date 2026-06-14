@@ -253,7 +253,7 @@ export default function HomePage() {
 
   const breaking    = articles.filter((a) => a.isBreaking);
   const hero        = articles.find((a) => a.isFeatured) ?? articles[0];
-  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
+  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 5);
   const usedIds     = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
   const latestGrid  = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2    = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
@@ -399,7 +399,7 @@ export default function HomePage() {
             {/* Through the Lens */}
             {lensArticles.length > 0 && (
               <section className="my-16">
-                <SectionHead label="Visual Journalism" title="Through the Lens" href="/search" accent="#c8392b" />
+                <SectionHead  title="Through the Lens" href="/search" accent="#c8392b" />
                 <div className="grid md:grid-cols-3 gap-4">
                   {lensArticles.map((art) => (
                     <Link key={art._id} to={`/article/${art.slug}`} className="group block no-underline relative overflow-hidden rounded-xl bg-gray-100">
