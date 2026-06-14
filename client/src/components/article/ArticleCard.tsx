@@ -126,7 +126,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         <CategoryLabel name={article.category?.name} slug={article.category?.slug} />
         <div className="flex gap-3 items-start mt-1.5">
           {/* Thumbnail — LEFT, aligned with title */}
-          <Link to={`/article/${article.slug}`} className="flex-shrink-0">
+          <Link to={`/article/${article.slug}`} className="flex-shrink-0 mt-3">
             {article.featuredImage?.url ? (
               <div className="w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
                 <img
