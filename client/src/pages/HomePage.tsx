@@ -405,26 +405,6 @@ export default function HomePage() {
               </section>
             )}
 
-            {/* Editor's Pick */}
-            {editorsPick.length > 0 && (
-              <section className="mb-16">
-                <div className="flex items-end justify-between mb-5 pb-3 border-b-2 border-brand-navy">
-                  <div>
-                    <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Curated</p>
-                    <h2 className="text-3xl font-serif font-bold text-ink italic flex items-center gap-2">
-                      Features
-                      
-                    </h2>
-                  </div>
-                  <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
-                    More <ArrowRight size={12} />
-                  </Link>
-                </div>
-                <div className="grid md:grid-cols-3 gap-5">
-                  {editorsPick.map((art) => (<ArticleCard key={art._id} article={art} />))}
-                </div>
-              </section>
-            )}
 
             {/* Opinion */}
             {opinions.length > 0 && (

@@ -233,7 +233,7 @@ function GoogleSignInPrompt({
           The Orbis Journal
         </p>
         <p className="font-serif font-bold text-[15px] leading-snug mb-1">
-          Join the conversation
+          Stay Notified
         </p>
         <p className="text-white/50 text-[12px] font-sans mb-4 leading-relaxed">
           Sign in to comment, save articles, and support independent journalism.
