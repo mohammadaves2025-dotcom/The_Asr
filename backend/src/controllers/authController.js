@@ -13,7 +13,8 @@ exports.register = async (req, res, next) => {
     const existing = await User.findOne({ email });
     if (existing) return sendError(res, { statusCode: 409, message: 'Email already registered' });
 
-    const user = await User.create({ name, email, password, provider: 'local' });
+    // Public registration always creates a subscriber — role cannot be supplied by the client
+    const user = await User.create({ name, email, password, role: 'subscriber', provider: 'local' });
 
     const { accessToken, refreshToken } = generateTokenPair(user._id, user.role);
     await user.addRefreshToken(refreshToken, req.headers['user-agent'], req.ip);

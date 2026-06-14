@@ -436,20 +436,46 @@ const userController = {
 
   adminUpdateRole: async (req, res, next) => {
     try {
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { role: req.body.role },
-        { new: true }
-      );
-      if (!user) return sendError(res, { statusCode: 404, message: 'User not found' });
-      return sendSuccess(res, { data: { user } });
+      const VALID_ROLES = ['subscriber', 'contributor', 'editor', 'admin', 'superadmin'];
+      const { role } = req.body;
+
+      if (!role || !VALID_ROLES.includes(role)) {
+        return sendError(res, { statusCode: 400, message: `Invalid role. Must be one of: ${VALID_ROLES.join(', ')}` });
+      }
+
+      // Superadmin protection: cannot demote/change another superadmin
+      const target = await User.findById(req.params.id).select('role _id');
+      if (!target) return sendError(res, { statusCode: 404, message: 'User not found' });
+
+      if (target.role === 'superadmin' && target._id.toString() !== req.user._id.toString()) {
+        return sendError(res, { statusCode: 403, message: 'Cannot change the role of another superadmin.' });
+      }
+
+      // Prevent self-demotion below current role
+      if (target._id.toString() === req.user._id.toString()) {
+        return sendError(res, { statusCode: 400, message: 'You cannot change your own role.' });
+      }
+
+      target.role = role;
+      await target.save();
+
+      return sendSuccess(res, { data: { user: target } });
     } catch (err) { next(err); }
   },
 
   adminToggleActive: async (req, res, next) => {
     try {
+      if (req.params.id === req.user._id.toString()) {
+        return sendError(res, { statusCode: 400, message: 'Cannot deactivate your own account.' });
+      }
+
       const user = await User.findById(req.params.id);
       if (!user) return sendError(res, { statusCode: 404, message: 'User not found' });
+
+      if (user.role === 'superadmin') {
+        return sendError(res, { statusCode: 403, message: 'Superadmin accounts cannot be deactivated.' });
+      }
+
       user.isActive = !user.isActive;
       await user.save();
       return sendSuccess(res, { message: `User ${user.isActive ? 'activated' : 'deactivated'}`, data: { isActive: user.isActive } });
@@ -503,10 +529,18 @@ const userController = {
   adminDelete: async (req, res, next) => {
     try {
       if (req.params.id === req.user._id.toString()) {
-        return sendError(res, { statusCode: 400, message: 'Cannot delete yourself' });
+        return sendError(res, { statusCode: 400, message: 'Cannot delete yourself.' });
       }
-      const user = await User.findByIdAndDelete(req.params.id);
-      if (!user) return sendError(res, { statusCode: 404, message: 'User not found' });
+
+      const target = await User.findById(req.params.id).select('role name');
+      if (!target) return sendError(res, { statusCode: 404, message: 'User not found' });
+
+      // Superadmin accounts cannot be deleted (must be demoted first)
+      if (target.role === 'superadmin') {
+        return sendError(res, { statusCode: 403, message: 'Superadmin accounts cannot be deleted.' });
+      }
+
+      await target.deleteOne();
       return sendSuccess(res, { message: 'User deleted' });
     } catch (err) { next(err); }
   },

@@ -1,7 +1,11 @@
 const Article = require('../models/Article');
 const Category = require('../models/Category');
 const { sendSuccess, sendError, buildPaginationMeta } = require('../utils/apiResponse');
-const { uploadToCloudinary } = require('../config/cloudinary'); // ← ADD THIS LINE
+const { uploadToCloudinary } = require('../config/cloudinary');
+
+// ── Role helpers ──────────────────────────────────────────────────────────────
+const ELEVATED = ['editor', 'admin', 'superadmin'];
+const isElevated = (role) => ELEVATED.includes(role);
 
 // ── List Articles (public) ────────────────────────────────────────────────────
 exports.getArticles = async (req, res, next) => {
@@ -23,10 +27,7 @@ exports.getArticles = async (req, res, next) => {
     if (isFeatured === 'true') filter.isFeatured = true;
     if (isBreaking === 'true') filter.isBreaking = true;
     if (language) filter.language = language;
-
-    if (search) {
-      filter.$text = { $search: search };
-    }
+    if (search) filter.$text = { $search: search };
 
     const skip = (page - 1) * limit;
     const [articles, total] = await Promise.all([
@@ -49,7 +50,7 @@ exports.getArticles = async (req, res, next) => {
   }
 };
 
-//getArticle
+// ── Get single public article ─────────────────────────────────────────────────
 exports.getArticle = async (req, res, next) => {
   try {
     const { slug } = req.params;
@@ -63,26 +64,12 @@ exports.getArticle = async (req, res, next) => {
 
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
-    // ── Improved related articles (tag-count weighted) ────────────────────────
-    //
-    // Strategy:
-    //   1. Find up to 20 candidates from same category OR sharing any tag.
-    //   2. Score each candidate by how many tags it shares with this article.
-    //   3. Return the top 5 by score, then by recency as a tiebreaker.
-    //
-    // This is a pure-JS approach that works without any schema changes or
-    // full-text search infrastructure.
-
     let related = [];
-
     if (article.tags && article.tags.length > 0) {
       const candidates = await Article.find({
         _id: { $ne: article._id },
         status: 'published',
-        $or: [
-          { category: article.category._id },
-          { tags: { $in: article.tags } },
-        ],
+        $or: [{ category: article.category._id }, { tags: { $in: article.tags } }],
       })
         .limit(20)
         .sort('-publishedAt')
@@ -90,26 +77,14 @@ exports.getArticle = async (req, res, next) => {
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category tags');
 
-      // Score by shared tag count
       const tagSet = new Set(article.tags.map((t) => t.toLowerCase()));
-
       const scored = candidates
-        .map((c) => {
-          const sharedTags = (c.tags ?? []).filter((t) => tagSet.has(t.toLowerCase())).length;
-          return { article: c, score: sharedTags };
-        })
-        .sort((a, b) => b.score - a.score || 0); // sort by score desc (publishedAt already sorted)
-
+        .map((c) => ({ article: c, score: (c.tags ?? []).filter((t) => tagSet.has(t.toLowerCase())).length }))
+        .sort((a, b) => b.score - a.score);
       related = scored.slice(0, 5).map((s) => s.article);
     } else {
-      // No tags — fall back to same category
-      related = await Article.find({
-        _id: { $ne: article._id },
-        status: 'published',
-        category: article.category._id,
-      })
-        .limit(5)
-        .sort('-publishedAt')
+      related = await Article.find({ _id: { $ne: article._id }, status: 'published', category: article.category._id })
+        .limit(5).sort('-publishedAt')
         .populate('author', 'name avatar')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category');
@@ -121,76 +96,54 @@ exports.getArticle = async (req, res, next) => {
   }
 };
 
-// ── Homepage Data (aggregated) ────────────────────────────────────────────────
+// ── Homepage Data ─────────────────────────────────────────────────────────────
 exports.getHomepageData = async (req, res, next) => {
   try {
     const published = { status: 'published' };
 
     const [hero, featured, latest, breaking, opinionPicks, categoryPreviews] = await Promise.all([
-      // Hero: single top featured story
       Article.findOne({ ...published, isFeatured: true })
         .sort('-publishedAt')
         .populate('author', 'name avatar role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category contentType'),
 
-      // Editor's picks
       Article.find({ ...published, isEditorsPick: true })
-        .sort('-publishedAt')
-        .limit(4)
+        .sort('-publishedAt').limit(4)
         .populate('author', 'name role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category'),
 
-      // Latest 8 articles
       Article.find(published)
-        .sort('-publishedAt')
-        .limit(8)
+        .sort('-publishedAt').limit(8)
         .populate('author', 'name role')
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category contentType'),
 
-      // Breaking news ticker
       Article.find({ ...published, isBreaking: true })
-        .sort('-publishedAt')
-        .limit(5)
+        .sort('-publishedAt').limit(5)
         .select('title slug category'),
 
-      // Opinion section picks
       Article.find({ ...published, contentType: { $in: ['opinion', 'analysis'] } })
-        .sort('-publishedAt')
-        .limit(3)
+        .sort('-publishedAt').limit(3)
         .populate('author', 'name avatar role')
         .populate('category', 'name slug')
         .select('title slug author category contentType publishedAt'),
 
-      // Category previews — top 3 articles per key category
       Article.aggregate([
         { $match: published },
         { $sort: { publishedAt: -1 } },
-        {
-          $lookup: {
-            from: 'categories',
-            localField: 'category',
-            foreignField: '_id',
-            as: 'category',
-          },
-        },
+        { $lookup: { from: 'categories', localField: 'category', foreignField: '_id', as: 'category' } },
         { $unwind: '$category' },
         {
           $group: {
             _id: '$category.slug',
-            categoryName: { $first: '$category.name' },
+            categoryName:  { $first: '$category.name' },
             categoryColor: { $first: '$category.color' },
             articles: {
               $push: {
-                _id: '$_id',
-                title: '$title',
-                slug: '$slug',
-                excerpt: '$excerpt',
-                featuredImage: '$featuredImage',
-                publishedAt: '$publishedAt',
-                readTime: '$readTime',
+                _id: '$_id', title: '$title', slug: '$slug', excerpt: '$excerpt',
+                featuredImage: '$featuredImage', publishedAt: '$publishedAt', readTime: '$readTime',
               },
             },
           },
@@ -200,18 +153,26 @@ exports.getHomepageData = async (req, res, next) => {
       ]),
     ]);
 
-    return sendSuccess(res, {
-      data: { hero, featured, latest, breaking, opinionPicks, categoryPreviews },
-    });
+    return sendSuccess(res, { data: { hero, featured, latest, breaking, opinionPicks, categoryPreviews } });
   } catch (err) {
     next(err);
   }
 };
 
-// ── Create Article (CMS) ──────────────────────────────────────────────────────
+// ── Create Article ────────────────────────────────────────────────────────────
 exports.createArticle = async (req, res, next) => {
   try {
-    const article = await Article.create({ ...req.body, author: req.user._id });
+    const { status, ...rest } = req.body;
+
+    // Contributors can only create drafts or submit for review — never publish directly
+    let safeStatus = status || 'draft';
+    if (req.user.role === 'contributor') {
+      if (!['draft', 'review'].includes(safeStatus)) {
+        return sendError(res, { statusCode: 403, message: 'Contributors can only save as draft or submit for review.' });
+      }
+    }
+
+    const article = await Article.create({ ...rest, status: safeStatus, author: req.user._id });
     await article.populate('category', 'name slug');
     return sendSuccess(res, { statusCode: 201, message: 'Article created', data: { article } });
   } catch (err) {
@@ -219,23 +180,46 @@ exports.createArticle = async (req, res, next) => {
   }
 };
 
-
+// ── Update Article ────────────────────────────────────────────────────────────
 exports.updateArticle = async (req, res, next) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
-    const canEdit = ['admin', 'superadmin', 'editor'].includes(req.user.role) ||
-      article.author.toString() === req.user._id.toString();
-    if (!canEdit) return sendError(res, { statusCode: 403, message: 'Access denied' });
+    const userRole = req.user.role;
+    const isOwner = article.author.toString() === req.user._id.toString();
+
+    // Access check: elevated roles OR own article
+    if (!isElevated(userRole) && !isOwner) {
+      return sendError(res, { statusCode: 403, message: 'Access denied' });
+    }
 
     // Strip fields that must never be overwritten via PATCH
-    const { author, slug, views, likes, shares, commentsCount,
-      editHistory, createdAt, updatedAt, __v, ...safeBody } = req.body;
+    const {
+      author, slug, views, likes, shares, commentsCount,
+      editHistory, createdAt, updatedAt, __v,
+      ...safeBody
+    } = req.body;
 
-    // ✅ safeBody is now declared — contributor publish-gate goes HERE
-    if (req.user.role === 'contributor' && safeBody.status === 'published') {
-      return sendError(res, { statusCode: 403, message: 'Contributors cannot publish directly. Submit for review.' });
+    // Contributors: only draft or review — cannot publish, archive, or schedule
+    if (userRole === 'contributor') {
+      if (safeBody.status && !['draft', 'review'].includes(safeBody.status)) {
+        return sendError(res, { statusCode: 403, message: 'Contributors can only save as draft or submit for review.' });
+      }
+      // Contributors cannot modify featured/breaking/editors-pick flags
+      delete safeBody.isFeatured;
+      delete safeBody.isBreaking;
+      delete safeBody.isEditorsPick;
+      // Contributors cannot change co-authors, scheduled time, or language
+      delete safeBody.coAuthors;
+      delete safeBody.scheduledFor;
+    }
+
+    // Editors cannot publish — only admin/superadmin can
+    if (userRole === 'editor') {
+      if (safeBody.status === 'published') {
+        return sendError(res, { statusCode: 403, message: 'Editors cannot publish directly. An admin must approve.' });
+      }
     }
 
     article.editHistory.push({ editedBy: req.user._id, note: req.body.editNote });
@@ -252,8 +236,15 @@ exports.updateArticle = async (req, res, next) => {
 // ── Delete Article ────────────────────────────────────────────────────────────
 exports.deleteArticle = async (req, res, next) => {
   try {
-    const article = await Article.findByIdAndDelete(req.params.id);
+    const article = await Article.findById(req.params.id);
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
+
+    // Only admin and superadmin can delete articles
+    if (!['admin', 'superadmin'].includes(req.user.role)) {
+      return sendError(res, { statusCode: 403, message: 'Only admins can delete articles.' });
+    }
+
+    await article.deleteOne();
     return sendSuccess(res, { message: 'Article deleted' });
   } catch (err) {
     next(err);
@@ -263,7 +254,7 @@ exports.deleteArticle = async (req, res, next) => {
 // ── Upload Featured Image ─────────────────────────────────────────────────────
 exports.uploadImage = async (req, res, next) => {
   try {
-    if (!req.file) return sendError(res, { statusCode: 400, message: 'No image uploaded' });
+    if (!req.file) return sendError(res, { statusCode: 400, message: 'No image file received. Ensure the field name is "image".' });
 
     const result = await uploadToCloudinary(req.file.buffer, {
       folder: 'theasr/articles',
@@ -293,10 +284,11 @@ exports.adminGetArticle = async (req, res, next) => {
 
     if (!article) return sendError(res, { statusCode: 404, message: 'Article not found' });
 
-    // Only author, editor, or admin can view
-    const canView = ['admin', 'superadmin', 'editor'].includes(req.user.role) ||
-      article.author._id.toString() === req.user._id.toString();
-    if (!canView) return sendError(res, { statusCode: 403, message: 'Access denied' });
+    // Contributors can only view their own articles
+    const isOwner = article.author._id.toString() === req.user._id.toString();
+    if (!isElevated(req.user.role) && !isOwner) {
+      return sendError(res, { statusCode: 403, message: 'Access denied' });
+    }
 
     return sendSuccess(res, { data: { article } });
   } catch (err) {
@@ -304,13 +296,20 @@ exports.adminGetArticle = async (req, res, next) => {
   }
 };
 
-// ── Admin: All Articles (with any status) ─────────────────────────────────────
+// ── Admin: All Articles ───────────────────────────────────────────────────────
 exports.adminGetArticles = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, status, author, category, search } = req.query;
     const filter = {};
+
+    // Contributors only see their own articles — always enforced server-side
+    if (req.user.role === 'contributor') {
+      filter.author = req.user._id;
+    } else {
+      if (author) filter.author = author;
+    }
+
     if (status) filter.status = status;
-    if (author) filter.author = author;
     if (category) filter.category = category;
     if (search) filter.$text = { $search: search };
 
@@ -332,10 +331,9 @@ exports.adminGetArticles = async (req, res, next) => {
   }
 };
 
-// ── Increment Views (public, fire-and-forget) ─────────────────────────────────
+// ── Increment Views ───────────────────────────────────────────────────────────
 exports.incrementViews = async (req, res, next) => {
   try {
-    // Accept slug or id
     const filter = req.params.slug.match(/^[0-9a-fA-F]{24}$/)
       ? { _id: req.params.slug }
       : { slug: req.params.slug };
