@@ -15,7 +15,7 @@ import ArticleCard from '../components/article/ArticleCard';
 import CommentsSection from '../components/article/CommentsSection';
 import AISummary from '../components/article/AISummary';
 import TranslationToggle from '../components/article/TranslationToggle';
-import { MostRead, PopularStories, FollowUs } from '../components/sidebar/SidebarWidgets';
+import { MostRead, PopularStories, DonateCard, FollowUs } from '../components/sidebar/SidebarWidgets';
 import { articlesService } from '../services/articles';
 import { useAuth } from '../context/AuthContext';
 import { formatDateLong, resolveAuthorName } from '../utils/helpers';
@@ -782,30 +782,7 @@ export default function ArticlePage() {
               <div className="sticky top-24 space-y-6">
 
                 {/* Support */}
-                <div className="border-2 border-brand-navy p-5 rounded-xl">
-                  <p className="text-[9px] font-black uppercase tracking-[3px] text-ink-muted mb-2 font-sans">
-                    Support The Orbis Journal
-                  </p>
-                  <p className="font-serif font-bold text-[15px] text-ink mb-4 leading-snug">
-                    Help us publish more journalism like this.
-                  </p>
-                  <div className="grid grid-cols-2 gap-1.5 mb-3">
-                    {['₹200', '₹500', '₹1000', '₹2500'].map((a) => (
-                      <button
-                        key={a}
-                        className="border border-gray-200 rounded-lg text-ink text-[11px] font-bold py-2 hover:bg-brand-navy hover:text-brand-yellow hover:border-brand-navy transition-all font-sans"
-                      >
-                        {a}
-                      </button>
-                    ))}
-                  </div>
-                  <Link
-                    to="/support"
-                    className="block text-center bg-brand-navy text-brand-yellow font-black text-[10px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-brand-navy-dark transition-colors font-sans"
-                  >
-                    Donate →
-                  </Link>
-                </div>
+                <DonateCard />
 
                 {/* Related articles — horizontal layout (thumbnail left, title right) */}
                 {related.length > 0 && (
