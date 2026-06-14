@@ -638,7 +638,7 @@ export default function ArticlePage() {
                         className="flex items-start gap-3 group no-underline"
                       >
                         {art.featuredImage?.url && (
-                          <img src={art.featuredImage.url} alt={art.title} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
+                          <img src={art.featuredImage.url} alt={art.title} className="w-24 aspect-video object-cover rounded-lg flex-shrink-0" />
                         )}
                         <p className="text-[14px] font-serif font-semibold text-ink group-hover:text-brand-navy transition-colors leading-snug line-clamp-2">
                           {art.title}

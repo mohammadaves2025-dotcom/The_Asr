@@ -57,7 +57,7 @@ function MostRead({ articles }: { articles: Article[] }) {
       <ol>
         {articles.slice(0, 5).map((art) => (
           <li key={art._id} className="group border-b border-gray-100 last:border-0 py-4 flex items-start gap-3">
-            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
               {art.featuredImage?.url ? (
                 <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               ) : (
@@ -89,7 +89,7 @@ function PopularStories({ articles }: { articles: Article[] }) {
       <ul className="space-y-4">
         {articles.map((art) => (
           <li key={art._id} className="group flex gap-3 items-start">
-            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-14 h-14 rounded-lg overflow-hidden bg-gray-100">
+            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
               {art.featuredImage?.url ? (
                 <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               ) : (
@@ -166,7 +166,7 @@ function OpinionCard({ article }: { article: Article }) {
       </div>
       {article.featuredImage?.url && (
         <Link to={`/article/${article.slug}`} className="flex-shrink-0">
-          <div className="w-20 h-20 overflow-hidden bg-gray-100 rounded-lg">
+          <div className="w-24 aspect-video overflow-hidden bg-gray-100 rounded-lg">
             <img src={article.featuredImage.url} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
         </Link>

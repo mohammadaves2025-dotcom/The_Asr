@@ -128,7 +128,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
           {/* Thumbnail — LEFT, aligned with title */}
           <Link to={`/article/${article.slug}`} className="flex-shrink-0">
             {article.featuredImage?.url ? (
-              <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+              <div className="w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
                 <img
                   src={article.featuredImage.url}
                   alt={article.featuredImage.alt || article.title}
@@ -136,7 +136,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
                 />
               </div>
             ) : (
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
+              <div className="w-24 aspect-video rounded-lg bg-gradient-to-br from-brand-navy to-brand-navy-dark flex items-center justify-center">
                 <span className="text-brand-yellow font-serif font-black text-xl">
                   {article.title?.[0] ?? '?'}
                 </span>
