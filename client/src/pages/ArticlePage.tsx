@@ -15,6 +15,7 @@ import ArticleCard from '../components/article/ArticleCard';
 import CommentsSection from '../components/article/CommentsSection';
 import AISummary from '../components/article/AISummary';
 import TranslationToggle from '../components/article/TranslationToggle';
+import { MostRead, PopularStories, FollowUs } from '../components/sidebar/SidebarWidgets';
 import { articlesService } from '../services/articles';
 import { useAuth } from '../context/AuthContext';
 import { formatDateLong, resolveAuthorName } from '../utils/helpers';
@@ -390,6 +391,15 @@ export default function ArticlePage() {
       slug ? articlesService.getBySlug(slug) : Promise.reject('No slug'),
     enabled: !!slug,
   });
+
+  // Sidebar — Most Read / Popular Stories, sorted by views descending
+  const { data: mostReadData } = useQuery({
+    queryKey: ['articles', 'most-read'],
+    queryFn: () => articlesService.getAll({ limit: 8, status: 'published', sort: '-views' }),
+    staleTime: 10 * 60 * 1000,
+  });
+  const mostReadArticles: Article[] = mostReadData?.data?.data?.articles ?? [];
+  const popularArticles: Article[]  = mostReadArticles.slice(5, 8);
 
   useEffect(() => {
     if (slug) articlesService.incrementViews(slug).catch(() => {});
@@ -816,6 +826,12 @@ export default function ArticlePage() {
                 )}
 
                 {/* Newsletter removed from sidebar per client instruction */}
+
+                {mostReadArticles.length > 0 && <MostRead articles={mostReadArticles} />}
+
+                {popularArticles.length > 0 && <PopularStories articles={popularArticles} />}
+
+                <FollowUs />
               </div>
             </aside>
           </div>

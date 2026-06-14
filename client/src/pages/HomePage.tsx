@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, TrendingUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import BreakingTicker from '../components/home/BreakingTicker';
 import ArticleCard from '../components/article/ArticleCard';
+import { MostRead, PopularStories, DonateCard } from '../components/sidebar/SidebarWidgets';
 import { articlesService, categoriesService } from '../services/articles';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { formatDate, resolveAuthorName } from '../utils/helpers';
@@ -42,92 +43,6 @@ function SectionHead({
       >
         More <ArrowRight size={12} />
       </Link>
-    </div>
-  );
-}
-
-// ── Most Read (sidebar) ────────────────────────────────────────────────────────
-function MostRead({ articles }: { articles: Article[] }) {
-  return (
-    <div className="border border-gray-200 p-5 rounded-xl">
-      <div className="flex items-center gap-2 mb-5 pb-3 border-b-2 border-ink">
-        <TrendingUp size={14} className="text-ink" />
-        <h2 className="text-sm font-serif font-bold text-ink">Most Read</h2>
-      </div>
-      <ol>
-        {articles.slice(0, 5).map((art) => (
-          <li key={art._id} className="group border-b border-gray-100 last:border-0 py-4 flex items-start gap-3">
-            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
-              {art.featuredImage?.url ? (
-                <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-brand-navy/20 to-brand-navy/5" />
-              )}
-            </Link>
-            <div className="flex-1 min-w-0">
-              <Link to={`/article/${art.slug}`} className="text-[15px] font-serif font-semibold text-ink line-clamp-3 group-hover:text-brand-navy transition-colors block leading-snug">
-                {art.title}
-              </Link>
-              <p className="text-[12px] text-ink-muted mt-1.5 font-sans">{art.readTime}m read</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-// ── Popular Stories (sidebar) ─────────────────────────────────────────────────
-function PopularStories({ articles }: { articles: Article[] }) {
-  if (!articles.length) return null;
-  return (
-    <div className="border border-gray-200 p-5 rounded-xl">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-brand-red">
-        <h2 className="text-sm font-serif font-bold text-ink">Popular Stories</h2>
-        <span className="text-[9px] font-black uppercase tracking-[2px] text-brand-red font-sans">This Week</span>
-      </div>
-      <ul className="space-y-4">
-        {articles.map((art) => (
-          <li key={art._id} className="group flex gap-3 items-start">
-            <Link to={`/article/${art.slug}`} className="flex-shrink-0 block w-24 aspect-video rounded-lg overflow-hidden bg-gray-100">
-              {art.featuredImage?.url ? (
-                <img src={art.featuredImage.url} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-brand-navy/20 to-brand-navy/5" />
-              )}
-            </Link>
-            <div className="flex-1 min-w-0">
-              <Link to={`/article/${art.slug}`} className="text-[14px] font-serif font-semibold text-ink line-clamp-2 group-hover:text-brand-navy transition-colors block leading-snug">
-                {art.title}
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// ── Donate Card ───────────────────────────────────────────────────────────────
-function DonateCard() {
-  return (
-    <div className="rounded-xl overflow-hidden">
-      <div className="bg-brand-yellow px-5 pt-5 pb-4">
-        <p className="text-[11px] font-black uppercase tracking-[3px] text-brand-navy/60 mb-1.5 font-sans">
-          Support Independent Journalism
-        </p>
-        <p className="font-serif font-bold text-[17px] text-brand-navy leading-snug">
-          Fearless reporting needs your support.
-        </p>
-      </div>
-      <div className="bg-brand-navy px-5 pt-4 pb-5">
-        <p className="text-[13px] text-white/50 font-sans mb-4 leading-relaxed">
-          Your contribution keeps our newsroom independent and our journalism free for everyone.
-        </p>
-        <Link to="/support" className="block text-center bg-brand-yellow text-brand-navy font-black text-[11px] uppercase tracking-[2px] py-3 rounded-lg hover:bg-yellow-300 transition-colors font-sans">
-          Donate Now →
-        </Link>
-      </div>
     </div>
   );
 }
