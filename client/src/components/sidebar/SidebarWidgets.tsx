@@ -119,3 +119,18 @@ export function FollowUs() {
     </div>
   );
 }
+
+// ── About Us ──────────────────────────────────────────────────────────────────
+export function AboutUsCard() {
+  return (
+    <div className="border border-gray-200 p-5 rounded-xl">
+      <p className="text-[12px] font-black uppercase tracking-[3px] text-ink-muted mb-3 font-sans">About Us</p>
+      <p className="text-[12px] text-ink-muted font-sans leading-relaxed mb-3">
+        The Orbis Journal is an independent media platform dedicated to human rights, social justice, and the stories of marginalized communities.
+      </p>
+      <Link to="/about" className="text-[11px] font-black uppercase tracking-[2px] text-brand-navy hover:text-brand-red transition-colors font-sans">
+        Our Mission →
+      </Link>
+    </div>
+  );
+}
