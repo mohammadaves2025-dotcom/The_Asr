@@ -54,6 +54,13 @@ const searchLimiter = createLimiter(
   'Search rate limit exceeded'
 );
 
+/** Token refresh: 30 per 15 min — generous enough for normal access-token expiry cycles */
+const refreshLimiter = createLimiter(
+  15 * 60 * 1000,
+  30,
+  'Too many token refresh attempts, please log in again'
+);
+
 module.exports = {
   apiLimiter,
   authLimiter,
@@ -61,4 +68,5 @@ module.exports = {
   passwordResetLimiter,
   uploadLimiter,
   searchLimiter,
+  refreshLimiter,
 };

@@ -85,7 +85,7 @@ app.get('/health', (req, res) => res.json({
 const publishScheduledArticles = require('./jobs/publishScheduled');
 app.get('/api/v1/internal/publish-scheduled', async (req, res) => {
   const cronSecret = req.headers['authorization'];
-  if (process.env.CRON_SECRET && cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   await publishScheduledArticles();

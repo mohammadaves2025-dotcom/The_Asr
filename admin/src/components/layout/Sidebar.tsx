@@ -9,34 +9,34 @@ const NAV_ITEMS = [
   {
     label: 'Overview',
     items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
+      { icon: LayoutDashboard, label: 'Dashboard', href: '/', roles: ['contributor', 'editor', 'admin', 'superadmin'] },
     ],
   },
   {
     label: 'Content',
     items: [
-      { icon: FileText, label: 'Articles', href: '/articles' },
-      { icon: Tags, label: 'Categories', href: '/categories' },
-      { icon: MessageSquare, label: 'Comments', href: '/comments' },
+      { icon: FileText, label: 'Articles', href: '/articles', roles: ['contributor', 'editor', 'admin', 'superadmin'] },
+      { icon: Tags, label: 'Categories', href: '/categories', roles: ['editor', 'admin', 'superadmin'] },
+      { icon: MessageSquare, label: 'Comments', href: '/comments', roles: ['editor', 'admin', 'superadmin'] },
     ],
   },
   {
     label: 'Community',
     items: [
-      { icon: Send, label: 'Submissions', href: '/submissions' },
-      { icon: Mail, label: 'Newsletter', href: '/newsletter' },
+      { icon: Send, label: 'Submissions', href: '/submissions', roles: ['editor', 'admin', 'superadmin'] },
+      { icon: Mail, label: 'Newsletter', href: '/newsletter', roles: ['editor', 'admin', 'superadmin'] },
     ],
   },
   {
     label: 'Users',
     items: [
-      { icon: Users, label: 'Users', href: '/users' },
+      { icon: Users, label: 'Users', href: '/users', roles: ['admin', 'superadmin'] },
     ],
   },
   {
     label: 'System',
     items: [
-      { icon: Settings, label: 'Settings', href: '/settings' },
+      { icon: Settings, label: 'Settings', href: '/settings', roles: ['admin', 'superadmin'] },
     ],
   },
 ];
@@ -79,31 +79,35 @@ export default function Sidebar({ collapsed }: Props) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3">
-        {NAV_ITEMS.map((group) => (
-          <div key={group.label}>
-            {!collapsed && (
-              <p className="sidebar-section-label">{group.label}</p>
-            )}
-            {group.items.map(({ icon: Icon, label, href }) => (
-              <Link
-                key={href}
-                to={href}
-                title={collapsed ? label : undefined}
-                className={cn(
-                  'sidebar-link',
-                  isActive(href) && 'sidebar-link-active',
-                  collapsed && 'justify-center px-0'
-                )}
-              >
-                <Icon size={16} className={cn('flex-shrink-0', isActive(href) ? 'text-brand-yellow' : 'text-white/50')} />
-                {!collapsed && <span>{label}</span>}
-                {!collapsed && isActive(href) && (
-                  <ChevronRight size={13} className="ml-auto text-brand-yellow" />
-                )}
-              </Link>
-            ))}
-          </div>
-        ))}
+        {NAV_ITEMS.map((group) => {
+          const items = group.items.filter((item) => !item.roles || item.roles.includes(user?.role ?? ''));
+          if (items.length === 0) return null;
+          return (
+            <div key={group.label}>
+              {!collapsed && (
+                <p className="sidebar-section-label">{group.label}</p>
+              )}
+              {items.map(({ icon: Icon, label, href }) => (
+                <Link
+                  key={href}
+                  to={href}
+                  title={collapsed ? label : undefined}
+                  className={cn(
+                    'sidebar-link',
+                    isActive(href) && 'sidebar-link-active',
+                    collapsed && 'justify-center px-0'
+                  )}
+                >
+                  <Icon size={16} className={cn('flex-shrink-0', isActive(href) ? 'text-brand-yellow' : 'text-white/50')} />
+                  {!collapsed && <span>{label}</span>}
+                  {!collapsed && isActive(href) && (
+                    <ChevronRight size={13} className="ml-auto text-brand-yellow" />
+                  )}
+                </Link>
+              ))}
+            </div>
+          );
+        })}
       </nav>
 
       {/* User footer */}

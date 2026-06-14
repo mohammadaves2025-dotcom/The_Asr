@@ -6,8 +6,13 @@
 // Shows a clear "AI Translation" badge so readers know it is machine-translated.
 
 import { useState } from 'react';
+import axios from 'axios';
 import { Languages, Loader2, AlertCircle } from 'lucide-react';
-import api from '../../services/api';
+
+// Plain client for public AI endpoints — bypasses auth interceptors
+// (no Authorization header, no refresh-on-401, no redirect for anonymous readers).
+const BASE_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
+const publicApi = axios.create({ baseURL: BASE_URL, headers: { 'Content-Type': 'application/json' } });
 
 type Lang = 'en' | 'hi' | 'ur';
 
@@ -69,7 +74,7 @@ export default function TranslationToggle({
     // Fetch translation
     setLoading(lang);
     try {
-      const res = await api.post('/ai/translate', {
+      const res = await publicApi.post('/ai/translate', {
         title:    originalTitle,
         excerpt:  originalExcept,
         language: lang === 'hi' ? 'Hindi' : 'Urdu',

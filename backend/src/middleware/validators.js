@@ -55,9 +55,9 @@ const resetPasswordValidator = [
 // ── Article Validators ────────────────────────────────────────────────────────
 const createArticleValidator = [
   body('title').trim().notEmpty().withMessage('Title is required').isLength({ max: 300 }),
-  body('excerpt').trim().notEmpty().withMessage('Excerpt is required').isLength({ max: 1000 }),
+  body('excerpt').optional({ values: 'falsy' }).trim().isLength({ max: 1000 }),
   body('body').optional(),                          // ← allow empty body for drafts
-  body('category').isMongoId().withMessage('Valid category ID required'),
+  body('category').optional({ values: 'falsy' }).isMongoId().withMessage('Valid category ID required'),
   body('contentType')
     .optional()
     .isIn([

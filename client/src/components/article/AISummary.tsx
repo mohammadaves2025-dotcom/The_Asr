@@ -9,8 +9,14 @@
 // wrap this component in a conditional and only render for signed-in users.
 
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Sparkles, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
-import api from '../../services/api';
+
+// Plain client for public AI endpoints — deliberately bypasses the auth
+// interceptors on the shared `api` instance (no Authorization header,
+// no token-refresh-on-401, no redirect-to-login for anonymous readers).
+const BASE_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
+const publicApi = axios.create({ baseURL: BASE_URL, headers: { 'Content-Type': 'application/json' } });
 
 interface Props {
   title:   string;
@@ -44,7 +50,7 @@ export default function AISummary({ title, excerpt, body, slug }: Props) {
     setError(false);
 
     // Use the public summary endpoint (no auth required)
-    api
+    publicApi
       .post('/ai/summary', {
         title,
         excerpt,

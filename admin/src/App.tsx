@@ -1,3 +1,4 @@
+import { type ReactElement } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -22,6 +23,18 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Roles allowed per restricted route. Contributors are redirected to /articles.
+const ELEVATED_ROLES = ['editor', 'admin', 'superadmin'];
+const ADMIN_ONLY_ROLES = ['admin', 'superadmin'];
+
+function RoleGate({ allowed, children }: { allowed: string[]; children: ReactElement }) {
+  const { user } = useAdminAuth();
+  if (!user || !allowed.includes(user.role)) {
+    return <Navigate to="/articles" replace />;
+  }
+  return children;
+}
 
 function ProtectedRoutes() {
   const { isAuthenticated, isLoading } = useAdminAuth();
@@ -48,12 +61,12 @@ function ProtectedRoutes() {
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/articles/new" element={<ArticleEditorPage />} />
         <Route path="/articles/:id/edit" element={<ArticleEditorPage />} />
-        <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/comments" element={<CommentsPage />} />
-        <Route path="/submissions" element={<SubmissionsPage />} />
-        <Route path="/newsletter" element={<NewsletterPage />} />
-        <Route path="/users" element={<UsersPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/categories" element={<RoleGate allowed={ELEVATED_ROLES}><CategoriesPage /></RoleGate>} />
+        <Route path="/comments" element={<RoleGate allowed={ELEVATED_ROLES}><CommentsPage /></RoleGate>} />
+        <Route path="/submissions" element={<RoleGate allowed={ELEVATED_ROLES}><SubmissionsPage /></RoleGate>} />
+        <Route path="/newsletter" element={<RoleGate allowed={ELEVATED_ROLES}><NewsletterPage /></RoleGate>} />
+        <Route path="/users" element={<RoleGate allowed={ADMIN_ONLY_ROLES}><UsersPage /></RoleGate>} />
+        <Route path="/settings" element={<RoleGate allowed={ADMIN_ONLY_ROLES}><SettingsPage /></RoleGate>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

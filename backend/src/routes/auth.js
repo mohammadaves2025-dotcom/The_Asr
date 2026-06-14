@@ -9,13 +9,13 @@ const {
   forgotPasswordValidator,
   resetPasswordValidator,
 } = require('../middleware/validators');
-const { authLimiter, registerLimiter, passwordResetLimiter } = require('../middleware/rateLimiter');
+const { authLimiter, registerLimiter, passwordResetLimiter, refreshLimiter } = require('../middleware/rateLimiter');
 
 // ── Local Auth ────────────────────────────────────────────────────────────────
 router.post('/register', registerLimiter, registerValidator, authController.register);
 router.post('/login', authLimiter, loginValidator, authController.login);
 router.post('/logout', protect, authController.logout);
-router.post('/refresh', authController.refreshToken);
+router.post('/refresh', refreshLimiter, authController.refreshToken);
 
 // ── Google OAuth ──────────────────────────────────────────────────────────────
 router.get('/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));

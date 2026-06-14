@@ -24,7 +24,7 @@ async function callAnthropic(messages, maxTokens = 800) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
       messages,
     }),
@@ -42,7 +42,7 @@ router.post(
   authorize('contributor', 'editor', 'admin', 'superadmin'),
   async (req, res, next) => {
     try {
-      const { model, max_tokens, messages } = req.body;
+      const { messages } = req.body;
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         return res.status(400).json({ success: false, message: 'messages array is required' });
       }
@@ -50,6 +50,7 @@ router.post(
       if (!apiKey) {
         return res.status(503).json({ success: false, message: 'AI service not configured' });
       }
+      // Model and max_tokens are fixed server-side — never trust client input here.
       const upstream = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -58,8 +59,8 @@ router.post(
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model:      model || 'claude-sonnet-4-5',
-          max_tokens: max_tokens || 1000,
+          model:      'claude-sonnet-4-6',
+          max_tokens: 1000,
           messages,
         }),
       });

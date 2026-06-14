@@ -1,5 +1,6 @@
 const Article = require('../models/Article');
 const Category = require('../models/Category');
+const Comment = require('../models/Comment');
 const { sendSuccess, sendError, buildPaginationMeta } = require('../utils/apiResponse');
 const { uploadToCloudinary } = require('../config/cloudinary');
 
@@ -244,6 +245,7 @@ exports.deleteArticle = async (req, res, next) => {
       return sendError(res, { statusCode: 403, message: 'Only admins can delete articles.' });
     }
 
+    await Comment.deleteMany({ article: article._id });
     await article.deleteOne();
     return sendSuccess(res, { message: 'Article deleted' });
   } catch (err) {

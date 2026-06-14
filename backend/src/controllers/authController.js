@@ -217,9 +217,12 @@ exports.updatePassword = async (req, res, next) => {
     }
 
     user.password = newPassword;
+    user.refreshTokens = []; // invalidate all sessions
     await user.save();
 
-    return sendSuccess(res, { message: 'Password updated successfully' });
+    clearRefreshCookie(res);
+
+    return sendSuccess(res, { message: 'Password updated successfully — please log in again' });
   } catch (err) {
     next(err);
   }

@@ -21,12 +21,20 @@ const articleSchema = new mongoose.Schema(
     subtitle: { type: String, maxlength: 500 },
     excerpt: {
       type: String,
-      required: [true, 'Excerpt is required'],
+      required: [
+        function () { return ['published', 'scheduled'].includes(this.status); },
+        'Excerpt is required',
+      ],
       maxlength: [1000, 'Excerpt cannot exceed 1000 characters'],
+      default: '',
     },
     body: {
       type: String,
-      required: [true, 'Body content is required'],
+      required: [
+        function () { return ['published', 'scheduled'].includes(this.status); },
+        'Body content is required',
+      ],
+      default: '',
     }, // rich HTML from Quill/TipTap
 
     // ── Media ──────────────────────────────────────────────────────────────
@@ -51,7 +59,10 @@ const articleSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
-      required: [true, 'Category is required'],
+      required: [
+        function () { return ['published', 'scheduled'].includes(this.status); },
+        'Category is required',
+      ],
     },
     tags: [{ type: String, lowercase: true, trim: true }],
     contentType: {

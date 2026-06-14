@@ -29,6 +29,7 @@ interface FormState extends Partial<Article> {
   tagsInput?: string;
   categoryId?: string;
   relatedArticleIds?: string[];
+  relatedArticleTitles?: Record<string, string>;
 }
 
 // ── Save indicator ────────────────────────────────────────────────────────────
@@ -158,9 +159,10 @@ function LivePreview({ title, subtitle, excerpt, body, featuredImage, category }
 }
 
 // ── Related Articles Panel ──────────────────────────────────────────────────
-function RelatedArticlesPanel({ ids, onChange }: {
+function RelatedArticlesPanel({ ids, titles, onChange }: {
   ids: string[];
-  onChange: (ids: string[]) => void;
+  titles: Record<string, string>;
+  onChange: (ids: string[], titles: Record<string, string>) => void;
 }) {
   const [query, setQuery] = useState('');
   const { data } = useQuery({
@@ -170,12 +172,12 @@ function RelatedArticlesPanel({ ids, onChange }: {
   });
   const articles = data?.data?.data?.articles ?? [];
 
-  const add = (id: string) => {
+  const add = (id: string, title: string) => {
     if (ids.length >= 5 || ids.includes(id)) return;
-    onChange([...ids, id]);
+    onChange([...ids, id], { ...titles, [id]: title });
   };
   const remove = (id: string) => {
-    onChange(ids.filter(i => i !== id));
+    onChange(ids.filter(i => i !== id), titles);
   };
 
   return (
@@ -191,7 +193,7 @@ function RelatedArticlesPanel({ ids, onChange }: {
         <div className="space-y-1">
           {ids.map(id => (
             <div key={id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs font-sans">
-              <span className="text-ink font-medium truncate">{id}</span>
+              <span className="text-ink font-medium truncate">{titles[id] ?? id}</span>
               <button onClick={() => remove(id)} className="text-accent-red hover:text-red-700"><X size={12} /></button>
             </div>
           ))}
@@ -201,7 +203,7 @@ function RelatedArticlesPanel({ ids, onChange }: {
       {query.length > 2 && articles.length > 0 && (
         <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
           {articles.map((art: any) => (
-            <button key={art._id} onClick={() => { add(art._id); setQuery(''); }} disabled={ids.includes(art._id)} className="w-full text-left px-3 py-2 text-xs font-sans hover:bg-gray-50 disabled:opacity-40 border-b last:border-0">
+            <button key={art._id} onClick={() => { add(art._id, art.title); setQuery(''); }} disabled={ids.includes(art._id)} className="w-full text-left px-3 py-2 text-xs font-sans hover:bg-gray-50 disabled:opacity-40 border-b last:border-0">
               <p className="font-semibold text-ink line-clamp-1">{art.title}</p>
               <p className="text-ink-muted mt-0.5">{art.contentType}</p>
             </button>
@@ -400,6 +402,7 @@ export default function ArticleEditorPage() {
     isMustRead: false, isVerified: false, isPremium: false,
     isGuestAuthor: false, guestAuthorName: '', guestAuthorBio: '',
     relatedArticleIds: [],
+    relatedArticleTitles: {} as Record<string, string>,
   });
 
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -436,6 +439,9 @@ export default function ArticleEditorPage() {
       tagsInput: articleData.tags?.join(', ') ?? '',
       categoryId: typeof articleData.category === 'object' ? articleData.category._id : articleData.category,
       relatedArticleIds: (articleData as any).relatedArticles?.map((a: any) => a._id?.toString?.() ?? a._id) ?? [],
+      relatedArticleTitles: Object.fromEntries(
+        ((articleData as any).relatedArticles ?? []).map((a: any) => [a._id?.toString?.() ?? a._id, a.title])
+      ),
     });
   }, [articleData]);
 
@@ -475,6 +481,7 @@ export default function ArticleEditorPage() {
     // Convert relatedArticleIds to relatedArticles for the API
     payload.relatedArticles = (form as any).relatedArticleIds || [];
     delete payload.relatedArticleIds;
+    delete payload.relatedArticleTitles;
 
     // Only include category if it has a valid value
     if (form.categoryId) {
@@ -556,8 +563,8 @@ export default function ArticleEditorPage() {
       const url = res.data?.data?.url;
       if (url) setNested('featuredImage', 'url', url);
       toast.success('Image uploaded');
-    } catch {
-      toast.error('Image upload failed');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message ?? 'Image upload failed');
     }
   };
 
@@ -944,7 +951,11 @@ export default function ArticleEditorPage() {
                 <SectionLabel title="Related Articles" />
                 <RelatedArticlesPanel
                   ids={(form as any).relatedArticleIds || []}
-                  onChange={(ids) => set('relatedArticleIds', ids)}
+                  titles={(form as any).relatedArticleTitles || {}}
+                  onChange={(ids, titles) => {
+                    set('relatedArticleIds', ids);
+                    set('relatedArticleTitles', titles);
+                  }}
                 />
               </div>
 
