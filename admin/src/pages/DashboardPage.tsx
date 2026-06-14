@@ -5,8 +5,12 @@ import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
 import { articlesAdmin, usersAdmin, submissionsAdmin, statsAdmin } from '../services/admin';
 import { formatDate, formatRelative } from '../utils/helpers';
+import { useAdminAuth } from '../context/AuthContext';
 
 export default function DashboardPage() {
+  const { user } = useAdminAuth();
+  const isContributor = user?.role === 'contributor';
+
   const { data: statsData } = useQuery({
     queryKey: ['admin', 'stats'],
     queryFn:  () => statsAdmin.get(),
@@ -21,6 +25,7 @@ export default function DashboardPage() {
   const { data: usersData } = useQuery({
     queryKey: ['admin', 'users', 'dashboard'],
     queryFn: () => usersAdmin.getAll({ limit: 5 }),
+    enabled: !isContributor,
   });
 
   const { data: submissionsData } = useQuery({
@@ -43,7 +48,7 @@ export default function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Articles"   value={totalArticles}  icon={FileText} color="#122837" />
-        <StatCard label="Total Users"      value={totalUsers}     icon={Users}    color="#0e7490" />
+        {!isContributor && <StatCard label="Total Users"      value={totalUsers}     icon={Users}    color="#0e7490" />}
         <StatCard label="New Submissions"  value={newSubmissions} icon={Send}     color="#b45309" />
         <StatCard label="Total Views"      value={totalViews}     icon={Eye}      color="#16a34a" />
       </div>
@@ -102,8 +107,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent Users */}
-      <div className="admin-card">
+      {/* Recent Users — hidden from contributors */}
+      {!isContributor && <div className="admin-card">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
           <h2 className="text-sm font-semibold font-sans text-ink">Recent Registrations</h2>
           <Link to="/users" className="text-xs font-sans text-brand-navy hover:underline">View all</Link>
@@ -141,7 +146,7 @@ export default function DashboardPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
