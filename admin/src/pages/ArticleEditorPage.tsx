@@ -13,10 +13,17 @@ import RichTextEditor from '../components/editor/RichTextEditor';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const CONTENT_TYPES = [
-  'news', 'investigation', 'opinion', 'analysis', 'ground-report',
-  'explainer', 'interview', 'photo-essay', 'video-report', 'book-excerpt',
-  'special-series', 'community-voice', 'verified-report', 'in-their-words',
+const CONTENT_TYPES: { value: string; label: string }[] = [
+  { value: 'news',             label: 'Just In' },               // Just In section
+  { value: 'opinion',          label: 'Opinion & Analysis' },    // Opinion & Analysis section
+  { value: 'investigation',    label: 'Investigation' },         // Top Stories / Investigation badge
+  { value: 'ground-report',    label: 'Ground Report' },         // Ground Report section
+  { value: 'double-lens',      label: 'Double Lens' },           // Double Lens section
+  { value: 'verified-report',  label: 'Verified Report' },       // Top Stories with ✓ Verified badge
+  { value: 'photo-essay',      label: 'Through the Lens' },      // Through the Lens section
+  { value: 'explainer',        label: 'Explainer' },             // Explainer badge
+  { value: 'interview',        label: 'Interview' },             // Interview badge
+  { value: 'community-voices', label: 'Community Voice' },       // Community Voice badge
 ];
 const STATUSES = ['draft', 'review', 'scheduled', 'published', 'archived'];
 const LANGUAGES = [
@@ -896,7 +903,7 @@ export default function ArticleEditorPage() {
                     <label className="admin-label">Content Type *</label>
                     <select value={form.contentType} onChange={e => set('contentType', e.target.value)} className="admin-select">
                       {CONTENT_TYPES.map(t => (
-                        <option key={t} value={t}>{t.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
+                        <option key={t.value} value={t.value}>{t.label}</option>
                       ))}
                     </select>
                   </div>

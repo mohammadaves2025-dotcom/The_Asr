@@ -3,9 +3,16 @@ const slugify = require('slug');
 
 const ARTICLE_STATUSES = ['draft', 'review', 'scheduled', 'published', 'archived'];
 const CONTENT_TYPES = [
-  'news', 'investigation', 'opinion', 'analysis', 'ground-report',
-  'explainer', 'interview', 'photo-essay', 'video-report', 'book-excerpt',
-  'special-series', 'community-voice', 'verified-report', 'in-their-words',
+  'news',            // Just In — general news articles
+  'investigation',   // Top Stories / Investigation badge
+  'opinion',         // Opinion & Analysis section
+  'ground-report',   // Ground Report section
+  'double-lens',     // Double Lens section
+  'verified-report', // Top Stories with ✓ Verified badge
+  'photo-essay',     // Through the Lens section
+  'explainer',       // Explainer badge
+  'interview',       // Interview badge
+  'community-voices', // Community Voice badge
 ];
 
 const articleSchema = new mongoose.Schema(

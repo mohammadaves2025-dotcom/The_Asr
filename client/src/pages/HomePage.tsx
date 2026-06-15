@@ -375,7 +375,7 @@ export default function HomePage() {
             )}
 
             {/* Double Lens */}
-            {articles.filter((a) => a.contentType === 'ground-report').length >= 2 && (
+            {articles.filter((a) => a.contentType === 'double-lens').length >= 2 && (
               <section className="my-16">
                 <div className="mb-6 pb-3 border-b-2 border-brand-navy">
                   <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-navy mb-1 font-sans">Perspective</p>
@@ -385,7 +385,7 @@ export default function HomePage() {
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-0 border border-gray-200 rounded-xl overflow-hidden">
-                  {articles.filter((a) => a.contentType === 'ground-report').slice(0, 2).map((art, i) => (
+                  {articles.filter((a) => a.contentType === 'double-lens').slice(0, 2).map((art, i) => (
                     <div key={art._id} className={`p-5 ${i === 0 ? 'border-b md:border-b-0 md:border-r border-gray-200' : ''}`}>
                       <span className="text-[11px] font-black uppercase tracking-[2px] px-2 py-0.5 bg-brand-navy text-brand-yellow rounded-full font-sans">
                         {i === 0 ? 'Lens A' : 'Lens B'}
