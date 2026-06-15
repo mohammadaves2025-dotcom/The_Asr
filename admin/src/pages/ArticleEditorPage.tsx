@@ -972,7 +972,31 @@ export default function ArticleEditorPage() {
               <div>
                 <SectionLabel title="Flags & Badges" />
                 <div className="space-y-3">
-                  <Toggle label="Featured Article" desc="Show in hero slots" checked={!!form.isFeatured} onChange={() => set('isFeatured', !form.isFeatured)} />
+                  <Toggle label="Featured Article" desc="Show in hero slots" checked={!!form.isFeatured} onChange={async () => {
+                    const turningOn = !form.isFeatured;
+                    if (turningOn && currentArticleId) {
+                      // Call setHero — clears isFeatured on all other articles first
+                      try {
+                        await articlesAdmin.setHero(currentArticleId);
+                        set('isFeatured', true);
+                        toast.success('Hero article updated');
+                      } catch {
+                        toast.error('Failed to set hero');
+                      }
+                    } else if (!turningOn && currentArticleId) {
+                      // Clear hero
+                      try {
+                        await articlesAdmin.setHero('none');
+                        set('isFeatured', false);
+                        toast.success('Hero cleared');
+                      } catch {
+                        toast.error('Failed to clear hero');
+                      }
+                    } else {
+                      // Article not saved yet — just toggle locally
+                      set('isFeatured', turningOn);
+                    }
+                  }} />
                   <Toggle label="Breaking News" desc="Show in breaking ticker" checked={!!form.isBreaking} onChange={() => set('isBreaking', !form.isBreaking)} />
                   <Toggle label="Editor's Pick" checked={!!form.isEditorsPick} onChange={() => set('isEditorsPick', !form.isEditorsPick)} />
                   <Toggle label="Must Read" checked={!!form.isMustRead} onChange={() => set('isMustRead', !form.isMustRead)} />
