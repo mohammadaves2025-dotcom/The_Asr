@@ -63,7 +63,7 @@ const refreshLimiter = createLimiter(
 
 /**
  * Public AI endpoints (/summary, /translate): 20 per hour per IP.
- * These proxy to Anthropic — a tighter limit protects API quota from abuse
+ * These proxy to Google Gemini — a tighter limit protects API quota from abuse
  * while still being generous for genuine readers (articles rarely need
  * re-summarising or re-translating more than a handful of times per hour).
  */
