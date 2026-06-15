@@ -214,7 +214,7 @@ function HomePageSkeleton() {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theorbisjournal.in';
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://theorbisjournal.com';
 
 export default function HomePage() {
   const { data: articlesData, isLoading } = useQuery({
@@ -253,7 +253,7 @@ export default function HomePage() {
 
   const breaking    = articles.filter((a) => a.isBreaking);
   const hero        = articles.find((a) => a.isFeatured) ?? articles[0];
-  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 4);
+  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 5);
   const usedIds     = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
   const latestGrid  = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2    = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
