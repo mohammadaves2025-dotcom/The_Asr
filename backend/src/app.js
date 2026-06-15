@@ -26,6 +26,10 @@ const {
 
 const app = express();
 
+// Vercel sits behind a proxy and sets X-Forwarded-For — trust the first hop
+// so express-rate-limit (and req.ip) work correctly.
+app.set('trust proxy', 1);
+
 // ── Ensure DB is connected on every serverless invocation ─────────────────────
 app.use(async (req, res, next) => {
   try {

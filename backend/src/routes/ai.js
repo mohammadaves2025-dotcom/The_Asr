@@ -13,11 +13,14 @@ const { protect, authorize } = require('../middleware/auth');
 const { aiPublicLimiter } = require('../middleware/rateLimiter');
 
 const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_FALLBACK_MODEL = 'gemini-2.5-flash-lite';
 
 // ── Shared helper ─────────────────────────────────────────────────────────────
 // Converts Anthropic-style { role, content } messages into Gemini's
 // { role, parts: [{ text }] } format and calls generateContent.
-async function callGemini(messages, maxTokens = 800) {
+// Retries once on transient overload (503 / "high demand"), falling back to a
+// lighter model if the primary is still saturated.
+async function callGeminiModel(model, messages, maxTokens) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('AI service not configured');
 
@@ -27,7 +30,7 @@ async function callGemini(messages, maxTokens = 800) {
   }));
 
   const upstream = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -39,9 +42,38 @@ async function callGemini(messages, maxTokens = 800) {
   );
 
   const data = await upstream.json();
-  if (!upstream.ok) throw new Error(data.error?.message || 'AI request failed');
+  if (!upstream.ok) {
+    const err = new Error(data.error?.message || 'AI request failed');
+    err.status = upstream.status;
+    throw err;
+  }
 
   return data.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
+}
+
+function isOverloaded(err) {
+  return err.status === 503 || /overloaded|high demand|unavailable/i.test(err.message || '');
+}
+
+async function callGemini(messages, maxTokens = 800) {
+  try {
+    return await callGeminiModel(GEMINI_MODEL, messages, maxTokens);
+  } catch (err) {
+    if (isOverloaded(err)) {
+      // Primary model overloaded — retry once on the lighter fallback model.
+      try {
+        return await callGeminiModel(GEMINI_FALLBACK_MODEL, messages, maxTokens);
+      } catch (fallbackErr) {
+        if (isOverloaded(fallbackErr)) {
+          // One short retry on the original model before giving up.
+          await new Promise((r) => setTimeout(r, 800));
+          return await callGeminiModel(GEMINI_MODEL, messages, maxTokens);
+        }
+        throw fallbackErr;
+      }
+    }
+    throw err;
+  }
 }
 
 // ── 1. Admin AI assistant (existing — unchanged behaviour, new provider) ──────
@@ -55,35 +87,11 @@ router.post(
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         return res.status(400).json({ success: false, message: 'messages array is required' });
       }
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
+      if (!process.env.GEMINI_API_KEY) {
         return res.status(503).json({ success: false, message: 'AI service not configured' });
       }
 
-      const contents = messages.map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
-
-      // Model and max_tokens are fixed server-side — never trust client input here.
-      const upstream = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents,
-            generationConfig: { maxOutputTokens: 1000 },
-          }),
-        }
-      );
-
-      const data = await upstream.json();
-      if (!upstream.ok) {
-        return res.status(upstream.status).json({ success: false, message: data.error?.message || 'AI request failed' });
-      }
-
-      const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
+      const text = await callGemini(messages, 1000);
 
       // Shape response like Anthropic's { content: [{ type: 'text', text }] }
       // so existing admin frontend code (admin.ts / AI drawer) keeps working unchanged.
