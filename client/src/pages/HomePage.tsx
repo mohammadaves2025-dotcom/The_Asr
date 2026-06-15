@@ -410,7 +410,7 @@ export default function HomePage() {
             {/* Through the Lens */}
             {lensArticles.length > 0 && (
               <section className="my-16">
-                <SectionHead label="Visual Journalism" title="Through the Lens" href="/search" accent="#c8392b" />
+                <SectionHead title="Through the Lens" href="/search" accent="#c8392b" />
                 <div className="grid md:grid-cols-3 gap-4">
                   {lensArticles.map((art) => (
                     <Link key={art._id} to={`/article/${art.slug}`} className="group block no-underline relative overflow-hidden rounded-xl bg-gray-100">

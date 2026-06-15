@@ -131,6 +131,23 @@ const articleSchema = new mongoose.Schema(
       },
     ],
 
+    // ── AI Translation Cache ───────────────────────────────────────────────
+    // Keyed by language code ('hi' | 'ur'). Populated on first translate request
+    // and served from DB on subsequent requests — avoids repeated Gemini calls.
+    aiTranslations: {
+      type: Map,
+      of: new mongoose.Schema(
+        {
+          title:     { type: String, required: true },
+          excerpt:   { type: String, required: true },
+          body:      { type: String, default: '' },
+          createdAt: { type: Date,   default: Date.now },
+        },
+        { _id: false }
+      ),
+      default: {},
+    },
+
     // ── SEO ───────────────────────────────────────────────────────────────
     seo: {
       metaTitle: String,

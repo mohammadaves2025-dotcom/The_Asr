@@ -145,42 +145,70 @@ Body: ${bodyText.slice(0, 2500)}`;
 });
 
 // ── 3. Article translation (public — no auth required) ───────────────────────
-// Used by TranslationToggle.tsx to translate title + excerpt.
+// Used by TranslationToggle.tsx to translate title + excerpt + body.
 // aiPublicLimiter: 20 req / hour per IP — tighter than the global 100/15min.
+//
+// Flow:
+//   1. If articleId provided → check Article.aiTranslations[langCode] in DB.
+//   2. On cache hit → return immediately (no Gemini call).
+//   3. On cache miss → call Gemini for title + excerpt + body, write to DB, return.
 router.post('/translate', aiPublicLimiter, async (req, res, next) => {
   try {
-    const { title, excerpt, language, slug } = req.body;
+    const { title, excerpt, body, language, articleId } = req.body;
 
     if (!title || !language) {
       return res.status(400).json({ success: false, message: 'title and language are required' });
     }
 
     // Only Hindi and Urdu supported in phase 1
-    const supported = ['Hindi', 'Urdu'];
+    const LANG_MAP = { Hindi: 'hi', Urdu: 'ur' };
+    const supported = Object.keys(LANG_MAP);
     if (!supported.includes(language)) {
       return res.status(400).json({ success: false, message: `Language must be one of: ${supported.join(', ')}` });
     }
 
+    const langCode = LANG_MAP[language]; // 'hi' | 'ur'
+
+    // ── DB cache check ──────────────────────────────────────────────────────
+    if (articleId) {
+      const Article = require('../models/Article');
+      const cached = await Article.findById(articleId)
+        .select(`aiTranslations.${langCode}`)
+        .lean();
+
+      const hit = cached?.aiTranslations?.[langCode];
+      if (hit?.title && hit?.excerpt) {
+        return res.json({
+          success: true,
+          fromCache: true,
+          translation: { title: hit.title, excerpt: hit.excerpt, body: hit.body || '' },
+        });
+      }
+    }
+
+    // ── Build prompt ────────────────────────────────────────────────────────
+    const hasBody = body && body.trim().length > 0;
+
     const prompt = `You are a professional translator for an Indian human rights news publication.
 
-Translate the following article title and excerpt from English to ${language}.
+Translate the following article fields from English to ${language}.
 The translation must be accurate, natural, and journalistically appropriate.
 Preserve proper nouns (names, places, laws) as they are.
+For the body field, preserve all HTML tags exactly — translate only the visible text content inside tags.
 
-Return ONLY a JSON object with exactly two keys: "title" and "excerpt".
+Return ONLY a JSON object with exactly these keys: "title", "excerpt"${hasBody ? ', "body"' : ''}.
 No markdown, no explanation, no extra keys.
 
 Title: ${title}
-Excerpt: ${excerpt || title}`;
+Excerpt: ${excerpt || title}${hasBody ? `\nBody (HTML): ${body.slice(0, 6000)}` : ''}`;
 
-    const text = await callGemini([{ role: 'user', content: prompt }], 600);
+    const text = await callGemini([{ role: 'user', content: prompt }], hasBody ? 4000 : 600);
 
     let translation = null;
     try {
       const cleaned = text.replace(/```json|```/g, '').trim();
       translation = JSON.parse(cleaned);
     } catch {
-      // If JSON parse fails, return error — don't guess
       return res.status(502).json({ success: false, message: 'Translation parsing failed' });
     }
 
@@ -188,7 +216,35 @@ Excerpt: ${excerpt || title}`;
       return res.status(502).json({ success: false, message: 'Incomplete translation response' });
     }
 
-    return res.json({ success: true, translation });
+    // ── Write to DB cache ───────────────────────────────────────────────────
+    if (articleId) {
+      try {
+        const Article = require('../models/Article');
+        await Article.findByIdAndUpdate(articleId, {
+          $set: {
+            [`aiTranslations.${langCode}`]: {
+              title:     translation.title,
+              excerpt:   translation.excerpt,
+              body:      translation.body || '',
+              createdAt: new Date(),
+            },
+          },
+        });
+      } catch (cacheErr) {
+        // Non-fatal — log but still return translation to the user
+        console.error('[ai/translate] DB cache write failed:', cacheErr.message);
+      }
+    }
+
+    return res.json({
+      success: true,
+      fromCache: false,
+      translation: {
+        title:   translation.title,
+        excerpt: translation.excerpt,
+        body:    translation.body || '',
+      },
+    });
   } catch (err) {
     next(err);
   }

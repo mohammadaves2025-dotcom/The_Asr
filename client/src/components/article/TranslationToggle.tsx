@@ -2,15 +2,13 @@
 //
 // Renders a language switcher strip: [EN] [हिन्दी] [اُردُو]
 // When Hindi or Urdu is selected, calls the backend AI proxy to translate
-// the article title + excerpt.  Body is NOT translated (too slow/expensive for phase 1).
-// Shows a clear "AI Translation" badge so readers know it is machine-translated.
+// title, excerpt, AND body. Shows a clear "AI Translation" badge.
 
 import { useState } from 'react';
 import axios from 'axios';
 import { Languages, Loader2, AlertCircle } from 'lucide-react';
 
 // Plain client for public AI endpoints — bypasses auth interceptors
-// (no Authorization header, no refresh-on-401, no redirect for anonymous readers).
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
 const publicApi = axios.create({ baseURL: BASE_URL, headers: { 'Content-Type': 'application/json' } });
 
@@ -19,13 +17,16 @@ type Lang = 'en' | 'hi' | 'ur';
 interface Translation {
   title:   string;
   excerpt: string;
+  body:    string;
 }
 
 interface Props {
   originalTitle:   string;
-  originalExcept:  string;
+  originalExcerpt: string;
+  originalBody:    string;
+  articleId:       string;
   articleSlug:     string;
-  /** Called when language changes so the parent (ArticlePage) can update displayed title/excerpt */
+  /** Called when language changes so the parent (ArticlePage) can update displayed content */
   onTranslate: (lang: Lang, translation: Translation | null) => void;
 }
 
@@ -43,14 +44,16 @@ const LANG_NAMES: Record<Lang, string> = {
 
 export default function TranslationToggle({
   originalTitle,
-  originalExcept,
+  originalExcerpt,
+  originalBody,
+  articleId,
   articleSlug,
   onTranslate,
 }: Props) {
   const [activeLang,  setActiveLang]  = useState<Lang>('en');
   const [loading,     setLoading]     = useState<Lang | null>(null);
   const [error,       setError]       = useState<string | null>(null);
-  // Cache translations in memory for the session
+  // Cache translations in memory for the session (fallback when DB cache misses)
   const [cache,       setCache]       = useState<Partial<Record<Lang, Translation>>>({});
 
   const handleSelect = async (lang: Lang) => {
@@ -64,21 +67,23 @@ export default function TranslationToggle({
       return;
     }
 
-    // Already fetched — use cache
+    // Already fetched this session — use in-memory cache
     if (cache[lang]) {
       setActiveLang(lang);
       onTranslate(lang, cache[lang]!);
       return;
     }
 
-    // Fetch translation
+    // Fetch translation (backend will check DB cache first)
     setLoading(lang);
     try {
       const res = await publicApi.post('/ai/translate', {
-        title:    originalTitle,
-        excerpt:  originalExcept,
-        language: lang === 'hi' ? 'Hindi' : 'Urdu',
-        slug:     articleSlug,
+        title:     originalTitle,
+        excerpt:   originalExcerpt,
+        body:      originalBody,
+        language:  lang === 'hi' ? 'Hindi' : 'Urdu',
+        articleId,
+        slug:      articleSlug,
       });
 
       const translation: Translation = res.data?.translation;

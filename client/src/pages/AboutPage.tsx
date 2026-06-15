@@ -60,7 +60,8 @@ export default function AboutPage() {
             </p>
             <Link to="/support" className="btn-primary">Support Our Mission</Link>
           </div>
-          <div className="bg-brand-navy p-8 text-white">
+
+          {/* <div className="bg-brand-navy p-8 text-white">
             <div className="grid grid-cols-2 gap-6">
               {[
                 { n: '247+', label: 'Stories Published' },
@@ -74,7 +75,9 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
+
+
         </div>
       </div>
 
