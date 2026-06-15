@@ -43,7 +43,7 @@ app.use(xssSanitize);
 
 // ── CORS ───────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL  || 'http://localhost:3000',
+  process.env.CLIENT_URL  || 'https://the-asr-1m9a.vercel.app',
   process.env.ADMIN_URL   || 'http://localhost:5174',
 ].filter(Boolean).map(o => o.replace(/\/$/, '')); // strip trailing slashes
 
