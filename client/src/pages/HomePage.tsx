@@ -105,8 +105,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
     <section className="my-14">
       <div className="border-y-2 border-ink py-5 mb-8 flex flex-col sm:flex-row sm:items-end gap-3 sm:justify-between">
         <div>
-          <p className="text-[12px] font-black uppercase tracking-[4px] text-brand-red mb-1.5 font-sans">The Orbis Original</p>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-ink leading-tight italic">Stories That Mattered</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-ink leading-tight italic">The Orbis Original</h2>
           <p className="text-[14px] text-ink-muted font-sans mt-1.5 max-w-md leading-relaxed">
             We bring powerful stories from across India, highlighting the lives and struggles of individuals whose experiences expose injustice, inspire reflection, and demand attention.
           </p>
@@ -343,7 +342,7 @@ export default function HomePage() {
               <section className="mb-16">
                 <div className="flex items-end justify-between mb-6 pb-3 border-b-2 border-brand-red">
                   <div>
-                    <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-1 font-sans">Essential Reading</p>
+                    
                     <h2 className="text-3xl font-serif font-bold text-ink italic">Must Read</h2>
                   </div>
                   <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
