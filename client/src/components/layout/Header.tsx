@@ -220,12 +220,12 @@ export default function Header() {
 
                 {moreOpen && (
                   <div
-                    className="absolute right-0 top-full w-60 z-[100]"
+                    className="absolute right-0 top-full w-64 z-[100]"
                     onMouseLeave={() => setMoreOpen(false)}
                   >
-                    <div className="bg-white border border-gray-100 rounded-xl mt-1" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.25)' }}>
-                      <div className="px-4 pt-3 pb-1.5">
-                        <p className="text-[9px] font-black uppercase tracking-[2.5px] text-ink-muted/60">More Sections</p>
+                    <div className="bg-white rounded-xl mt-1 overflow-hidden shadow-overlay border-t-[3px] border-brand-red">
+                      <div className="px-4 pt-3.5 pb-2 border-b border-gray-100">
+                        <p className="text-[11px] font-black uppercase tracking-[2.5px] text-brand-red font-sans">More Sections</p>
                       </div>
                       {moreCategories.map((cat: any) => (
                         <NavLink
@@ -233,14 +233,20 @@ export default function Header() {
                           to={`/category/${cat.slug}`}
                           onClick={() => setMoreOpen(false)}
                           className={({ isActive }) =>
-                            `flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold font-sans transition-colors group ${isActive
+                            `flex items-center justify-between px-4 py-3 text-[14px] font-serif font-bold transition-colors group border-b border-gray-50 last:border-0 ${isActive
                               ? 'text-brand-navy bg-brand-yellow/10'
-                              : 'text-ink hover:text-brand-navy hover:bg-gray-50'
+                              : 'text-ink hover:text-brand-navy hover:bg-surface-secondary'
                             }`
                           }
                         >
-                          <span>{cat.name}</span>
-                          <ChevronRight size={13} className="opacity-0 group-hover:opacity-40 transition-opacity" />
+                          <span className="flex items-center gap-2.5">
+                            <span
+                              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: cat.color ?? '#c8392b' }}
+                            />
+                            {cat.name}
+                          </span>
+                          <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 text-brand-red transition-opacity" />
                         </NavLink>
                       ))}
                     </div>
