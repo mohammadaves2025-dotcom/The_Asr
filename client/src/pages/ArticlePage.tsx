@@ -13,8 +13,11 @@ import {
 } from 'lucide-react';
 import ArticleCard from '../components/article/ArticleCard';
 import CommentsSection from '../components/article/CommentsSection';
-import AISummary from '../components/article/AISummary';
-import TranslationToggle from '../components/article/TranslationToggle';
+// Translation & AI Summary — disabled per client request until AI tokens are purchased.
+// To re-enable: uncomment these imports and the corresponding JSX blocks below
+// (search "AI FEATURE" in this file).
+// import AISummary from '../components/article/AISummary';
+// import TranslationToggle from '../components/article/TranslationToggle';
 import { MostRead, PopularStories, DonateCard, FollowUs } from '../components/sidebar/SidebarWidgets';
 import { articlesService } from '../services/articles';
 import { useAuth } from '../context/AuthContext';
@@ -361,21 +364,21 @@ export default function ArticlePage() {
   // ── Google Sign-In prompt state ───────────────────────────────────────────
   const [showSignInPrompt, setShowSignInPrompt] = useState(false);
 
-  // ── Translation state — overrides displayed title/excerpt/body when active ─
-  const [translatedTitle,   setTranslatedTitle]   = useState<string | null>(null);
-  const [translatedExcerpt, setTranslatedExcerpt] = useState<string | null>(null);
-  const [translatedBody,    setTranslatedBody]    = useState<string | null>(null);
-  const [activeLang,        setActiveLang]        = useState<'en' | 'hi' | 'ur'>('en');
-
-  const handleTranslate = (
-    lang: 'en' | 'hi' | 'ur',
-    translation: { title: string; excerpt: string; body: string } | null
-  ) => {
-    setActiveLang(lang);
-    setTranslatedTitle(translation?.title   ?? null);
-    setTranslatedExcerpt(translation?.excerpt ?? null);
-    setTranslatedBody(translation?.body     ?? null);
-  };
+  // ── Translation state (AI FEATURE — disabled, see imports above) ──────────
+  // const [translatedTitle,   setTranslatedTitle]   = useState<string | null>(null);
+  // const [translatedExcerpt, setTranslatedExcerpt] = useState<string | null>(null);
+  // const [translatedBody,    setTranslatedBody]    = useState<string | null>(null);
+  // const [activeLang,        setActiveLang]        = useState<'en' | 'hi' | 'ur'>('en');
+  //
+  // const handleTranslate = (
+  //   lang: 'en' | 'hi' | 'ur',
+  //   translation: { title: string; excerpt: string; body: string } | null
+  // ) => {
+  //   setActiveLang(lang);
+  //   setTranslatedTitle(translation?.title   ?? null);
+  //   setTranslatedExcerpt(translation?.excerpt ?? null);
+  //   setTranslatedBody(translation?.body     ?? null);
+  // };
 
   // Show the prompt after 6 seconds if not logged in — once per session
   useEffect(() => {
@@ -548,25 +551,27 @@ export default function ArticlePage() {
                 )}
               </div>
 
-              {/* Language toggle — EN / हिन्दी / اُردُو */}
-              <TranslationToggle
+              {/* AI FEATURE — Language toggle (EN / हिन्दी / اُردُو) — disabled per client
+                  request until AI tokens are purchased. To re-enable, uncomment the
+                  import at the top of this file and this block. */}
+              {/* <TranslationToggle
                 originalTitle={article.title}
                 originalExcerpt={article.excerpt}
                 originalBody={article.body ?? ''}
                 articleId={article._id}
                 articleSlug={article.slug}
                 onTranslate={handleTranslate}
-              />
+              /> */}
 
-              {/* Title — shows translated version when active */}
+              {/* Title */}
               <h1 className="text-4xl md:text-5xl lg:text-[52px] font-serif font-bold text-ink leading-tight mb-4">
-                {translatedTitle ?? article.title}
+                {article.title}
               </h1>
 
               {/* Sub-headline — bold as per client (font-semibold + slightly larger) */}
-              {(translatedExcerpt ?? article.subtitle) && (
+              {article.subtitle && (
                 <p className="text-xl md:text-2xl text-ink-secondary font-sans leading-relaxed font-semibold mb-6">
-                  {translatedExcerpt ?? article.subtitle}
+                  {article.subtitle}
                 </p>
               )}
 
@@ -702,20 +707,22 @@ export default function ArticlePage() {
                 </div>
               )}
 
-              {/* AI Summary — "Read in 30 seconds" */}
-              {article.body && (
+              {/* AI FEATURE — "Read in 30 Seconds" AI Summary — disabled per client
+                  request until AI tokens are purchased. To re-enable, uncomment the
+                  import at the top of this file and this block. */}
+              {/* {article.body && (
                 <AISummary
                   title={article.title}
                   excerpt={article.excerpt}
                   body={article.body}
                   slug={article.slug}
                 />
-              )}
+              )} */}
 
-              {/* Body — shows translated version when active; RTL wrapper for Urdu */}
-              {(translatedBody ?? article.body) ? (
-                <div dir={activeLang === 'ur' ? 'rtl' : 'ltr'}>
-                  <ArticleBody html={translatedBody ?? article.body!} />
+              {/* Body */}
+              {article.body ? (
+                <div dir="ltr">
+                  <ArticleBody html={article.body} />
                 </div>
               ) : (
                 <div className="prose-article">

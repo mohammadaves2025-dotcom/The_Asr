@@ -54,7 +54,7 @@ export default function RegisterPage() {
               Free access to all articles, save stories, follow journalists, and never miss a report.
             </p>
           </div>
-          <p className="text-xs text-white/30 font-sans">&copy; {new Date().getFullYear()} The Orbis Journal Media</p>
+          <p className="text-xs text-white/30 font-sans">&copy; {new Date().getFullYear()} The Orbis Journal </p>
         </div>
       </div>
 

@@ -12,7 +12,7 @@ const CATEGORIES = [
   { name: 'Ground Reports', description: 'Field journalism from affected communities', color: '#7c3aed', order: 4, isFeatured: true },
   { name: 'Opinion & Analysis', description: 'Editorials, expert commentary, op-eds', color: '#b45309', order: 5 },
   { name: 'Social Justice & Caste', description: 'Discrimination, exclusion, equity issues', color: '#0e7490', order: 6, isFeatured: true },
-  { name: 'Gender & Rights', description: 'Women, LGBTQIA+, gender-based violence', color: '#be123c', order: 7, isFeatured: true },
+  { name: 'Gender & Rights', description: 'Women, gender-based violence', color: '#be123c', order: 7, isFeatured: true },
   { name: 'Law & Courts', description: 'Judiciary, landmark verdicts, legal reform', color: '#065f46', order: 8 },
   { name: 'International', description: 'Global human rights, diaspora, world affairs', color: '#1e3a5f', order: 9 },
   { name: 'Communal Watch', description: 'Communal violence tracking, hate crime reports', color: '#9a3412', order: 10 },

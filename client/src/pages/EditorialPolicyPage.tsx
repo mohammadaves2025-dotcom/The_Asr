@@ -53,10 +53,7 @@ export default function EditorialPolicyPage() {
             link to or name the original dataset. When official figures conflict with ground-level accounts, we report
             both and note the discrepancy clearly.
           </p>
-          <p>
-            Stories in our "Verified Reports" section meet a higher standard: they are fact-checked by a second editor and
-            are supported by documentary evidence, not only oral testimony.
-          </p>
+          
         </PolicySection>
 
         <PolicySection title="Fairness and right of reply">

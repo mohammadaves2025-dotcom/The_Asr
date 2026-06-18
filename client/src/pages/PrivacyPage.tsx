@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         <PolicySection title="Overview">
           <p>
             The Orbis Journal ("we", "our", "the newsroom") is committed to protecting your privacy. This policy explains what personal
-            information we collect when you visit theasr.in, why we collect it, and how we handle it. We collect the minimum
+            information we collect when you visit theorbisjournal@gmail.com, why we collect it, and how we handle it. We collect the minimum
             data necessary to operate the site and communicate with our readers. We do not sell your data to anyone, ever.
           </p>
         </PolicySection>
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
         <PolicySection title="Data retention">
           <p>Newsletter subscriber data is held as long as you remain subscribed. Account data is retained as long as your account
           is active. You may request deletion of your account and associated personal data at any time by writing to
-          privacy@theasr.in. We will action deletion requests within 30 days.</p>
+          theorbisjournal@gmail.com. We will action deletion requests within 30 days.</p>
         </PolicySection>
 
         <PolicySection title="Third-party services">
@@ -74,13 +74,13 @@ export default function PrivacyPage() {
         <PolicySection title="Your rights">
           <p>You have the right to access the personal data we hold about you, to request correction of inaccurate data, and to
           request deletion. You may also object to certain processing or request that we restrict processing in some circumstances.
-          To exercise any of these rights, contact us at privacy@theasr.in.</p>
+          To exercise any of these rights, contact us at theorbisjournal@gmail.com.</p>
           <p>For readers in the European Union, these rights are guaranteed under the GDPR. We treat these rights as universal and
           will honour them regardless of your location.</p>
         </PolicySection>
 
         <PolicySection title="Contact">
-          <p>For any privacy concerns, please write to <strong className="text-ink">privacy@theasr.in</strong>. For formal complaints,
+          <p>For any privacy concerns, please write to <strong className="text-ink">theorbisjournal@gmail.com</strong>. For formal complaints,
           please use our <Link to="/grievance" className="text-brand-red hover:underline">Grievance Redressal</Link> process.</p>
         </PolicySection>
 

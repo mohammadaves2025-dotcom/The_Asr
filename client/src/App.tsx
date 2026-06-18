@@ -17,6 +17,7 @@ import Layout from './components/layout/Layout';
 import HomePage                  from './pages/HomePage';
 import ArticlePage               from './pages/ArticlePage';
 import CategoryPage              from './pages/CategoryPage';
+import FormatPage                from './pages/FormatPage';
 import SearchPage                from './pages/SearchPage';
 import TagPage                   from './pages/TagPage';
 import AuthorPage                from './pages/AuthorPage';
@@ -67,6 +68,7 @@ const router = createBrowserRouter([
       { path: '/',               element: <HomePage /> },
       { path: '/article/:slug',  element: <ArticlePage /> },
       { path: '/category/:slug', element: <CategoryPage /> },
+      { path: '/format/:type',   element: <FormatPage /> },
       { path: '/search',         element: <SearchPage /> },
       { path: '/tag/:tag',       element: <TagPage /> },
       { path: '/author/:id',     element: <AuthorPage /> },

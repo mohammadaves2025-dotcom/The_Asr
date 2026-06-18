@@ -27,7 +27,7 @@ function SectionHead({
       style={{ borderBottom: `2px solid ${accent}` }}
     >
       <div>
-        {label && (
+        { (
           <p
             className="text-[12px] font-black uppercase tracking-[3px] mb-1 font-sans"
             style={{ color: accent }}
@@ -317,7 +317,7 @@ export default function HomePage() {
             {/* Just In */}
             {latestGrid.length > 0 && (
               <section className="mb-16">
-                <SectionHead label="Top Stories" title="Just In" href="/search" accent="#c8392b" />
+                <SectionHead title="Just In" href="/search" accent="#c8392b" />
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {latestGrid.map((art) => (<ArticleCard key={art._id} article={art} />))}
                 </div>
@@ -328,7 +328,7 @@ export default function HomePage() {
             {/* Opinion */}
             {opinions.length > 0 && (
               <section className="mb-16">
-                <SectionHead label="Voices" title="Opinion & Analysis" href="/category/opinion" accent="#0d1e29" />
+                <SectionHead title="Opinion & Analysis" href="/category/opinion" accent="#0d1e29" />
                 <div>
                   {opinions.map((art) => (<OpinionCard key={art._id} article={art} />))}
                 </div>
@@ -365,7 +365,7 @@ export default function HomePage() {
             {/* In Their Words */}
             {articles.filter((a) => a.category?.slug === 'in-their-words').length > 0 && (
               <section className="mb-16">
-                <SectionHead label="Voices" title="In Their Words" href="/in-their-words" accent="#0d1e29" />
+                <SectionHead title="In Their Words" href="/in-their-words" accent="#0d1e29" />
                 <div className="grid md:grid-cols-3 gap-5">
                   {articles.filter((a) => a.category?.slug === 'in-their-words').slice(0, 3).map((art) => (
                     <ArticleCard key={art._id} article={art} />

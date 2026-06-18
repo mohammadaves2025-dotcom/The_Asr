@@ -31,7 +31,7 @@ export default function TermsPage() {
 
         <PolicySection title="Acceptance of terms">
           <p>
-            By accessing or using theasr.in (the "Site"), you agree to be bound by these Terms of Use and our
+            By accessing or using theorbisjournal@gmail.com (the "Site"), you agree to be bound by these Terms of Use and our
             Privacy Policy. If you do not agree, please do not use the Site. These terms apply to all visitors,
             registered users, subscribers, and anyone who accesses any content published on the Site.
           </p>
@@ -40,18 +40,18 @@ export default function TermsPage() {
         <PolicySection title="Content ownership and copyright">
           <p>
             All articles, photographs, videos, graphics, and other content published on the Site are the intellectual
-            property of The Orbis Journal Media or, where credited, of the respective contributor or rights holder. Content is
+            property of The Orbis Journal or, where credited, of the respective contributor or rights holder. Content is
             protected by Indian copyright law and applicable international treaties.
           </p>
           <p>
             You may share our articles on social media or link to them from other websites, provided you clearly attribute
-            TThe Orbis Journal and include a direct link to the original article. Brief quotations (up to 100 words) for the purpose
+            The Orbis Journal and include a direct link to the original article. Brief quotations (up to 100 words) for the purpose
             of commentary, criticism, or review are permitted under fair use.
           </p>
           <p>
             Republishing full articles, hosting our content on other websites, or commercial reproduction in any form is
             strictly prohibited without prior written permission. To request republication rights, contact
-            permissions@theasr.in.
+            theorbisjournal@gmail.com.
           </p>
         </PolicySection>
 
@@ -93,7 +93,7 @@ export default function TermsPage() {
             financial advice.
           </p>
           <p>
-            To the maximum extent permitted by law, The Orbis Journal Media shall not be liable for any indirect, incidental, or
+            To the maximum extent permitted by law, The Orbis Journal shall not be liable for any indirect, incidental, or
             consequential damages arising from your use of the Site or reliance on its content.
           </p>
         </PolicySection>

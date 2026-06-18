@@ -58,9 +58,9 @@ const sendEmail = async ({ to, subject, html }) => {
 const sendWelcomeEmail = (to, name) =>
   sendEmail({
     to,
-    subject: 'Welcome to The Orbis Journal Media',
+    subject: 'Welcome to The Orbis Journal',
     html: `<h2>Welcome, ${name}.</h2>
-      <p>Thank you for joining The Orbis Journal Media — independent journalism covering human rights,
+      <p>Thank you for joining The Orbis Journal — independent journalism covering human rights,
       minorities, and accountability across India.</p>
       <p>You can now read, comment, save articles, and support our newsroom.</p>
       <a href="${process.env.CLIENT_URL}" class="btn">Read Today's Stories →</a>`,

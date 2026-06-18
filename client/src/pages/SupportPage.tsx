@@ -6,7 +6,7 @@ const AMOUNTS = ['₹200', '₹500', '₹1000', '₹2000', '₹5000'];
 
 // Replace with your actual UPI VPA
 const UPI_VPA = 'theorbisjournal@upi';
-const UPI_NAME = 'The Orbis Journal Media';
+const UPI_NAME = 'The Orbis Journal ';
 const UPI_NOTE = 'Support independent journalism';
 
 const WHY_ITEMS = [
@@ -62,7 +62,7 @@ export default function SupportPage() {
             The Orbis Journal is<br />reader-funded entirely.
           </h1>
           <p className="text-white/70 text-lg font-sans max-w-2xl mx-auto leading-relaxed">
-             Every story we publish is made possible by readers like you who believe accountability journalism matters.
+             Every story we publish is made possible by readers like you..
           </p>
         </div>
       </div>
@@ -191,7 +191,7 @@ export default function SupportPage() {
         </div>
 
         {/* Other ways — buttons now use <a> tags with proper hrefs */}
-        <div className="mt-14 pt-10 border-t border-gray-200">
+        {/* <div className="mt-14 pt-10 border-t border-gray-200">
           <h2 className="text-2xl font-serif font-bold text-ink mb-6">Other ways to support</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
@@ -206,7 +206,7 @@ export default function SupportPage() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

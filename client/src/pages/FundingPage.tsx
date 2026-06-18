@@ -119,7 +119,7 @@ export default function FundingPage() {
           <p>
             We publish an annual report each year covering our editorial output, financial summary, and impact.
             If you have questions about our funding that are not answered here, please write to
-            <strong className="text-ink"> finance@theasr.in</strong>.
+            <strong className="text-ink"> theorbisjournal@gmail.com</strong>.
           </p>
         </PolicySection>
 

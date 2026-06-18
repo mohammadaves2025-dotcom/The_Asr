@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             </p>
           </div>
           <p className="text-xs text-white/30 font-sans">
-            &copy; {new Date().getFullYear()} The Orbis Journal Media
+            &copy; {new Date().getFullYear()} The Orbis Journal 
           </p>
         </div>
       </div>

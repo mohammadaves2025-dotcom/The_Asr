@@ -32,7 +32,7 @@ export default function CorrectionsPage() {
         <div className="bg-amber-50 border border-amber-200 px-5 py-4 mb-10 flex items-start gap-3">
           <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[14px] text-amber-900 font-sans leading-relaxed">
-            Found an error in our reporting? Email <strong>corrections@theasr.in</strong> with the article link,
+            Found an error in our reporting? Email <strong>theorbisjournal@gmail.com</strong> with the article link,
             the error, and supporting evidence. We respond within two working days.
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function CorrectionsPage() {
 
         <PolicySection title="Reporting an error">
           <p>
-            Readers, sources, and subjects of our reporting may flag errors by emailing <strong className="text-ink">corrections@theasr.in</strong>.
+            Readers, sources, and subjects of our reporting may flag errors by emailing <strong className="text-ink">theorbisjournal@gmail.com</strong>.
             Please include: the URL of the article, the specific claim you believe is incorrect, and, if possible,
             a source or evidence supporting the correction.
           </p>
@@ -85,7 +85,7 @@ export default function CorrectionsPage() {
           <p>
             Corrections are for factual inaccuracies, not for disagreements with our editorial judgement, the framing
             of a story, or the prominence we gave to a story. We welcome letters and responses to our journalism, which
-            may be submitted for publication to letters@theasr.in.
+            may be submitted for publication to theorbisjournal@gmail.com.
           </p>
         </PolicySection>
 

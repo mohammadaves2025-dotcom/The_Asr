@@ -14,7 +14,7 @@ const STEPS = [
   {
     step: '01',
     title: 'Submit your grievance',
-    desc: 'Email grievance@theasr.in with the subject line "Grievance: [Article Title or Topic]". Include the article URL, a clear description of your complaint, and any supporting evidence.',
+    desc: 'Email theorbisjournal@gmail.com with the subject line "Grievance: [Article Title or Topic]". Include the article URL, a clear description of your complaint, and any supporting evidence.',
   },
   {
     step: '02',
@@ -60,7 +60,7 @@ export default function GrievancePage() {
         <div className="bg-brand-navy/5 border border-brand-navy/20 px-5 py-5 mb-10">
           <p className="text-[11px] font-black uppercase tracking-[2px] text-brand-navy mb-1 font-sans">Grievance Officer</p>
           <p className="text-[15px] font-serif font-semibold text-ink mb-0.5">The Orbis Journal Editorial Desk</p>
-          <p className="text-[13px] text-ink-muted font-sans">grievance@theasr.in · Response within 14 working days</p>
+          <p className="text-[13px] text-ink-muted font-sans">theorbisjournal@gmail.com · Response within 14 working days</p>
         </div>
 
         <PolicySection title="Purpose of this process">
@@ -71,7 +71,7 @@ export default function GrievancePage() {
           </p>
           <p>
             This process is available to subjects of our reporting, sources, readers, and any member of the public who
-            believes they have been directly affected by content published on theasr.in. It is separate from our routine
+            believes they have been directly affected by content published on theorbisjournal@gmail.com. It is separate from our routine
             <Link to="/corrections" className="text-brand-red hover:underline mx-1">corrections process</Link> and is intended
             for more serious concerns.
           </p>
@@ -118,7 +118,7 @@ export default function GrievancePage() {
           </p>
           <p>
             If your complaint relates to a legal matter — defamation, copyright infringement, or a court order — please
-            contact us at legal@theasr.in. We recommend seeking independent legal advice before pursuing legal action.
+            contact us at theorbisjournal@gmail.com. We recommend seeking independent legal advice before pursuing legal action.
           </p>
         </PolicySection>
 
@@ -126,12 +126,12 @@ export default function GrievancePage() {
           <p>
             In compliance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021,
             The Orbis Journal designates a Grievance Officer for digital content complaints. Complaints under the IT Rules may be
-            submitted to grievance@theasr.in and will be addressed within the timelines prescribed under applicable law.
+            submitted to theorbisjournal@gmail.com and will be addressed within the timelines prescribed under applicable law.
           </p>
         </PolicySection>
 
         <div className="mt-10 pt-8 border-t border-gray-200 flex gap-4">
-          <a href="mailto:grievance@theasr.in" className="btn-primary">
+          <a href="mailto:theorbisjournal@gmail.com" className="btn-primary">
             Submit a Grievance <ArrowLeft size={13} className="rotate-180" />
           </a>
           <Link to="/editorial-policy" className="btn-secondary">Editorial Policy</Link>
