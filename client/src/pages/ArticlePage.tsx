@@ -536,9 +536,14 @@ export default function ArticlePage() {
                     ✓ Verified
                   </span>
                 )}
-                {article.isEditorsPick && (
+                {article.contentType === 'features' && (
                   <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-yellow text-brand-navy rounded-full">
                     Features
+                  </span>
+                )}
+                {article.contentType === 'orbis-original' && (
+                  <span className="text-[9px] font-black tracking-[2px] uppercase px-2 py-1 bg-brand-red text-white rounded-full">
+                    Orbis Original
                   </span>
                 )}
                 {article.category && (

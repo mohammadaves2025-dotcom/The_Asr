@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Plus, Eye, Trash2, LayoutTemplate, Zap, CircleCheck as CheckCircle } from 'lucide-react';
+import { Search, Plus, Eye, Trash2, LayoutTemplate, Zap } from 'lucide-react';
 import { articlesAdmin, usersAdmin } from '../services/admin';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { formatRelative, cn } from '../utils/helpers';
@@ -58,7 +58,7 @@ export default function ArticlesPage() {
     onError: () => toast.error('Failed to delete article'),
   });
 
-  const toggleFlag = async (article: Article, field: 'isBreaking' | 'isEditorsPick') => {
+  const toggleFlag = async (article: Article, field: 'isBreaking') => {
     try {
       await articlesAdmin.update(article._id, { [field]: !article[field] });
       toast.success('Updated');
@@ -259,13 +259,6 @@ export default function ArticlesPage() {
                           className={cn('p-1 rounded transition-colors', article.isBreaking ? 'text-accent-red' : 'text-gray-300 hover:text-red-400')}
                         >
                           <Zap size={13} fill={article.isBreaking ? 'currentColor' : 'none'} />
-                        </button>
-                        <button
-                          onClick={() => toggleFlag(article, 'isEditorsPick')}
-                          title="Editor's Pick"
-                          className={cn('p-1 rounded transition-colors', article.isEditorsPick ? 'text-accent-green' : 'text-gray-300 hover:text-green-400')}
-                        >
-                          <CheckCircle size={13} />
                         </button>
                       </div>
                     </td>

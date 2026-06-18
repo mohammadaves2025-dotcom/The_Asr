@@ -59,9 +59,14 @@ export default function HeroSection({ hero, featured }: Props) {
                       <CheckCircle size={11} /> Verified
                     </span>
                   )}
-                  {hero.isEditorsPick && (
+                  {hero.contentType === 'features' && (
                     <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-brand-navy/10 text-brand-navy rounded-full">
                       Features
+                    </span>
+                  )}
+                  {hero.contentType === 'orbis-original' && (
+                    <span className="text-[10px] font-bold font-sans uppercase tracking-widest px-3 py-1 bg-brand-red/10 text-brand-red rounded-full">
+                      Orbis Original
                     </span>
                   )}
                 </div>

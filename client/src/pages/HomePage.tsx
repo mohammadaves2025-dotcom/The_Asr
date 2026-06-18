@@ -144,7 +144,7 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
                     {art.contentType === 'investigation' ? 'Investigation'
                       : art.contentType === 'ground-report' ? 'Ground Report'
                       : art.contentType === 'verified-report' ? '✓ Verified'
-                      : 'Must Read'}
+                      : 'Orbis Original'}
                   </span>
                 </div>
 
@@ -253,29 +253,18 @@ export default function HomePage() {
 
   const breaking    = articles.filter((a) => a.isBreaking);
   const hero        = articles.find((a) => a.isFeatured) ?? articles[0];
-  const sideStories = articles.filter((a) => a._id !== hero?._id).slice(0, 5);
+  const featuresArticles = articles.filter((a) => a.contentType === 'features' && a._id !== hero?._id);
+  const sideStories = featuresArticles.length >= 2
+    ? featuresArticles.slice(0, 5)
+    : articles.filter((a) => a._id !== hero?._id).slice(0, 5);
   const usedIds     = new Set([hero?._id, ...sideStories.map((a) => a._id)]);
   const latestGrid  = articles.filter((a) => !usedIds.has(a._id)).slice(0, 6);
   const usedIds2    = new Set([...usedIds, ...latestGrid.map((a) => a._id)]);
   const opinions    = articles.filter((a) => a.contentType === 'opinion').slice(0, 3);
   const moreGrid    = articles.filter((a) => !usedIds2.has(a._id)).slice(0, 6);
 
-  const mustReads = articles.filter((a) => a.isMustRead);
-  const storiesThatMattered =
-    mustReads.length >= 2
-      ? mustReads.slice(0, 4)
-      : [
-          ...mustReads,
-          ...articles
-            .filter(
-              (a) =>
-                !mustReads.find((m) => m._id === a._id) &&
-                (a.contentType === 'investigation' ||
-                  a.contentType === 'ground-report' ||
-                  a.contentType === 'verified-report')
-            )
-            .slice(0, 4 - mustReads.length),
-        ].slice(0, 4);
+  const mustReads = articles.filter((a) => a.contentType === 'orbis-original');
+  const storiesThatMattered = mustReads.slice(0, 4);
 
   // Through the Lens — photo-essays only, no fallback
   const photoEssays  = articles.filter((a) => a.contentType === 'photo-essay' || (a.tags && a.tags.includes('photo')));
@@ -338,13 +327,12 @@ export default function HomePage() {
             {/* The Orbis Original */}
             <TheOrbisOriginal articles={storiesThatMattered} />
 
-            {/* Must Read */}
+            {/* The Orbis Original — grid below the featured component */}
             {mustReads.length > 0 && (
               <section className="mb-16">
                 <div className="flex items-end justify-between mb-6 pb-3 border-b-2 border-brand-red">
                   <div>
-                    <p className="text-[12px] font-black uppercase tracking-[3px] text-brand-red mb-1 font-sans">Essential Reading</p>
-                    <h2 className="text-3xl font-serif font-bold text-ink italic">Must Read</h2>
+                    <h2 className="text-3xl font-serif font-bold text-ink italic">The Orbis Original</h2>
                   </div>
                   <Link to="/search" className="flex items-center gap-1 text-[12px] font-bold uppercase tracking-[1.5px] text-ink-muted hover:text-brand-navy transition-colors font-sans mb-1">
                     More <ArrowRight size={12} />

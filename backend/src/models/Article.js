@@ -3,16 +3,18 @@ const slugify = require('slug');
 
 const ARTICLE_STATUSES = ['draft', 'review', 'scheduled', 'published', 'archived'];
 const CONTENT_TYPES = [
-  'news',            // Just In — general news articles
-  'investigation',   // Top Stories / Investigation badge
-  'opinion',         // Opinion & Analysis section
-  'ground-report',   // Ground Report section
-  'double-lens',     // Double Lens section
-  'verified-report', // Top Stories with ✓ Verified badge
-  'photo-essay',     // Through the Lens section
-  'explainer',       // Explainer badge
-  'interview',       // Interview badge
-  'community-voices', // Community Voice badge
+  'news',             // Just In — general news articles
+  'investigation',    // Investigation badge
+  'opinion',          // Opinion & Analysis section
+  'ground-report',    // Ground Report section
+  'double-lens',      // Double Lens section
+  'verified-report',  // ✓ Verified badge
+  'photo-essay',      // Through the Lens section
+  'explainer',        // Explainer badge
+  'interview',        // Interview badge
+  'community-voice',  // Community Voice badge
+  'orbis-original',   // The Orbis Original section
+  'features',         // Features / Editor's Pick section
 ];
 
 const articleSchema = new mongoose.Schema(
@@ -107,8 +109,7 @@ const articleSchema = new mongoose.Schema(
     // ── Flags & Badges ────────────────────────────────────────────────────
     isFeatured: { type: Boolean, default: false },
     isBreaking: { type: Boolean, default: false },
-    isEditorsPick: { type: Boolean, default: false },
-    isMustRead: { type: Boolean, default: false },
+
     isVerified: { type: Boolean, default: false }, // fact-checked badge
     isPremium: { type: Boolean, default: false },
 

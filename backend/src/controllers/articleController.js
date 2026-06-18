@@ -109,7 +109,7 @@ exports.getHomepageData = async (req, res, next) => {
         .populate('category', 'name slug color')
         .select('title slug excerpt featuredImage publishedAt readTime author category contentType'),
 
-      Article.find({ ...published, isEditorsPick: true })
+      Article.find({ ...published, contentType: 'features' })
         .sort('-publishedAt').limit(4)
         .populate('author', 'name role')
         .populate('category', 'name slug color')
@@ -210,7 +210,6 @@ exports.updateArticle = async (req, res, next) => {
       // Contributors cannot modify featured/breaking/editors-pick flags
       delete safeBody.isFeatured;
       delete safeBody.isBreaking;
-      delete safeBody.isEditorsPick;
       // Contributors cannot change co-authors, scheduled time, or language
       delete safeBody.coAuthors;
       delete safeBody.scheduledFor;

@@ -64,8 +64,6 @@ export interface Article {
   videoUrl?:        string;
   isFeatured?:      boolean;
   isBreaking?:      boolean;
-  isEditorsPick?:   boolean;
-  isMustRead?:      boolean;
   isVerified?:      boolean;
   isPremium?:       boolean;
   views?:           number;

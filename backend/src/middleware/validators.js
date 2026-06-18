@@ -61,9 +61,10 @@ const createArticleValidator = [
   body('contentType')
     .optional()
     .isIn([
-      'news', 'investigation', 'opinion', 'analysis', 'ground-report',
-      'explainer', 'interview', 'photo-essay', 'video-report', 'book-excerpt',
-      'special-series', 'community-voice', 'verified-report', 'in-their-words',
+      'news', 'investigation', 'opinion', 'ground-report',
+      'double-lens', 'verified-report', 'photo-essay',
+      'explainer', 'interview', 'community-voice',
+      'orbis-original', 'features',
     ])
     .withMessage('Invalid content type'),
   body('status')

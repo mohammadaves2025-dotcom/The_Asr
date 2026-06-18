@@ -5,20 +5,18 @@ import type { Article } from '../../types';
 
 // ── Content type label map ─ matches backend CONTENT_TYPES enum exactly ──────
 const CONTENT_TYPE_MAP: Record<string, { label: string; color: string }> = {
-  'news':             { label: 'News',            color: 'bg-brand-navy text-brand-yellow' },
-  'investigation':    { label: 'Investigation',   color: 'bg-brand-navy text-brand-yellow' },
-  'opinion':          { label: 'Opinion',         color: 'bg-brand-yellow text-brand-navy' },
-  'analysis':         { label: 'Analysis',        color: 'bg-brand-navy text-brand-yellow' },
-  'ground-report':    { label: 'Ground Report',   color: 'bg-brand-yellow text-brand-navy' },
-  'explainer':        { label: 'Explainer',       color: 'bg-brand-navy text-brand-yellow' },
-  'interview':        { label: 'Interview',       color: 'bg-brand-yellow text-brand-navy' },
-  'photo-essay':      { label: 'Photo Essay',     color: 'bg-brand-navy text-brand-yellow' },
-  'video-report':     { label: 'Video',           color: 'bg-brand-red text-white' },
-  'book-excerpt':     { label: 'Book Excerpt',    color: 'bg-brand-yellow text-brand-navy' },
-  'special-series':   { label: 'Special Series',  color: 'bg-brand-navy text-brand-yellow' },
-  'community-voice':  { label: 'Community Voice', color: 'bg-brand-yellow text-brand-navy' },
-  'verified-report':  { label: '✓ Verified',      color: 'bg-brand-navy text-brand-yellow' },
-  'in-their-words':   { label: 'In Their Words',  color: 'bg-brand-yellow text-brand-navy' },
+  'news':             { label: 'News',              color: 'bg-brand-navy text-brand-yellow' },
+  'investigation':    { label: 'Investigation',     color: 'bg-brand-navy text-brand-yellow' },
+  'opinion':          { label: 'Opinion',           color: 'bg-brand-yellow text-brand-navy' },
+  'ground-report':    { label: 'Ground Report',     color: 'bg-brand-yellow text-brand-navy' },
+  'double-lens':      { label: 'Double Lens',       color: 'bg-brand-navy text-brand-yellow' },
+  'verified-report':  { label: '✓ Verified',        color: 'bg-brand-navy text-brand-yellow' },
+  'photo-essay':      { label: 'Photo Essay',       color: 'bg-brand-navy text-brand-yellow' },
+  'explainer':        { label: 'Explainer',         color: 'bg-brand-navy text-brand-yellow' },
+  'interview':        { label: 'Interview',         color: 'bg-brand-yellow text-brand-navy' },
+  'community-voice':  { label: 'Community Voice',   color: 'bg-brand-yellow text-brand-navy' },
+  'orbis-original':   { label: 'Orbis Original',    color: 'bg-brand-red text-white' },
+  'features':         { label: 'Features',          color: 'bg-brand-yellow text-brand-navy' },
 };
 
 function ContentLabel({ type }: { type?: string }) {
@@ -396,11 +394,6 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
             {article.isBreaking && (
               <span className="absolute top-3 left-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-red text-white">
                 Breaking
-              </span>
-            )}
-            {article.isEditorsPick && (
-              <span className="absolute top-3 right-3 text-[9px] font-black tracking-[2px] uppercase px-2 py-0.5 bg-brand-yellow text-brand-navy">
-                Editor's Pick
               </span>
             )}
           </div>

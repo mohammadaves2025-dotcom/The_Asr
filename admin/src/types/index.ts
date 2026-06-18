@@ -44,8 +44,6 @@ export interface Article {
   publishedAt?: string;
   isFeatured: boolean;
   isBreaking: boolean;
-  isEditorsPick: boolean;
-  isMustRead?: boolean;
   isVerified: boolean;
   isPremium?: boolean;
   isGuestAuthor?: boolean;

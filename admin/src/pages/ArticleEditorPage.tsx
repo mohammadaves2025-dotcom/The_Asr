@@ -14,16 +14,18 @@ import RichTextEditor from '../components/editor/RichTextEditor';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const CONTENT_TYPES: { value: string; label: string }[] = [
-  { value: 'news',             label: 'Just In' },               // Just In section
-  { value: 'opinion',          label: 'Opinion & Analysis' },    // Opinion & Analysis section
-  { value: 'investigation',    label: 'Investigation' },         // Top Stories / Investigation badge
-  { value: 'ground-report',    label: 'Ground Report' },         // Ground Report section
-  { value: 'double-lens',      label: 'Double Lens' },           // Double Lens section
-  { value: 'verified-report',  label: 'Verified Report' },       // Top Stories with ✓ Verified badge
-  { value: 'photo-essay',      label: 'Through the Lens' },      // Through the Lens section
-  { value: 'explainer',        label: 'Explainer' },             // Explainer badge
-  { value: 'interview',        label: 'Interview' },             // Interview badge
-  { value: 'community-voices', label: 'Community Voice' },       // Community Voice badge
+  { value: 'news',            label: 'Just In' },
+  { value: 'opinion',         label: 'Opinion & Analysis' },
+  { value: 'investigation',   label: 'Investigation' },
+  { value: 'ground-report',   label: 'Ground Report' },
+  { value: 'double-lens',     label: 'Double Lens' },
+  { value: 'verified-report', label: 'Verified Report' },
+  { value: 'photo-essay',     label: 'Through the Lens' },
+  { value: 'explainer',       label: 'Explainer' },
+  { value: 'interview',       label: 'Interview' },
+  { value: 'community-voice', label: 'Community Voice' },
+  { value: 'orbis-original',  label: 'The Orbis Original' },
+  { value: 'features',        label: 'Features' },
 ];
 const STATUSES = ['draft', 'review', 'scheduled', 'published', 'archived'];
 const LANGUAGES = [
@@ -405,8 +407,8 @@ export default function ArticleEditorPage() {
     featuredImage: { url: '', alt: '', caption: '', credit: '' },
     location: { state: '', district: '', country: 'India' },
     seo: { metaTitle: '', metaDescription: '' },
-    isFeatured: false, isBreaking: false, isEditorsPick: false,
-    isMustRead: false, isVerified: false, isPremium: false,
+    isFeatured: false, isBreaking: false,
+    isVerified: false, isPremium: false,
     isGuestAuthor: false, guestAuthorName: '', guestAuthorBio: '',
     relatedArticleIds: [],
     relatedArticleTitles: {} as Record<string, string>,
@@ -998,8 +1000,7 @@ export default function ArticleEditorPage() {
                     }
                   }} />
                   <Toggle label="Breaking News" desc="Show in breaking ticker" checked={!!form.isBreaking} onChange={() => set('isBreaking', !form.isBreaking)} />
-                  <Toggle label="Editor's Pick" checked={!!form.isEditorsPick} onChange={() => set('isEditorsPick', !form.isEditorsPick)} />
-                  <Toggle label="Must Read" checked={!!form.isMustRead} onChange={() => set('isMustRead', !form.isMustRead)} />
+
                   <Toggle label="Fact-Checked / Verified" desc="Show verified badge" checked={!!form.isVerified} onChange={() => set('isVerified', !form.isVerified)} />
                   <Toggle label="Premium / Subscribers Only" checked={!!form.isPremium} onChange={() => set('isPremium', !form.isPremium)} />
                 </div>
