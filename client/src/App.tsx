@@ -7,6 +7,7 @@
 //   - /series alias kept (still a valid content format)
 //   - All page files still exist on disk — just no longer linked from nav/footer
 
+import { lazy } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -14,36 +15,44 @@ import { AuthProvider } from './context/AuthContext';
 import Layout from './components/layout/Layout';
 
 // Pages
+// ── HomePage stays a regular (eager) import — it's the landing page for most
+// visits, so there's no benefit to code-splitting it; splitting it would just
+// add an extra network round-trip for the most common case.
+// Every other page is lazy-loaded: previously ALL of these were imported
+// eagerly, meaning a visitor to just "/" had to download the JS for every
+// single page (login, profile, all legal pages, admin-adjacent pages, etc.)
+// before React could even mount HomePage. This was a big part of the blank
+// screen on first load.
 import HomePage                  from './pages/HomePage';
-import ArticlePage               from './pages/ArticlePage';
-import CategoryPage              from './pages/CategoryPage';
-import FormatPage                from './pages/FormatPage';
-import SearchPage                from './pages/SearchPage';
-import TagPage                   from './pages/TagPage';
-import AuthorPage                from './pages/AuthorPage';
-import LoginPage                 from './pages/LoginPage';
-import ProfilePage               from './pages/ProfilePage';
-import SupportPage               from './pages/SupportPage';
-import SubmissionsPage           from './pages/SubmissionsPage';
-import AboutPage                 from './pages/AboutPage';
-import ContactPage               from './pages/ContactPage';
-import EditorialPolicyPage       from './pages/EditorialPolicyPage';
-import FundingPage               from './pages/FundingPage';
-import CorrectionsPage           from './pages/CorrectionsPage';
-import PrivacyPage               from './pages/PrivacyPage';
-import TermsPage                 from './pages/TermsPage';
-import GrievancePage             from './pages/GrievancePage';
-import NotFoundPage              from './pages/NotFoundPage';
+const ArticlePage               = lazy(() => import('./pages/ArticlePage'));
+const CategoryPage              = lazy(() => import('./pages/CategoryPage'));
+const FormatPage                = lazy(() => import('./pages/FormatPage'));
+const SearchPage                = lazy(() => import('./pages/SearchPage'));
+const TagPage                   = lazy(() => import('./pages/TagPage'));
+const AuthorPage                = lazy(() => import('./pages/AuthorPage'));
+const LoginPage                 = lazy(() => import('./pages/LoginPage'));
+const ProfilePage               = lazy(() => import('./pages/ProfilePage'));
+const SupportPage               = lazy(() => import('./pages/SupportPage'));
+const SubmissionsPage           = lazy(() => import('./pages/SubmissionsPage'));
+const AboutPage                 = lazy(() => import('./pages/AboutPage'));
+const ContactPage               = lazy(() => import('./pages/ContactPage'));
+const EditorialPolicyPage       = lazy(() => import('./pages/EditorialPolicyPage'));
+const FundingPage               = lazy(() => import('./pages/FundingPage'));
+const CorrectionsPage           = lazy(() => import('./pages/CorrectionsPage'));
+const PrivacyPage               = lazy(() => import('./pages/PrivacyPage'));
+const TermsPage                 = lazy(() => import('./pages/TermsPage'));
+const GrievancePage             = lazy(() => import('./pages/GrievancePage'));
+const NotFoundPage              = lazy(() => import('./pages/NotFoundPage'));
 
-// Guards
+// Guards — kept eager, it's tiny and needed immediately for /profile
 import ProtectedRoute            from './components/common/ProtectedRoute';
 
 // OAuth & password reset
-import GoogleCallbackPage        from './pages/GoogleCallbackPage';
-import ForgotPasswordPage        from './pages/ForgotPasswordPage';
-import ResetPasswordPage         from './pages/ResetPasswordPage';
-import NewsletterConfirmPage     from './pages/NewsletterConfirmPage';
-import NewsletterUnsubscribePage from './pages/NewsletterUnsubscribePage';
+const GoogleCallbackPage        = lazy(() => import('./pages/GoogleCallbackPage'));
+const ForgotPasswordPage        = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage         = lazy(() => import('./pages/ResetPasswordPage'));
+const NewsletterConfirmPage     = lazy(() => import('./pages/NewsletterConfirmPage'));
+const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {

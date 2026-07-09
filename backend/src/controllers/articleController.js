@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Article = require('../models/Article');
 const Category = require('../models/Category');
 const Comment = require('../models/Comment');
@@ -20,7 +21,20 @@ exports.getArticles = async (req, res, next) => {
 
     if (category) {
       const cat = await Category.findOne({ slug: category });
-      if (cat) filter.category = cat._id;
+      // IMPORTANT: if the slug doesn't resolve (bad slug, or a transient DB
+      // hiccup right after a cold start), do NOT silently drop the filter —
+      // that used to return the latest articles across ALL categories,
+      // which is why visiting an empty/unready category briefly showed
+      // articles from a totally different section. Return an empty,
+      // correctly-shaped result instead so the frontend's normal "no
+      // articles yet" empty state handles it.
+      if (!cat) {
+        return sendSuccess(res, {
+          data: { articles: [] },
+          meta: buildPaginationMeta(page, limit, 0),
+        });
+      }
+      filter.category = cat._id;
     }
     if (tag) filter.tags = { $in: [tag.toLowerCase()] };
     if (author) filter.author = author;
@@ -347,15 +361,34 @@ exports.setHero = async (req, res, next) => {
 
     if (id !== 'none') {
       // Only allow published articles to be set as hero
-      const article = await Article.findOne({ _id: id, status: 'published' });
-      if (!article) {
+      const exists = await Article.exists({ _id: id, status: 'published' });
+      if (!exists) {
         return res.status(404).json({ success: false, message: 'Published article not found' });
       }
-      await Article.updateMany({ isFeatured: true }, { isFeatured: false });
-      article.isFeatured = true;
-      await article.save();
-    } else {
-      await Article.updateMany({ isFeatured: true }, { isFeatured: false });
+    }
+
+    // ── Atomic swap ──────────────────────────────────────────────────────────
+    // Previously this was two separate writes (updateMany then save), which
+    // meant two concurrent setHero calls (or a slow retry) could leave either
+    // 0 or 2+ articles marked isFeatured. Both writes now happen inside one
+    // transaction so the homepage hero query always sees a single consistent
+    // state — either the swap fully happened or it didn't happen at all.
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        if (id !== 'none') {
+          await Article.updateMany(
+            { _id: { $ne: id }, isFeatured: true },
+            { isFeatured: false },
+            { session }
+          );
+          await Article.updateOne({ _id: id }, { isFeatured: true }, { session });
+        } else {
+          await Article.updateMany({ isFeatured: true }, { isFeatured: false }, { session });
+        }
+      });
+    } finally {
+      await session.endSession();
     }
 
     return res.json({ success: true, message: id === 'none' ? 'Hero cleared' : 'Hero updated' });
@@ -366,12 +399,32 @@ exports.setHero = async (req, res, next) => {
 
 
 // ── Increment Views ───────────────────────────────────────────────────────────
+// Dedup via a short-lived cookie so refreshing/re-visiting the same article
+// (or a script looping this endpoint) doesn't inflate views — and by
+// extension doesn't manipulate the "Most Read" widget on the homepage.
+// This is a lightweight guard, not a full anti-abuse system: a user clearing
+// cookies or switching devices still gets counted again, which is fine —
+// the goal is just to stop trivial repeat-refresh / loop inflation.
 exports.incrementViews = async (req, res, next) => {
   try {
-    const filter = req.params.slug.match(/^[0-9a-fA-F]{24}$/)
-      ? { _id: req.params.slug }
-      : { slug: req.params.slug };
+    const { slug } = req.params;
+    const cookieName = `viewed_${slug}`;
+
+    if (req.cookies?.[cookieName]) {
+      return res.status(204).end();
+    }
+
+    const filter = slug.match(/^[0-9a-fA-F]{24}$/)
+      ? { _id: slug }
+      : { slug };
     await Article.findOneAndUpdate(filter, { $inc: { views: 1 } });
+
+    res.cookie(cookieName, '1', {
+      maxAge: 30 * 60 * 1000, // 30 min
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
     return res.status(204).end();
   } catch (err) {
     next(err);

@@ -31,7 +31,24 @@
     <link rel="canonical" href="https://theorbisjournal.in" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Static placeholder shown only until React mounts and takes over.
+        Not tied to any JS/CSS bundle, so it appears the instant the HTML
+        itself loads — this is what closes the "blank white page" gap
+        before the app's own skeletons can render. React replaces this
+        div's contents on mount; nothing here needs cleanup.
+      -->
+      <div style="min-height:100vh;display:flex;flex-direction:column;background:#fff;">
+        <div style="background:#fbfc09;padding:14px 20px;">
+          <span style="font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:26px;color:#122837;">The Orbis Journal</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+          <div style="width:24px;height:24px;border:2px solid rgba(18,40,55,0.15);border-top-color:#122837;border-radius:50%;animation:orbis-spin 0.7s linear infinite;"></div>
+        </div>
+      </div>
+      <style>@keyframes orbis-spin{to{transform:rotate(360deg)}}</style>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

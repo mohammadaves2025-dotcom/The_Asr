@@ -9,7 +9,7 @@ const {
   forgotPasswordValidator,
   resetPasswordValidator,
 } = require('../middleware/validators');
-const { authLimiter, registerLimiter, passwordResetLimiter, refreshLimiter } = require('../middleware/rateLimiter');
+const { authLimiter, registerLimiter, passwordResetLimiter, resetPasswordConsumeLimiter, refreshLimiter } = require('../middleware/rateLimiter');
 
 // ── Local Auth ────────────────────────────────────────────────────────────────
 router.post('/register', registerLimiter, registerValidator, authController.register);
@@ -27,7 +27,7 @@ router.get(
 
 // ── Password ──────────────────────────────────────────────────────────────────
 router.post('/forgot-password', passwordResetLimiter, forgotPasswordValidator, authController.forgotPassword);
-router.patch('/reset-password/:token', resetPasswordValidator, authController.resetPassword);
+router.patch('/reset-password/:token', resetPasswordConsumeLimiter, resetPasswordValidator, authController.resetPassword);
 router.patch('/update-password', protect, authController.updatePassword);
 
 // ── Profile ───────────────────────────────────────────────────────────────────

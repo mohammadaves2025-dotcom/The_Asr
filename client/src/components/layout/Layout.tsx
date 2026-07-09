@@ -1,7 +1,19 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+
+// ── Route-level loading fallback ─────────────────────────────────────────────
+// Shown only inside <main>, while a lazy-loaded page chunk is fetched — the
+// Header/Footer chrome is already visible immediately since only the page
+// content itself is code-split. Small skeleton bar, not a full-page blocker.
+function PageFallback() {
+  return (
+    <div className="container-site py-16 flex justify-center">
+      <div className="w-6 h-6 border-2 border-brand-navy/20 border-t-brand-navy rounded-full animate-spin" />
+    </div>
+  );
+}
 
 
 // ── Browser Notification Permission Popup ─────────────────────────────────────
@@ -89,7 +101,9 @@ export default function Layout() {
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
       <NotificationPrompt />

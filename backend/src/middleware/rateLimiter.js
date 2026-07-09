@@ -12,10 +12,16 @@ const createLimiter = (windowMs, max, message) =>
 
 // ── Limiters ──────────────────────────────────────────────────────────────────
 
-/** General API: 100 requests per 15 min */
+/**
+ * General API: applied globally to every /api/* request combined (see
+ * app.js). A single article page alone fires several calls (categories,
+ * article, comments, views, related). 100/15min per IP was getting hit by
+ * normal browsing on shared IPs (campus/hostel NAT, offices) — raised to a
+ * more realistic ceiling. Still low enough to blunt basic scraping/abuse.
+ */
 const apiLimiter = createLimiter(
   15 * 60 * 1000,
-  100,
+  300,
   'Too many requests, please try again in 15 minutes'
 );
 
@@ -33,11 +39,24 @@ const registerLimiter = createLimiter(
   'Too many accounts created from this IP, please try again in an hour'
 );
 
-/** Password reset: 3 per hour */
+/** Password reset — requesting the email: 3 per hour */
 const passwordResetLimiter = createLimiter(
   60 * 60 * 1000,
   3,
   'Too many password reset requests, please try again in an hour'
+);
+
+/**
+ * Password reset — actually consuming the token on /reset-password/:token.
+ * Kept as a separate limiter (not reused from passwordResetLimiter above) so
+ * someone who requested a couple of reset emails isn't then locked out of
+ * submitting their new password. A bit more headroom since typos in the new
+ * password field are a normal reason to retry.
+ */
+const resetPasswordConsumeLimiter = createLimiter(
+  60 * 60 * 1000,
+  10,
+  'Too many attempts, please request a new password reset link'
 );
 
 /** Upload: 20 per hour */
@@ -78,6 +97,7 @@ module.exports = {
   authLimiter,
   registerLimiter,
   passwordResetLimiter,
+  resetPasswordConsumeLimiter,
   uploadLimiter,
   searchLimiter,
   refreshLimiter,

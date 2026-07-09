@@ -4,12 +4,19 @@ const articleController = require('../controllers/articleController');
 const { protect, optionalAuth, authorize } = require('../middleware/auth');
 const { createArticleValidator, paginationValidator } = require('../middleware/validators');
 const { uploadArticleImage } = require('../config/cloudinary');
-const { uploadLimiter } = require('../middleware/rateLimiter');
+const { uploadLimiter, searchLimiter } = require('../middleware/rateLimiter');
 const { handleMulterError } = require('../middleware/multerErrorHandler');
+
+// This route doubles as the category/tag/format listing endpoint AND the
+// search endpoint (?search=). Only apply the stricter searchLimiter when a
+// search is actually being performed, so normal category/home browsing keeps
+// using just the shared global apiLimiter.
+const searchOnlyLimiter = (req, res, next) =>
+  req.query.search ? searchLimiter(req, res, next) : next();
 
 // ── Public ────────────────────────────────────────────────────────────────────
 router.get('/homepage', articleController.getHomepageData);
-router.get('/', paginationValidator, optionalAuth, articleController.getArticles);
+router.get('/', paginationValidator, optionalAuth, searchOnlyLimiter, articleController.getArticles);
 
 // ── Admin: all articles (contributors hit this too — scoping is enforced in controller) ──
 router.get('/admin/all',

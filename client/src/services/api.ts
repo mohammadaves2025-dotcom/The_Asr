@@ -15,6 +15,30 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
+// ── Single-flight refresh ────────────────────────────────────────────────────
+// On first load, Header + HomePage (or Header + CategoryPage, etc.) fire
+// several requests in parallel. If the token is expired, EVERY one of them
+// used to hit /auth/refresh independently and at the same time. Sharing one
+// in-flight promise means the first 401 triggers the refresh and every other
+// concurrent 401 just waits on that same result instead of racing it.
+let refreshPromise: Promise<string> | null = null;
+
+function refreshAccessToken(): Promise<string> {
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true })
+      .then(({ data }) => {
+        const newToken = data.data.accessToken;
+        localStorage.setItem('accessToken', newToken);
+        return newToken;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -22,9 +46,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
-        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
-        const newToken = data.data.accessToken;
-        localStorage.setItem('accessToken', newToken);
+        const newToken = await refreshAccessToken();
         original.headers.Authorization = `Bearer ${newToken}`;
         return api(original);
       } catch {
