@@ -456,6 +456,28 @@ END OF THEME B BLOCK */
   animation: fadeUp 0.5s ease forwards;
 }
 
+/* ── Shimmer skeleton ────────────────────────────────────────────────────────
+   Used for loading states (Layout's route Suspense fallback, HomePage/
+   CategoryPage/TagPage/FormatPage skeletons, and the pre-hydration shell in
+   index.html). Uses the site's own surface tokens rather than generic gray,
+   so it reads as an intentional part of the design rather than a placeholder
+   default. Pure CSS — no JS/animation library involved. */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background-color: theme('colors.surface.tertiary');
+  background-image: linear-gradient(
+    90deg,
+    theme('colors.surface.tertiary') 25%,
+    theme('colors.surface.secondary') 37%,
+    theme('colors.surface.tertiary') 63%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
 /* ── Shared utilities ────────────────────────────────────────────────────── */
 @layer utilities {
   .text-balance { text-wrap: balance; }

@@ -186,25 +186,25 @@ function TheOrbisOriginal({ articles }: { articles: Article[] }) {
 function HomePageSkeleton() {
   return (
     <div className="bg-paper">
-      <div className="container-site py-8 animate-pulse">
+      <div className="container-site py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-          <div className="lg:col-span-2 bg-gray-200 h-80 md:h-[480px] rounded-xl" />
+          <div className="lg:col-span-2 shimmer h-80 md:h-[480px] rounded-xl" />
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="space-y-2">
-                <div className="h-3 bg-gray-200 w-16 rounded" />
-                <div className="h-4 bg-gray-200 rounded" />
+                <div className="h-3 shimmer w-16 rounded" />
+                <div className="h-4 shimmer rounded" />
               </div>
             ))}
           </div>
         </div>
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 grid md:grid-cols-3 gap-5">
-            {[1, 2, 3].map((i) => (<div key={i} className="bg-gray-200 h-56 rounded-xl" />))}
+            {[1, 2, 3].map((i) => (<div key={i} className="shimmer h-56 rounded-xl" />))}
           </div>
           <div className="lg:col-span-4 space-y-5">
-            <div className="h-64 bg-gray-200 rounded-xl" />
-            <div className="h-40 bg-gray-200 rounded-xl" />
+            <div className="h-64 shimmer rounded-xl" />
+            <div className="h-40 shimmer rounded-xl" />
           </div>
         </div>
       </div>

@@ -17,10 +17,16 @@ import { articlesService } from '../services/articles';
 
 const LIMIT = 12;
 
+// See CategoryPage.tsx for why this wrapper + key exists: it forces a full
+// remount whenever the tag changes instead of relying on the query and the
+// page-reset effect to each separately catch up, closing off the same class
+// of stale-content flash.
 export default function TagPage() {
   const { tag } = useParams<{ tag: string }>();
+  return <TagPageInner key={tag} tag={tag} />;
+}
 
-  // ── Page in URL ───────────────────────────────────────────────────────────
+function TagPageInner({ tag }: { tag?: string }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
 
@@ -85,12 +91,12 @@ export default function TagPage() {
 
       {/* Loading skeleton */}
       {isLoading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i}>
-              <div className="h-48 bg-gray-200 mb-3" />
-              <div className="h-4 bg-gray-200 mb-2 rounded" />
-              <div className="h-4 bg-gray-200 w-3/4 rounded" />
+              <div className="h-48 shimmer mb-3" />
+              <div className="h-4 shimmer mb-2 rounded" />
+              <div className="h-4 shimmer w-3/4 rounded" />
             </div>
           ))}
         </div>

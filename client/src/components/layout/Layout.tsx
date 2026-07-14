@@ -6,11 +6,19 @@ import Footer from './Footer';
 // ── Route-level loading fallback ─────────────────────────────────────────────
 // Shown only inside <main>, while a lazy-loaded page chunk is fetched — the
 // Header/Footer chrome is already visible immediately since only the page
-// content itself is code-split. Small skeleton bar, not a full-page blocker.
+// content itself is code-split. Mirrors the hero+grid shape shared by
+// Home/Category/Format pages using the `.shimmer` utility (see index.css),
+// so the transition into the real page feels continuous rather than a
+// generic spinner interrupting it.
 function PageFallback() {
   return (
-    <div className="container-site py-16 flex justify-center">
-      <div className="w-6 h-6 border-2 border-brand-navy/20 border-t-brand-navy rounded-full animate-spin" />
+    <div className="container-site py-8 md:py-12">
+      <div className="grid md:grid-cols-3 gap-5">
+        <div className="shimmer h-64 rounded-xl md:col-span-2" />
+        <div className="shimmer h-64 rounded-xl" />
+        <div className="shimmer h-64 rounded-xl" />
+        <div className="shimmer h-64 rounded-xl" />
+      </div>
     </div>
   );
 }

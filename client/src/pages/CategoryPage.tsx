@@ -14,11 +14,27 @@ interface CategoryPageProps {
 
 const LIMIT = 24;
 
+// ── Why the wrapper + key ────────────────────────────────────────────────────
+// React Router reuses the same CategoryPage instance across /category/:slug
+// navigations (only the slug param changes) — it does not unmount/remount by
+// default. That means every piece of state on this page (both queries, the
+// page-reset effect) has to independently notice the slug changed and catch
+// up on its own, and there's no single moment where everything resets
+// together. Under a slow/cold-started backend, that gap can show the
+// *previous* category's banner and articles for noticeably longer than a
+// flash.
+//
+// Giving the inner component `key={slug}` sidesteps all of that: React
+// throws away the old component instance entirely and mounts a brand new one
+// whenever the slug changes, so there is no stale state to catch up on in
+// the first place — banner and article list always start fresh together.
 export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
   const { slug: paramSlug } = useParams<{ slug: string }>();
   const slug = paramSlug ?? fixedSlug;
+  return <CategoryPageInner key={slug} slug={slug} />;
+}
 
-  // ── Page state lives in URL (?page=N) so links are shareable ─────────────
+function CategoryPageInner({ slug }: { slug?: string }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
 
@@ -109,9 +125,9 @@ export default function CategoryPage({ fixedSlug }: CategoryPageProps) {
 
         {/* Loading skeleton */}
         {isLoading && (
-          <div className="grid md:grid-cols-3 gap-5 animate-pulse">
+          <div className="grid md:grid-cols-3 gap-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-64 bg-gray-200" />
+              <div key={i} className="h-64 shimmer" />
             ))}
           </div>
         )}

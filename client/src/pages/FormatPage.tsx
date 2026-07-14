@@ -42,13 +42,17 @@ interface FormatPageProps {
 
 const LIMIT = 24;
 
+// See CategoryPage.tsx for why this wrapper + key exists: forces a full
+// remount on type change instead of relying on the query/effect to catch up,
+// closing off the same stale-content flash for this page too.
 export default function FormatPage({ fixedType }: FormatPageProps) {
   const { type: paramType } = useParams<{ type: string }>();
   const type = paramType ?? fixedType;
+  return <FormatPageInner key={type} type={type} />;
+}
 
+function FormatPageInner({ type }: { type?: string }) {
   const meta = type ? FORMAT_META[type] : undefined;
-
-  // ── Page state lives in URL (?page=N) so links are shareable ─────────────
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
 
@@ -132,9 +136,9 @@ export default function FormatPage({ fixedType }: FormatPageProps) {
 
         {/* Loading skeleton */}
         {isLoading && (
-          <div className="grid md:grid-cols-3 gap-5 animate-pulse">
+          <div className="grid md:grid-cols-3 gap-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-64 bg-gray-200" />
+              <div key={i} className="h-64 shimmer" />
             ))}
           </div>
         )}

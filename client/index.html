@@ -34,20 +34,64 @@
     <div id="root">
       <!--
         Static placeholder shown only until React mounts and takes over.
-        Not tied to any JS/CSS bundle, so it appears the instant the HTML
-        itself loads — this is what closes the "blank white page" gap
-        before the app's own skeletons can render. React replaces this
-        div's contents on mount; nothing here needs cleanup.
+        Self-contained (its own inline <style>, no dependency on the app's
+        CSS/JS bundle) so it appears the instant the HTML itself loads —
+        this is what closes the "blank white page" gap before the app's own
+        skeletons take over. Mirrors the real masthead + nav + hero/grid
+        layout so it reads as "the page is arriving," not as a placeholder.
+        React replaces this div's contents on mount; nothing here needs
+        cleanup.
       -->
-      <div style="min-height:100vh;display:flex;flex-direction:column;background:#fff;">
-        <div style="background:#fbfc09;padding:14px 20px;">
-          <span style="font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:26px;color:#122837;">The Orbis Journal</span>
+      <style>
+        @keyframes orbis-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .orbis-shimmer {
+          background-color: #eeede8;
+          background-image: linear-gradient(90deg, #eeede8 25%, #f5f4f0 37%, #eeede8 63%);
+          background-size: 800px 100%;
+          animation: orbis-shimmer 1.4s ease-in-out infinite;
+        }
+      </style>
+      <div style="min-height:100vh;display:flex;flex-direction:column;background:#fafaf8;">
+
+        <!-- Masthead -->
+        <div style="background:#fbfc09;padding:18px 24px;">
+          <div style="max-width:1240px;margin:0 auto;">
+            <span style="font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:26px;color:#122837;">The Orbis Journal</span>
+            <div style="font-family:system-ui,sans-serif;font-weight:800;font-size:10px;letter-spacing:2px;color:rgba(18,40,55,0.5);margin-top:2px;">
+              HUMAN RIGHTS &middot; MINORITIES &middot; JUSTICE
+            </div>
+          </div>
         </div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
-          <div style="width:24px;height:24px;border:2px solid rgba(18,40,55,0.15);border-top-color:#122837;border-radius:50%;animation:orbis-spin 0.7s linear infinite;"></div>
+
+        <!-- Nav bar -->
+        <div style="background:#122837;padding:14px 24px;">
+          <div style="max-width:1240px;margin:0 auto;display:flex;gap:22px;">
+            <div style="width:46px;height:9px;border-radius:2px;background:#fbfc09;"></div>
+            <div style="width:64px;height:9px;border-radius:2px;background:rgba(255,255,255,0.15);"></div>
+            <div style="width:58px;height:9px;border-radius:2px;background:rgba(255,255,255,0.15);"></div>
+            <div style="width:50px;height:9px;border-radius:2px;background:rgba(255,255,255,0.15);"></div>
+            <div style="width:70px;height:9px;border-radius:2px;background:rgba(255,255,255,0.15);"></div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="max-width:1240px;margin:0 auto;padding:32px 24px;width:100%;box-sizing:border-box;">
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:40px;">
+            <div class="orbis-shimmer" style="height:340px;border-radius:10px;"></div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div class="orbis-shimmer" style="height:16px;width:60%;border-radius:4px;"></div>
+              <div class="orbis-shimmer" style="height:16px;width:80%;border-radius:4px;"></div>
+              <div class="orbis-shimmer" style="height:16px;width:70%;border-radius:4px;"></div>
+              <div class="orbis-shimmer" style="height:16px;width:85%;border-radius:4px;"></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+            <div class="orbis-shimmer" style="height:220px;border-radius:10px;"></div>
+            <div class="orbis-shimmer" style="height:220px;border-radius:10px;"></div>
+            <div class="orbis-shimmer" style="height:220px;border-radius:10px;"></div>
+          </div>
         </div>
       </div>
-      <style>@keyframes orbis-spin{to{transform:rotate(360deg)}}</style>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
